@@ -1,351 +1,1011 @@
 ---
-id: transacciones
+id: jdbc
 asignatura: Repositorios de Información
-unidad: 2
-titulo: Transacciones
-orden: 2
-resumen: ACID, serialización, anomalías, control de concurrencia, aislamiento y JDBC.
-fuente: Transacciones_original.pdf
+unidad: 1
+titulo: JDBC
+orden: 1
+resumen: Teoría completa de JDBC: arquitectura, conexiones, sentencias, resultados, NULL, transacciones, ResultSet avanzado, DataSource, JNDI y pools.
+fuente: JDBC_original.pdf
 ---
 
-# Transacciones
+# JDBC, de la conexión al *ResultSet*
 
-Una transacción agrupa operaciones que deben tratarse como una unidad lógica. Este tema explica por qué hacen falta frente a fallos y acceso concurrente, cómo reconocer una planificación correcta, qué anomalías pueden aparecer y cómo gestionar el aislamiento y la confirmación desde JDBC.
-
-Los apuntes siguen las 55 diapositivas de *Transacciones* (Escuela de Ingeniería Informática, curso 2026–2027). El material indica que está adaptado principalmente del curso CS145 de Christopher Ré en Stanford. Los ejemplos de Java añadidos aquí están señalados como didácticos; los ejercicios, valores y tablas del PDF se distinguen de ellos. [Abrir las diapositivas originales](Transacciones_original.pdf).
+Teoría de las diapositivas reorganizada para estudiar, con ejemplos de código y una guía de los proyectos de prácticas. Sigue el índice o lee el tema de principio a fin.
 
 ::: cifras
-4 | propiedades ACID
-3 | fases del esquema optimista
-4 | niveles de aislamiento
-55 | diapositivas de origen
+8 | bloques de teoría
+6 | mini-proyectos relacionados
+60 | páginas del PDF disponibles
 :::
 
-## Por qué hacen falta transacciones {#introduccion}
-
-### Memoria, disco y fallos
-
-El SGBD combina **memoria principal**, de acceso rápido pero limitada y volátil, con **disco**, de mayor capacidad y persistente pero más lento. El material distingue memoria **local** (privada de cada proceso), **global o compartida** (accesible por varios procesos), **disco** (al que pueden volcarse datos desde memoria) y **log**. Que un cambio exista en memoria no implica por sí mismo que haya sobrevivido a una caída. Estas ideas motivan el uso de mecanismos para recuperar un estado correcto tras un fallo. [Diapositivas 5–6](Transacciones_original.pdf#page=5).
-
-En una transferencia entre cuentas o un pago de intereses se exige: resistir fallos de hardware o del sistema, conservar la consistencia de los datos y garantizar que, una vez confirmada la operación, el resultado perdure. No sirve cargar una cuenta y fallar antes de abonar la otra. [Diapositiva 7](Transacciones_original.pdf#page=7).
-
-### Definición y ciclo de vida
-
-Una **transacción** (*txn*) es una secuencia de una o más operaciones SQL que se ejecutan como **una unidad lógica de trabajo**. El esquema del tema sitúa un inicio implícito al establecer una conexión o al terminar la transacción anterior. `COMMIT` hace permanentes los cambios y da paso a una transacción nueva; `ROLLBACK` descarta los cambios pendientes y también da paso a la siguiente. El cierre de la conexión y los fallos terminan la transacción en curso; **no debe suponerse que cerrar equivalga a confirmar**. En JDBC, el modo `autoCommit` cambia cómo se delimitan estas unidades. [Diapositivas 8–9 y 52](Transacciones_original.pdf#page=8).
-
-| Estado del esquema | Qué significa | Salida |
-| --- | --- | --- |
-| Activa | Se ejecutan lecturas y escrituras. | Puede llegar a parcialmente confirmada o fallar. |
-| Parcialmente confirmada | Terminó el trabajo, pero aún no se garantiza el estado permanente. | Confirmada si se consolida; fallida si ocurre un error. |
-| Confirmada | Sus efectos quedan permanentes. | Termina la transacción. |
-| Fallida | No puede completarse correctamente. | Se deshacen sus cambios. |
-| Abortada | El rollback ha dejado atrás los cambios pendientes. | Termina la transacción. |
-
-El [diagrama de ciclo de vida de la diapositiva 9](Transacciones_original.pdf#page=9) muestra las transiciones **inicio → activa → parcialmente confirmada → confirmada → fin** y el camino de fallo **activa/parcialmente confirmada → fallida → abortada → fin**.
-
-## Propiedades ACID {#acid}
-
-**ACID** reúne cuatro propiedades esperadas: **atomicidad, consistencia, aislamiento y durabilidad**. Son propiedades diferentes: una se refiere al «todo o nada» de una transacción; otra, a las reglas de validez; otra, a los efectos de la concurrencia; la última, a sobrevivir a fallos tras confirmar. [Diapositivas 11–15](Transacciones_original.pdf#page=11).
-
-| Propiedad | Idea central | Pregunta para comprobarla |
-| --- | --- | --- |
-| Atomicidad | Todas las operaciones se completan o no queda ninguna. | ¿Puede confirmarse solo la mitad de una transferencia? |
-| Consistencia | La transacción lleva la base de un estado válido a otro válido. | ¿Se mantienen las restricciones y reglas de negocio? |
-| Aislamiento | La concurrencia no debe producir un resultado incorrecto. | ¿Qué observa otra transacción antes y después de `COMMIT`? |
-| Durabilidad | Lo confirmado perdura incluso tras una caída posterior. | ¿Se conserva un cambio ya confirmado al reiniciar? |
-
-### Atomicidad
-
-Si la transacción falla, el estado final debe ser como si ninguna de sus operaciones se hubiera ejecutado. Si termina correctamente, deben completarse todas. En la figura del PDF, T1 ya hizo `COMMIT`, mientras T2 escribió pero todavía no confirmó cuando ocurre una caída: el sistema debe **deshacer T2**, no T1. [Diapositiva 12](Transacciones_original.pdf#page=12).
-
-### Consistencia
-
-El SGBD puede imponer restricciones como **número de cuenta único** o **saldo no negativo**. La aplicación aporta reglas de negocio que la base no puede imponer directamente, por ejemplo que una transferencia no cree ni destruya dinero. Durante el trabajo de una transacción pueden existir estados intermedios que no cumplan la regla global; al confirmar debe llegarse a un estado válido. [Diapositiva 13](Transacciones_original.pdf#page=13).
-
-### Aislamiento
-
-Varias transacciones pueden entrelazarse sin que el efecto final sea incorrecto: idealmente debe equivaler a ejecutar alguna secuencia válida de ellas una detrás de otra. El material enuncia que los cambios de una transacción no son visibles para otra hasta `COMMIT`; más adelante estudia **Read Uncommitted**, nivel que sí permite lecturas de datos no confirmados. Por eso hay que interpretar la visibilidad según el **nivel de aislamiento** aplicado. [Diapositivas 14 y 48](Transacciones_original.pdf#page=14).
-
-### Durabilidad
-
-Una vez que una transacción hace `COMMIT`, sus efectos deben mantenerse aunque después falle el sistema. Los cambios todavía en curso no tienen esa garantía; si la transacción falla se restaura un estado consistente. El tema diferencia así la confirmación de una operación que solo ha avanzado parcialmente. [Diapositiva 15](Transacciones_original.pdf#page=15).
-
-::: pregunta Si T2 escribió antes de una caída, pero no hizo COMMIT, ¿qué exige la atomicidad?
-Deshacer sus efectos: el estado final debe ser como si T2 no se hubiera ejecutado. Una transacción que sí confirmó antes de la caída debe mantener sus efectos por durabilidad.
+::: aviso Nota
+**Cómo leer los ejemplos** Los fragmentos identificados como «ejemplo didáctico» ilustran la API y no son transcripciones literales del proyecto. Los bloques identificados como «proyecto» describen los seis laboratorios de la Unidad 1 y distinguen lo que se observó en su código de las recomendaciones de buenas prácticas.
 :::
 
-## Operaciones y planificaciones {#planificaciones}
+## Qué es JDBC y cómo se organiza {#fundamentos}
 
-### Modelar SQL como lecturas y escrituras
+La aplicación programa contra una API común; el driver resuelve la comunicación concreta con el SGBD.
 
-Para estudiar concurrencia, representamos una operación como **Rᵢ(X)** (la transacción *i* lee el objeto X) o **Wᵢ(X)** (lo escribe). Por ejemplo, T1 puede ejecutar `R(V), R(Y), W(V), W(C)`. La correspondencia didáctica de la diapositiva 17 es:
+### Definición y paquetes
 
-| SQL | Lecturas y escrituras implícitas |
+**JDBC (Java Database Connectivity)** es la API estándar de Java para acceder a bases de datos relacionales o fuentes tabulares: establecer conexiones, ejecutar SQL y recibir y procesar resultados y errores. `java.sql` contiene las interfaces y clases de acceso básicas; `javax.sql` añade características como `DataSource`. El proveedor del SGBD ofrece un driver que implementa las interfaces JDBC básicas.
+
+::: proceso
+Aplicación Java → API JDBC → DriverManager / DataSource → Driver → SGBD
+:::
+
+**Componentes de la arquitectura**
+
+| Componente | Responsabilidad |
 | --- | --- |
-| `SELECT X FROM ...` | `R(X)` |
-| `INSERT INTO tabla (X) VALUES (...)` | `W(X)`: crea un registro. |
-| `UPDATE tabla SET X = ... WHERE ...` | `R(X), W(X)`: localiza y actualiza. |
-| `DELETE FROM tabla WHERE ...` | `R(X), W(X)`: localiza y elimina. |
+| Aplicación Java | Invoca los métodos de JDBC y procesa los datos. |
+| API JDBC | Interfaz orientada a objetos para trabajar con bases SQL. |
+| Driver JDBC | Establece conexiones, traduce llamadas a comandos del SGBD, convierte tipos SQL/Java y errores en excepciones Java. |
+| `DriverManager` | Mantiene los drivers disponibles y elige el que entiende la URL solicitada, de modo transparente para el cliente. |
+| Origen de datos | Base de datos relacional accesible mediante SQL. |
 
-Una **planificación** (*schedule*) intercala las operaciones de varias transacciones. Puede alternar T1 y T2, pero **debe respetar el orden interno** de las operaciones de cada una. [Diapositiva 18](Transacciones_original.pdf#page=18).
-
-### Serie, serializable y equivalente
-
-Una planificación **serie** ejecuta todas las operaciones de una transacción antes de comenzar la siguiente. Una planificación **serializable** puede intercalarlas, pero tiene el mismo efecto que alguna planificación serie. Permitir entrelazado correcto mejora el aprovechamiento de los recursos respecto a ejecutar siempre todo en serie. Un entrelazado que deja un resultado no equivalente a ninguna ejecución serie es incorrecto para el criterio expuesto en el tema. [Diapositivas 19–21](Transacciones_original.pdf#page=19).
-
-El ejemplo de las diapositivas usa dos transacciones sobre cuentas: **T1** transfiere 100 de B a A (`A += 100`, `B -= 100`) y **T2** aplica un 6 % de interés a ambas (`A *= 1,06`, `B *= 1,06`). Si T1 termina antes que T2, el interés se calcula tras transferir; si T2 termina antes, el interés precede a la transferencia. Ambos órdenes serie son válidos, pero pueden dar resultados diferentes. En una planificación serializable cada operación observa valores compatibles con **uno** de esos órdenes, aunque las instrucciones se hayan intercalado. [Diagramas 20–22](Transacciones_original.pdf#page=20).
-
-| Grupo de planificaciones del PDF | Clasificación | Equivalencia |
-| --- | --- | --- |
-| S1 y S2 | Serie | T1→T2 y T2→T1, respectivamente. |
-| S3 y S4 | Serializables, con operaciones intercaladas | S3 equivale a S1; S4 equivale a S2. |
-| S5 y S6 | No serializables | No equivalen a los órdenes serie mostrados. |
-
-### Grafo de precedencia
-
-El **grafo de precedencia** tiene una transacción por nodo y una arista **Tᵢ → Tⱼ** cuando una operación de Tᵢ aparece antes que una operación conflictiva de Tⱼ. Dos operaciones entran en conflicto si son de **transacciones distintas**, acceden al **mismo objeto** y **al menos una es una escritura**. Por tanto, `R₁(X)` y `R₂(X)` no conflictúan; `R₁(X)` y `W₂(X)`, sí. [Diapositiva 23](Transacciones_original.pdf#page=23).
-
-| Operación de T1 | Operación de T2 sobre X | ¿Conflicto? |
-| --- | --- | --- |
-| `R₁(X)` | `R₂(X)` | No: son dos lecturas. |
-| `R₁(X)` | `W₂(X)` | Sí. |
-| `W₁(X)` | `R₂(X)` | Sí. |
-| `W₁(X)` | `W₂(X)` | Sí. |
-
-**Procedimiento:** escribe la secuencia global, localiza pares conflictivos, dibuja una arista desde el que ocurre primero hacia el que ocurre después y comprueba si hay un ciclo. Un grafo **sin ciclos** permite ordenar las transacciones topológicamente y demuestra que la planificación es *serializable por conflictos*. Un grafo **con ciclos** no lo es. La diapositiva 24 lo expresa abreviadamente como «serializable si no hay ciclos», y su imagen usa explícitamente *conflict serializable*: no hay que confundir este criterio con todas las nociones posibles de equivalencia. [Diapositiva 24](Transacciones_original.pdf#page=24).
-
-::: practica Ejercicio de las dos planificaciones (diapositiva 25)
-La diapositiva compara:
-
-| Paso | Planificación 1 | Planificación 2 |
-| --- | --- | --- |
-| 1 | `R₁(X)` | `R₁(X)` |
-| 2 | `R₃(X)` | `R₃(X)` |
-| 3 | `W₁(X)` | `W₃(X)` |
-| 4 | `R₂(X)` | `W₁(X)` |
-| 5 | `W₃(X)` | `R₂(X)` |
-
-Traza las aristas antes de abrir la respuesta siguiente. [Ver en el PDF](Transacciones_original.pdf#page=25).
+::: aviso Ojo
+**Dos independencias diferentes.** La JVM aporta independencia de plataforma. Las interfaces JDBC y los drivers aportan independencia de los detalles de cada SGBD. Cambiar de SGBD puede requerir ajustar el SQL y la configuración, aunque se conserve la API.
 :::
 
-::: pregunta ¿Cuál de las dos planificaciones del ejercicio es serializable por conflictos?
-**Ninguna.** En la primera, `R₃(X)` precede a `W₁(X)` (T3→T1), mientras `R₁(X)`/`W₁(X)` preceden a `W₃(X)` (T1→T3): hay ciclo. En la segunda, `R₁(X)` precede a `W₃(X)` (T1→T3) y `R₃(X)`/`W₃(X)` preceden a `W₁(X)` (T3→T1): también hay ciclo.
-:::
+### Mapeo de tipos SQL ↔ Java
 
-## Anomalías de concurrencia {#anomalias}
+El driver convierte los valores entre ambos mundos. La tabla del tema recoge los tipos habituales:
 
-Las siguientes anomalías se explican con transacciones intercaladas sobre un mismo dato o sobre un conjunto de filas. La diferencia clave es **qué se leyó o escribió, cuándo hizo `COMMIT` la otra transacción y si una escritura oculta otra**. [Diapositivas 27–31](Transacciones_original.pdf#page=27).
-
-### Lectura sucia (*dirty read*)
-
-T2 lee un valor escrito por T1 **antes de que T1 confirme**. Si T1 hace `ROLLBACK`, la decisión de T2 estaba basada en un dato que nunca llegó a ser válido. El ejemplo del tema: T1 escribe A; T2 lee A, escribe A y confirma; después T1 aborta. [Diapositiva 27](Transacciones_original.pdf#page=27).
-
-### Lectura no repetible (*unrepeatable read*)
-
-T1 lee A dos veces dentro de su transacción y obtiene valores diferentes porque T2 modifica A y confirma entre ambas lecturas. Cambia **el valor de una fila que T1 ya había leído**. [Diapositiva 28](Transacciones_original.pdf#page=28).
-
-### Lectura fantasma (*phantom read*)
-
-T1 ejecuta de nuevo una consulta con el mismo predicado y cambia el **número o la identidad de las filas** devueltas porque otra transacción insertó, eliminó o modificó filas que cumplen la condición y confirmó. A diferencia de la lectura no repetible, aquí importa el **conjunto de resultados**. [Diapositiva 29](Transacciones_original.pdf#page=29).
-
-### Lectura de cambios parciales
-
-T2 observa **solo parte** de las escrituras de T1 antes de su `COMMIT`: T1 escribe A; T2 lee A y B y calcula usando esa combinación; después T1 escribe B. El resultado de T2 mezcla estados incompatibles de una misma operación lógica. [Diapositiva 30](Transacciones_original.pdf#page=30).
-
-### Pérdida total o parcial de una actualización
-
-Dos transacciones modifican los mismos datos y una escritura **sobrescribe** el efecto de la otra. En el ejemplo de la diapositiva 31, T1 escribe A; T2 escribe A y B; T1 escribe B. El estado final toma el A de T2 y el B de T1, de modo que no equivale a ninguna de las dos ejecuciones serie. [Diapositiva 31](Transacciones_original.pdf#page=31).
-
-| Anomalía | Señal distintiva |
-| --- | --- |
-| Lectura sucia | Se leyó un valor todavía no confirmado, que puede deshacerse. |
-| Lectura no repetible | La misma fila tiene otro valor en una segunda lectura. |
-| Lectura fantasma | Cambia el conjunto de filas de una consulta repetida. |
-| Lectura parcial | Se combinan escrituras parciales de otra transacción. |
-| Actualización perdida | Una escritura tapa el cambio de otra. |
-
-### Ejercicio: transferencia y retirada del 10 %
-
-Se parte de **A=1000, B=1000**. T1 transfiere 50 de A a B; T2 retira el 10 % del saldo de A. Las operaciones son las de la diapositiva 32:
-
-| T1 | T2 |
-| --- | --- |
-| `i11: x = R(A)` | `i21: y = R(A)` |
-| `i12: x = x - 50` | `i22: temp = y * 0,1` |
-| `i13: W(A = x)` | `i23: aux = y - temp` |
-| `i14: y = R(B)` | `i24: W(A = aux)` |
-| `i15: y = y + 50` | `i25: COMMIT` |
-| `i16: W(B = y)` |  |
-| `i17: COMMIT` |  |
-
-En serie, **T1→T2** deja A=855, B=1050; **T2→T1** deja A=850, B=1050. La planificación indicada en el PDF es `i11, i12, i21, i22, i23, i13, i14, i24, i25, i15, i16, i17`: T1 calcula A=950 pero T2 escribe después A=900, y el resultado final es **A=900, B=1050**. Se pierde la disminución de 50 en A hecha por T1. [Diapositiva 32](Transacciones_original.pdf#page=32).
-
-### Ejercicio: interés calculado sobre un dato sin confirmar
-
-De nuevo **A=1000, B=1000**. T1 transfiere 50 de A a B; T2 añade a A un interés del **10 %** de A. En la planificación de la diapositiva 33, T1 escribe A=950, T2 lee ese A y calcula un interés de 95, T2 escribe A=1045 y confirma, y **T1 hace `ROLLBACK`**. T2 confirmó un resultado calculado a partir de un cambio de T1 que se deshizo: es una **lectura sucia** y muestra por qué pueden producirse efectos en cascada. El ejercicio original presenta los pasos `i11, i12, i13, i21, i22, i23, i24, i25` antes del rollback de T1. [Diapositiva 33](Transacciones_original.pdf#page=33).
-
-## Control de concurrencia {#control-concurrencia}
-
-El objetivo es impedir anomalías incluso cuando las operaciones de varias transacciones se intercalan. El PDF contrasta un enfoque basado en **bloqueos** con otro basado en **versiones y validación**. La aplicación normalmente solicita un nivel de aislamiento y el SGBD aplica sus mecanismos internos. [Diapositivas 34–46](Transacciones_original.pdf#page=34).
-
-### Bloqueos: enfoque pesimista
-
-Para leer se solicita un **bloqueo compartido** `S(X)`: otros lectores pueden seguir leyendo X, pero un escritor debe esperar. Para escribir se solicita un **bloqueo exclusivo** `X(X)`: no se permiten otras lecturas ni escrituras concurrentes del objeto bloqueado. Los compartidos pueden liberarse explícitamente o al final de la transacción; el esquema del tema mantiene el exclusivo hasta el final. `U(X)` significa liberar el bloqueo. [Diapositivas 35–36](Transacciones_original.pdf#page=35).
-
-| Bloqueo ya existente | Otro lector pide S(X) | Otro escritor pide X(X) |
+| Tipo SQL | Tipo Java | Nota |
 | --- | --- | --- |
-| S(X) | Compatible: varios lectores. | Incompatible: espera. |
-| X(X) | Incompatible: espera. | Incompatible: espera. |
+| `CHAR`, `VARCHAR` | `String` | Texto |
+| `NUMERIC`, `DECIMAL` | `java.math.BigDecimal` | Precisión exacta |
+| `INTEGER` | `int` / `Integer` | Entero |
+| `BIGINT` | `long` / `Long` | Entero grande |
+| `FLOAT`, `DOUBLE` | `double` | Doble precisión |
+| `DATE` | `java.sql.Date` | Fecha |
+| `TIME` | `java.sql.Time` | Hora |
+| `TIMESTAMP` | `java.sql.Timestamp` | Fecha y hora |
 
-En la [planificación con bloqueos explícitos](Transacciones_original.pdf#page=36), T1 obtiene `X(B)`, escribe B y lo libera; T2 toma `S(A)`, lee A y después solicita `X(B)` antes de escribir B y liberar sus bloqueos. Los conflictos pueden obligar a esperar. La **granularidad** del bloqueo (fila, página, tabla, etc.) y la competencia por recursos afectan a la escalabilidad. El PDF menciona esta granularidad sin detallar una política concreta.
+PDF original: diapositivas 3–10.
 
-### Versiones y validación: enfoque optimista presentado en el PDF
+## De la conexión al resultado {#proceso}
 
-El material titula este enfoque **MVCC** y lo explica suponiendo que no habrá conflictos: las transacciones leen **versiones consistentes** y escriben en una copia o espacio privado; al confirmar se comprueba si lo leído y modificado sigue siendo válido. Describe tres fases: [diapositivas 37–44](Transacciones_original.pdf#page=37).
+Instalar driver → conectar → crear sentencia → ejecutar → recuperar → procesar → cerrar.
 
-1. **Simulación.** Lecturas sobre la versión consistente y escrituras privadas; los cambios aún no son globalmente visibles.
-2. **Validación.** Se examinan los conjuntos de lectura y escritura (*read set* / *write set*) y las transacciones que confirmaron durante la ejecución. Si hay conflicto relevante, la transacción debe abortar.
-3. **Escritura o commit.** La versión local válida pasa a ser visible; la persistencia física en disco puede realizarse después según el mecanismo del SGBD.
+### `Connection` y URL JDBC
 
-Los diagramas comienzan con `a=5`. T1 y T2 leen 5 y preparan, respectivamente, **`W₁(a=15)`** y **`W₂(a=25)`** en sus áreas privadas. T2 llega a validación sin que otra transacción haya confirmado durante su trabajo, por lo que puede consolidar 25. Cuando T1 intenta confirmar, su conjunto de escritura sobre `a` se cruza con el de T2, ya confirmado: el ejemplo de la diapositiva 44 muestra **fallo de validación** para T1. [Secuencia gráfica 38–44](Transacciones_original.pdf#page=38).
+`Connection` representa una conexión y una sesión de trabajo con la base de datos. Es una interfaz implementada por el driver, sin constructor propio. Una aplicación puede mantener varias conexiones con una o distintas bases. No hace falta cerrar la conexión después de cada sentencia: se cierra al acabar el trabajo con ella.
 
-::: aviso Matiz del ejemplo
-El PDF agrupa estos pasos bajo «MVCC, enfoque optimista». Son las fases del **esquema de validación que dibujan esas diapositivas**; no debe concluirse que todas las implementaciones de MVCC usen exactamente esa misma política. En la figura final, una transacción que sigue leyendo su instantánea puede continuar viendo el valor antiguo; el propio material contrasta esa situación con una nueva lectura en `Read Committed`.
-:::
-
-## Niveles de aislamiento {#aislamiento}
-
-Un nivel de aislamiento establece **qué efectos de otras transacciones concurrentes puede observar una transacción**. La aplicación no necesita operar directamente los bloqueos o versiones: pide un nivel al SGBD. En sistemas basados en bloqueos, influye en las operaciones concurrentes permitidas; en sistemas de versiones, en qué versiones resultan visibles. El nivel se configura **por transacción o conexión** en el modelo del tema; condiciona sobre todo las **lecturas de esa transacción**, no modifica por sí solo las otras que están ejecutándose. [Diapositivas 46–47](Transacciones_original.pdf#page=46).
-
-### Los cuatro niveles del tema
-
-1. **Read Uncommitted** (lectura no confirmada, menos restrictiva): puede leer cambios que todavía no hicieron `COMMIT` y que quizá luego se deshagan.
-2. **Read Committed** (lectura confirmada): no lee cambios sin confirmar; dos consultas sucesivas del mismo dato pueden obtener valores distintos, siempre confirmados.
-3. **Repeatable Read** (lectura repetible): las lecturas repetidas de los mismos registros devuelven los mismos valores; según la tabla del material todavía pueden aparecer filas nuevas en una consulta repetida.
-4. **Serializable** (más restrictivo): las transacciones concurrentes deben producir el mismo resultado que alguna ejecución serie.
-
-### Qué fenómenos permite cada nivel según la tabla del PDF
-
-| Nivel de aislamiento | Lectura sucia | Lectura no repetible | Lectura fantasma |
-| --- | --- | --- | --- |
-| Read Uncommitted | Sí | Sí | Sí |
-| Read Committed | No | Sí | Sí |
-| Repeatable Read | No | No | Sí |
-| Serializable | No | No | No |
-
-Esta es **la tabla didáctica de la diapositiva 49**. Los comportamientos concretos de un SGBD pueden depender de su implementación; para el examen de este material conserva la tabla tal como aparece. La tabla se refiere a esos tres fenómenos y no enumera por sí sola todas las formas de pérdida de actualización. [Ver tabla original](Transacciones_original.pdf#page=49).
-
-### Ejercicio `W(name, pay)` de la diapositiva 50
-
-Partimos de `pay=50` para `Amy`. Cada instrucción SQL individual se ejecuta atómicamente. T1 hace `S1: pay=2*pay`, luego `S2: pay=3*pay`; T2 hace `S3: pay=pay-20`, luego `S4: pay=pay-10`. Las dos transacciones comienzan, realizan sus dos sentencias en ese orden interno y después confirman. El PDF pregunta por los valores posibles si ambas son Serializable, ambas Read Committed, T1 Read Committed y T2 Read Uncommitted, ambas Read Uncommitted, y si ambas son Serializable pero T2 aborta después de S3. [Enunciado completo](Transacciones_original.pdf#page=50).
-
-```text title="Operaciones del ejercicio"
-Inicial: pay = 50
-T1: S1 (×2)  →  S2 (×3)   → COMMIT
-T2: S3 (−20) →  S4 (−10)  → COMMIT
+```text
+Connection conn = DriverManager.getConnection(url, usuario, clave);
 ```
 
-::: pregunta ¿Qué dos resultados corresponden a los órdenes completamente serie con ambas transacciones confirmadas?
-T1→T2: `50×2×3−20−10 = 270`. T2→T1: `(50−20−10)×2×3 = 120`. Para razonar sobre otros entrelazados o abortos hay que respetar el orden de instrucciones de cada transacción y las garantías del nivel indicado; no basta con permutar libremente los cuatro cálculos.
+La URL comienza por `jdbc:` e identifica la base y el protocolo/driver. Su forma concreta depende del controlador: `jdbc:[subprotocol]:[host[:port]]:[dbName][;attribute=value]*` es el esquema orientativo del PDF, no una plantilla literal universal. En el tema aparecen `oracle:thin`, `hsqldb:hsql` (servidor) y `hsqldb:mem` (memoria).
+
+```java title="URLs JDBC" origen="ejemplo didáctico"
+// Ejemplos didácticos de forma de URL; sustituye host y credenciales.
+String oracle = "jdbc:oracle:thin:@//servidor:1521/servicio";
+String hsqlServidor = "jdbc:hsqldb:hsql://localhost/miBD";
+String hsqlMemoria = "jdbc:hsqldb:mem:test";
+```
+
+::: aviso Ojo
+**Ejercicio de la diapositiva 15.** Construir las conexiones para Oracle (`thin`, host `156.35.94.98`, puerto `1521`, `desa19`, credenciales propias), HSQLDB servidor (`localhost`, puerto por defecto, usuario `sa`, contraseña vacía) y HSQLDB memoria (`test`, `sa`, contraseña vacía). Hay que distinguir SID de nombre de servicio al elegir la sintaxis real de Oracle.
 :::
 
-## Gestionar transacciones con JDBC {#jdbc}
+### Conexión real del laboratorio HSQLDB
 
-La interfaz `Connection` ofrece las operaciones del tema. Por defecto **`autoCommit = true`**: cada sentencia SQL queda confirmada automáticamente tras ejecutarse. Con **`autoCommit = false`**, varias sentencias forman la transacción en curso hasta llamar a `commit()` o `rollback()`. Tras acabar una transacción, la conexión puede iniciar la siguiente. [Diapositivas 52–53](Transacciones_original.pdf#page=52).
+El proyecto `unit1-manage-nulls` utiliza `DriverManager` para conectarse al
+servidor HSQLDB del taller. Este es el fragmento literal de
+`Problem1.main`:
 
-| Método de `Connection` | Para qué sirve |
-| --- | --- |
-| `getAutoCommit()` | Consultar el modo de confirmación. |
-| `setAutoCommit(boolean)` | Cambiar entre confirmación automática y manual. |
-| `commit()` | Confirmar los cambios de la transacción actual. |
-| `rollback()` | Descartar los cambios de la transacción actual. |
-| `isClosed()` | Comprobar si la conexión está cerrada. |
-| `getTransactionIsolation()` | Consultar el nivel de aislamiento de la conexión. |
-| `setTransactionIsolation(int)` | Solicitar otro nivel de aislamiento. |
+```java title="Problem1.java" origen="código original del proyecto"
+String serverName = "localhost";
+String url = "jdbc:hsqldb:hsql://" + serverName + "/";
+String username = "sa";
+String password = "";
 
-### Ejemplo: dos operaciones como una sola unidad
+// Create a connection to the database
+try {
+    conn = DriverManager.getConnection(url, username, password);
+```
 
-El siguiente fragmento **ilustra** una transferencia; no procede literalmente del PDF ni presupone sus tablas. Ambas sentencias usan **la misma conexión**. Si falla una, se deshace la transacción completa. Se comprueba además el número de filas afectadas para no confirmar una transferencia parcial.
+La URL no incluye un nombre de base de datos explícito: depende de cómo esté
+configurado el servidor HSQLDB del laboratorio. Las credenciales están
+escritas en el código porque es material docente; en una aplicación real deben
+externalizarse.
 
-```java title="Transferencia.java" origen="ejemplo didáctico"
-try (Connection con = DriverManager.getConnection(url, usuario, clave)) {
-    con.setAutoCommit(false);
+### Conexión real de Oracle mediante `config.properties`
+
+El laboratorio `ResultSet-Sensitivity-Oracle` lee la configuración desde un
+archivo relativo al directorio de ejecución y después llama a
+`DriverManager.getConnection`:
+
+```java title="DatabaseOperations.connect" origen="código original del proyecto"
+InputStream input = new FileInputStream("config.properties");
+
+// load properties file
+prop.load(input);
+
+// get the property values
+URL = prop.getProperty("URL");
+USERNAME = prop.getProperty("USERNAME");
+PASSWORD = prop.getProperty("PASSWORD");
+
+return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+```
+
+El `config.properties` no forma parte del árbol analizado de ese laboratorio:
+hay que crearlo con las claves esperadas y colocarlo en el *working directory*
+correcto. El `FileInputStream` tampoco se cierra en el código original; una
+versión segura lo declararía en `try-with-resources`.
+
+### `Statement` y sus tres ejecuciones
+
+Una sentencia nace de una conexión. `executeQuery` devuelve un `ResultSet` para consultas; `executeUpdate` devuelve el número de filas afectadas por DML (y se emplea también para DDL, cuyo recuento habitual es 0); `execute` devuelve un booleano que indica si el primer resultado es un `ResultSet`, no si la operación tuvo éxito.
+
+```java
+Statement stmt = conn.createStatement();
+ResultSet rs = stmt.executeQuery("SELECT id, name FROM TMechanics");
+int filas = stmt.executeUpdate("DELETE FROM TMechanics WHERE id = 42");
+boolean hayResultSet = stmt.execute("SELECT id FROM TMechanics");
+```
+
+### `ResultSet`: cursor y columnas
+
+El resultado de una consulta se recorre fila a fila. El cursor nace **antes de la primera fila**; `next()` avanza y devuelve `false` al terminar. En el uso básico del tema el cursor es secuencial y de solo lectura. `getInt`, `getString`, `getFloat`, etc., leen una columna de la fila actual, por etiqueta o por posición. **La primera columna es la 1, no la 0.**
+
+```java
+try (Connection conn = DriverManager.getConnection(url, usuario, clave);
+     Statement stmt = conn.createStatement();
+     ResultSet rs = stmt.executeQuery("SELECT id, name FROM TMechanics")) {
+    while (rs.next()) {
+        int id = rs.getInt(1);       // Primera columna: índice 1.
+        String nombre = rs.getString("name");
+        System.out.println(id + " · " + nombre);
+    }
+} catch (SQLException e) {
+    e.printStackTrace();
+}
+```
+
+Ejemplo didáctico · cierre automático
+
+El orden de los recursos en `try-with-resources` permite cerrarlos en orden inverso: `ResultSet`, `Statement`, `Connection`, también ante una excepción. El resultado y la sentencia pueden retener cursores y otros recursos limitados del servidor.
+
+Los laboratorios de `unit1-manage-nulls` utilizan el estilo clásico de
+`finally`. El bloque original de `Problem1` y `Problem2` contiene este error:
+
+```java title="finally de Problem1/Problem2" origen="código original del proyecto"
+if (statement != null)
     try {
-        try (PreparedStatement cargo = con.prepareStatement(
-                 "UPDATE cuentas SET saldo = saldo - ? WHERE id = ?");
-             PreparedStatement abono = con.prepareStatement(
-                 "UPDATE cuentas SET saldo = saldo + ? WHERE id = ?")) {
-            cargo.setBigDecimal(1, importe);
-            cargo.setInt(2, cuentaOrigen);
-            abono.setBigDecimal(1, importe);
-            abono.setInt(2, cuentaDestino);
+        conn.close();
+    } catch (SQLException e) {
+    }
+if (conn != null)
+    try {
+        conn.close();
+    } catch (SQLException e) {
+    }
+```
 
-            if (cargo.executeUpdate() != 1 || abono.executeUpdate() != 1) {
-                throw new SQLException("No se actualizaron ambas cuentas");
+La primera condición debería cerrar `statement`, no volver a cerrar `conn`.
+Además, el código no cierra explícitamente `ResultSet` y puede cerrar dos veces
+la conexión. Se muestra aquí como incidencia del laboratorio, no como patrón
+que deba copiarse. El patrón recomendado continúa siendo `try-with-resources`.
+
+PDF original: diapositivas 12–21 y 23–24.
+
+## NULL no equivale a `null` {#null-errores}
+
+Una lectura con getter primitivo puede ocultar que la columna SQL no tenía valor.
+
+El PDF distingue `ClassNotFoundException` al cargar explícitamente una clase de driver y `SQLException` al acceder a la base de datos. La carga manual del driver solo es relevante en el contexto en que se hace: el código básico anterior usa `DriverManager` con el driver instalado.
+
+El laboratorio Oracle ofrece además un diagnóstico más detallado de las
+excepciones encadenadas:
+
+```java title="DatabaseOperations.printSQLException" origen="código original del proyecto"
+for (Throwable e : ex) {
+    if (e instanceof SQLException) {
+        if (ignoreSQLException(((SQLException) e).getSQLState()) == false) {
+            e.printStackTrace(System.err);
+            System.err.println("SQLState: "
+                + ((SQLException) e).getSQLState());
+            System.err.println("Error Code: "
+                + ((SQLException) e).getErrorCode());
+            System.err.println("Message: " + e.getMessage());
+        }
+    }
+}
+```
+
+`SQLState`, código de error y mensaje ayudan a distinguir un problema de
+conexión, una sentencia inválida o una restricción del SGBD. El fragmento es
+una utilidad de laboratorio; una aplicación por capas normalmente registra la
+excepción y la traduce en una respuesta adecuada sin imprimir el *stack trace*
+directamente en la interfaz.
+
+Al leer una columna SQL `NULL` con `getInt()`, se devuelve `0`; por sí solo ese valor no distingue un cero real de un `NULL`. Llama a `wasNull()` **inmediatamente después del getter que quieras comprobar**. Con `getString()` el resultado puede ser la referencia Java `null`; concatenarla con texto imprime los caracteres «null», que es el problema ilustrado por el primer ejemplo.
+
+```java
+// Ejemplo didáctico basado en el caso invoice_id de TWorkorders.
+int invoiceId = rs.getInt("invoice_id");
+if (rs.wasNull()) {
+    System.out.println("No invoice");
+} else {
+    System.out.println("Invoice: " + invoiceId);
+}
+
+String factura = rs.getString("invoice_id");
+System.out.println(factura == null ? "No invoice" : factura);
+```
+
+::: practica unit1-manage-nulls
+`Problem1.java` consulta `TWorkorders` por `vehicle_id`, filtra `mechanic_id` y muestra `invoice_id` sin tratar su posible NULL. `Problem2.java` comprueba `rs.wasNull()` tras leer `invoice_id` y muestra «No invoice». Compara ambos con una fila con y sin factura.
+:::
+
+### Código literal: consulta y filtrado del laboratorio
+
+`Problem1.java` crea un `Statement`, ejecuta la consulta y recorre el
+`ResultSet`. El proyecto filtra `mechanic_id` en Java, después de recuperar las
+filas:
+
+```java title="Problem1.main" origen="código original del proyecto"
+statement = conn.createStatement();
+rs = statement.executeQuery(query);
+
+while (rs.next()) {
+    if (searched.equals(rs.getString("mechanic_id"))) {
+        display(rs);
+    }
+}
+```
+
+La consulta del ejemplo usa `SELECT *` y un `vehicle_id` literal. Es útil para
+ver `executeQuery`, `next()` y los getters por nombre, pero para código nuevo
+conviene seleccionar solo las columnas necesarias y parametrizar los valores
+con `PreparedStatement`.
+
+El método que imprime la fila lee tres columnas por etiqueta:
+
+```java title="Problem1.display" origen="código original del proyecto"
+private static void display(ResultSet rs) throws SQLException {
+    String id = rs.getString("id");
+    String desc = rs.getString("description");
+    String invoice_id = rs.getString("invoice_id");
+
+    System.out.println(id + "\t" + desc + "\t" + invoice_id);
+}
+```
+
+Si `invoice_id` es SQL `NULL`, la concatenación muestra `null`. `Problem2`
+resuelve el mismo caso comprobando `wasNull()` inmediatamente después del
+getter:
+
+```java title="Problem2.display" origen="código original del proyecto"
+private static void display(ResultSet rs) throws SQLException {
+    String id = rs.getString("id");
+    String desc = rs.getString("description");
+    String invoice_id = rs.getString("invoice_id");
+    if (rs.wasNull()) {
+        invoice_id = "No invoice ";
+    }
+    System.out.println(id + "\t" + desc + "\t" + invoice_id);
+}
+```
+
+En este laboratorio el getter es `getString`, no `getInt`: el PDF presenta
+también la variante con tipos primitivos, pero `wasNull()` sigue siendo válido
+para conocer si el último valor leído era SQL `NULL`.
+
+::: aviso Ojo
+**Precisión.** Un getter que devuelve un objeto puede devolver `null`; usar un wrapper como `Integer` requiere una lectura que realmente produzca ese objeto. `getInt()` siempre devuelve un `int`, aunque lo guardes después en un `Integer`.
+:::
+
+PDF original: diapositivas 21–23.
+
+## `Statement` y `PreparedStatement` {#sentencias}
+
+La consulta preparada separa la estructura SQL de los valores.
+
+En la jerarquía JDBC, `PreparedStatement` amplía `Statement` y `CallableStatement` amplía `PreparedStatement`; este último se usa para procedimientos almacenados. `Statement` envía una sentencia SQL construida; `PreparedStatement` fija una plantilla con marcadores `?` y recibe después sus parámetros mediante `setXXX()`. Hay que asignar todos los parámetros necesarios antes de ejecutarla; sus índices también empiezan en 1.
+
+| Aspecto | `Statement` | `PreparedStatement` |
+| --- | --- | --- |
+| Uso típico | Ejecución ocasional de SQL ya construido. | La misma forma de consulta repetida con otros valores. |
+| SQL dinámico | Puede requerir concatenación. | Marcadores `?` y llamadas `setXXX()`. |
+| Rendimiento repetido | Puede tener un coste mayor. | Puede mejorar; depende del driver y del SGBD. |
+| DDL / DML | Puede ejecutar ambos. | Puede ejecutar ambos. |
+| Datos del usuario | Concatenarlos en SQL permite inyección. | Los parámetros separan datos e instrucción. |
+
+```java title="Consulta de clientes" origen="ejemplo didáctico"
+// Ejemplo didáctico: consulta segura de clientes por población.
+String sql = "SELECT nombre, apellidos FROM TCLIENTS WHERE town = ?";
+try (PreparedStatement ps = conn.prepareStatement(sql)) {
+    for (String town : List.of("LLANERA", "OVIEDO", "LUGONES")) {
+        ps.setString(1, town);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                System.out.println(rs.getString("nombre") + " "
+                    + rs.getString("apellidos"));
             }
         }
-        con.commit();
-    } catch (SQLException error) {
-        try { con.rollback(); }
-        catch (SQLException falloRollback) { error.addSuppressed(falloRollback); }
-        throw error;
     }
 }
 ```
 
-::: aviso Importante en el ejemplo
-Las restricciones del esquema y las reglas de negocio, como no permitir saldo negativo, han de establecerse aparte. Una transacción agrupa los cambios, pero el ejemplo por sí solo no implementa todas las reglas de consistencia de una aplicación real.
+Ejemplo didáctico · nombres de tabla y columnas adaptables al esquema real
+
+### ¿De dónde sale la posible mejora?
+
+La diapositiva de fases muestra análisis y normalización (sintaxis, semántica, tablas y columnas), compilación, optimización, caché y ejecución. Su esquema explica que una consulta preparada puede reutilizar trabajo anterior al cambiar los parámetros. Es un modelo didáctico: la caché, la preparación efectiva y la ganancia concreta dependen del driver y del motor. Los valores suministrados a `?` son datos, no SQL ejecutable.
+
+::: aviso Ojo
+**Para el ejercicio de la diapositiva 30.** Consultar LLANERA y, después, una lista introducida por el usuario. En este último caso la plantilla preparada evita construir la condición concatenando cada población. Los `?` representan valores, no nombres de columnas o tablas.
 :::
 
-### Ejemplo: consultar y configurar el aislamiento
+PDF original: diapositivas 26–30.
 
-`getTransactionIsolation()` devuelve una de las constantes de `Connection`. El cambio con `setTransactionIsolation(...)` debe plantearse **antes de iniciar las operaciones de la transacción**; la admisión efectiva de cada nivel depende del driver y del SGBD.
+## Transacciones en una conexión {#transacciones}
 
-```java title="Aislamiento.java" origen="ejemplo didáctico"
-try (Connection con = DriverManager.getConnection(url, usuario, clave)) {
-    int anterior = con.getTransactionIsolation();
-    con.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-    con.setAutoCommit(false);
+Varias operaciones SQL deben completarse juntas o deshacerse juntas.
+
+El caso del PDF factura órdenes de trabajo: buscarlas, verificar que estén terminadas y sin facturar, actualizarlas para impedir otra facturación y crear la factura. La transacción se ejecuta **dentro de una misma `Connection`**. Con el `autoCommit` activado por defecto, cada sentencia se confirma automáticamente; para agruparlas se llama a `setAutoCommit(false)`, se ejecutan y se hace `commit()` o `rollback()` si falla algo.
+
+```java
+// Ejemplo didáctico: adaptar esquema, estados y reglas reales.
+try (Connection conn = DriverManager.getConnection(url, usuario, clave)) {
+    conn.setAutoCommit(false);
     try {
-        // Consultas y actualizaciones de esta transacción.
-        con.commit();
-    } catch (SQLException error) {
-        con.rollback();
-        throw error;
+        try (PreparedStatement update = conn.prepareStatement(
+                "UPDATE TWORKORDERS SET invoice_id = ? " +
+                "WHERE id = ? AND status = 'FINISHED' AND invoice_id IS NULL")) {
+            update.setInt(1, invoiceId);
+            update.setInt(2, workorderId);
+            if (update.executeUpdate() != 1) {
+                throw new SQLException("Orden no facturable");
+            }
+        }
+        try (PreparedStatement insert = conn.prepareStatement(
+                "INSERT INTO TINVOICES (id, amount) VALUES (?, ?)")) {
+            insert.setInt(1, invoiceId);
+            insert.setBigDecimal(2, total);
+            insert.executeUpdate();
+        }
+        conn.commit();
+    } catch (SQLException e) {
+        try { conn.rollback(); }
+        catch (SQLException rollbackError) { e.addSuppressed(rollbackError); }
+        throw e;
     }
-    // Si se reutiliza esta conexión, restaurar su configuración cuando proceda.
-    con.setTransactionIsolation(anterior);
 }
 ```
 
-| Constante JDBC | Nivel estudiado |
+Ejemplo didáctico · muestra el límite transaccional, no reproduce el esquema del PDF
+
+::: aviso Ojo
+**Pregunta clave.** Si abres otra conexión para el `INSERT`, ya no pertenece automáticamente a la transacción de la primera. Cerrar recursos no sustituye el `commit()` ni el `rollback()` explícitos del ejemplo.
+:::
+
+PDF original: diapositivas 31–33.
+
+## Navegar, observar y modificar {#resultset}
+
+Son tres dimensiones distintas: tipo de cursor, sensibilidad a cambios y concurrencia de lectura/escritura.
+
+### Tipos y modos
+
+`Connection.createStatement(rsType, rsConcurrency)` solicita cómo será el `ResultSet` producido por esa sentencia. También existen sobrecargas para otros modos de creación. El driver puede limitar o ajustar las capacidades disponibles: hay que observar el comportamiento real.
+
+| Tipo (`rsType`) | Navegación | Cambios externos |
+| --- | --- | --- |
+| `TYPE_FORWARD_ONLY` | Secuencial hacia delante; sin posicionamiento arbitrario. | Insensible en la tabla del tema. |
+| `TYPE_SCROLL_INSENSITIVE` | Adelante, atrás y posicionamiento. | No refleja cambios externos hasta volver a ejecutar la consulta. |
+| `TYPE_SCROLL_SENSITIVE` | Adelante, atrás y posicionamiento. | Puede reflejar cambios externos según driver, operación y caché. |
+
+| Concurrencia (`rsConcurrency`) | Efecto |
 | --- | --- |
-| `TRANSACTION_READ_UNCOMMITTED` | Read Uncommitted |
-| `TRANSACTION_READ_COMMITTED` | Read Committed |
-| `TRANSACTION_REPEATABLE_READ` | Repeatable Read |
-| `TRANSACTION_SERIALIZABLE` | Serializable |
+| `CONCUR_READ_ONLY` | Solo lectura. |
+| `CONCUR_UPDATABLE` | Permite pedir cambios en filas a través del propio cursor. |
 
-::: pregunta ¿Qué cambia al llamar a `setAutoCommit(false)`?
-Las siguientes sentencias sobre esa conexión pasan a formar parte de la transacción en curso y necesitan `commit()` para confirmarse o `rollback()` para deshacerse. No basta con cerrar cada `Statement`.
+```java
+// Ejemplo didáctico: solicitar cursor desplazable y actualizable.
+try (Statement stmt = conn.createStatement(
+        ResultSet.TYPE_SCROLL_INSENSITIVE,
+        ResultSet.CONCUR_UPDATABLE);
+     ResultSet rs = stmt.executeQuery(
+        "SELECT id, name FROM TMechanics")) {
+    while (rs.next()) System.out.println(rs.getString("name"));
+    while (rs.previous()) System.out.println(rs.getString("name"));
+}
+```
+
+Ejemplo didáctico · la compatibilidad efectiva depende del driver y la consulta
+
+### Restricciones de la consulta
+
+El material pide, para un cursor sensible o actualizable, **una tabla, sin `JOIN` y sin `SELECT *`**. Para poder insertar, incluye las columnas obligatorias sin valor por defecto; para actualización, no proyectes agregados o columnas derivadas (`SUM`, `MAX`, etc.), solo columnas de la tabla. Comprueba las capacidades del SGBD y del driver. Estas son las condiciones expuestas para las prácticas del tema, no una garantía universal de que toda consulta que las cumpla sea actualizable.
+
+::: practica ResultSet-Mejorado-HSQLDB
+`ResultSetExample.java` crea un `Statement` con tipo y concurrencia configurables, recorre `TMechanics` hacia delante y atrás. Las variantes de scroll y actualización, y las llamadas a `insert()` y `update()` en `run()`, están comentadas para activarlas al experimentar. Modifica una variable por vez y observa qué permite HSQLDB.
 :::
 
-## Guía de repaso y fuentes {#repaso}
+El punto de entrada del proyecto deja visibles las tres configuraciones que
+se comparan en las diapositivas:
 
-### Comprobaciones rápidas
+```java title="ResultSetExample.run" origen="código original del proyecto"
+statement = connection.createStatement(
+    // Opción simple
+    ResultSet.TYPE_FORWARD_ONLY,
+    ResultSet.CONCUR_READ_ONLY
+    // Opción intermedia
+//  ResultSet.TYPE_SCROLL_INSENSITIVE,
+//  ResultSet.CONCUR_READ_ONLY
+    // Opción más compleja
+//  ResultSet.TYPE_SCROLL_SENSITIVE,
+//  ResultSet.CONCUR_UPDATABLE
+);
 
-- **Atomicidad / durabilidad:** ¿qué se deshace tras un fallo y qué se conserva si ya hubo `COMMIT`?
-- **Serialización:** ¿se mantiene el orden interno de cada T? ¿Qué aristas del grafo producen las parejas conflictivas? ¿Hay un ciclo?
-- **Anomalía:** ¿se leyó algo sin confirmar, cambió el valor de una fila, cambió el conjunto de filas o se sobrescribió una escritura?
-- **Aislamiento:** ¿qué fenómeno evita cada fila de la tabla del PDF? ¿Qué nivel permite `dirty read`?
-- **JDBC:** ¿están todas las instrucciones de la operación en la misma conexión y se gestiona la ruta de error con `rollback()`?
+results = statement.executeQuery(
+    "SELECT id, nif, name, surname, version FROM TMechanics");
 
-::: pregunta ¿Por qué S3 puede equivaler a S1 aunque las transacciones estén intercaladas?
-Porque serializable no significa «sin intercalado»: exige que el efecto de las operaciones intercaladas sea equivalente al de alguna planificación serie. En las diapositivas 20–22, S3 equivale a S1 y S4 a S2.
+scrollAhead();
+scrollBack();
+```
+
+Con la opción `TYPE_FORWARD_ONLY` activa, la llamada posterior a
+`scrollBack()` no es coherente con el tipo de cursor y puede fallar en tiempo
+de ejecución. Para recorrer hacia atrás hay que solicitar un tipo scrollable.
+El proyecto también contiene, preparadas pero comentadas, operaciones de
+inserción y actualización:
+
+```java title="ResultSetExample.insert" origen="código original del proyecto"
+results.moveToInsertRow();
+results.updateString("id", UUID.randomUUID().toString());
+results.updateString("nif", UUID.randomUUID().toString());
+results.updateString("name", UUID.randomUUID().toString());
+results.updateString("surname", UUID.randomUUID().toString());
+results.updateLong("version", 1L);
+
+results.insertRow();
+```
+
+```java title="ResultSetExample.update" origen="código original del proyecto"
+while (results.next()) {
+    int version = results.getInt("version");
+    results.updateInt("version", version + 1);
+    results.updateRow();
+}
+```
+
+Estas operaciones solo se ejecutan si se activan en `run()` y se solicita un
+`ResultSet` actualizable. El proyecto usa columnas explícitas en el `SELECT`,
+en línea con las limitaciones explicadas por el PDF.
+
+### Fetch size: la ventana de filas
+
+El `ResultSet` no obliga a almacenar íntegramente en memoria todas las filas de la consulta. El driver decide cuántas recupera y cachea; `rs.setFetchSize(25)` solicita lotes de 25. Si una ventana cacheada se agota, puede obtener otra. **Es una indicación al driver, no una promesa de uso exacto de memoria ni de red.** En el experimento Oracle, la ventana importa porque una fila ya cacheada puede comportarse de manera distinta a otra pendiente de recuperar.
+
+```java
+rs.setFetchSize(25);
+while (rs.next()) {
+    // El driver gestiona la recuperación de filas en bloques.
+}
+```
+
+En el laboratorio `ResultSet-Sensitivity-Oracle` el tamaño se configura sobre el
+`Statement` antes de ejecutar la consulta (`statement.setFetchSize(1)` en la
+estrategia sensible y `statement.setFetchSize(100)` en la insensible, según el
+informe del proyecto). El driver lo aplica al `ResultSet` que se obtiene después.
+No debe confundirse esta indicación con una garantía de que exactamente ese
+número de filas permanezca siempre en memoria: es una sugerencia cuyo efecto
+depende del driver y del SGBD.
+
+### Visibilidad de operaciones propias y ajenas
+
+La tabla siguiente es la que presenta el PDF para **su implementación Oracle JDBC**. «Interno» significa cambios hechos a través del propio `ResultSet`; «externo», cambios hechos por otra transacción sin repetir la consulta. «Visible» no significa que una operación sea necesariamente compatible en cualquier consulta.
+
+| Tipo | DELETE propio | UPDATE propio | INSERT propio | DELETE ajeno | UPDATE ajeno | INSERT ajeno |
+| --- | --- | --- | --- | --- | --- | --- |
+| Forward-only | No | Sí | No | No | No | No |
+| Scroll-sensitive | Sí | Sí | No | No | Sí | No |
+| Scroll-insensitive | Sí | Sí | No | No | No | No |
+
+::: aviso Ojo
+**Experimento propuesto en el PDF.** En `ResultSet-Sensitivity`, elegir opción 8 (UPDATE externo, sensible, actualizable), cambiar desde SQL Developer la primera y la última fila y reanudar. Repetir tras descomentar la línea 16 de `Sensitive.java` y comparar `ojdbc6` con `ojdbc8`. Según el índice facilitado, `Sensitive.java` usa `fetchSize = 1` e `Insensitive.java`, `fetchSize = 100`; la referencia a «descomentar» reproduce la consigna del PDF, no asegura el estado actual del fichero.
 :::
 
-### Material original y lecturas
+El código real de las dos estrategias muestra dónde se solicita cada combinación:
 
-- [PDF completo de la unidad](Transacciones_original.pdf), con los gráficos originales y los enunciados de ejercicios.
-- [Curso CS145 de Stanford](https://cs145-fa18.github.io/), indicado como fuente principal de adaptación en la portada.
-- El PDF recomienda tres vídeos de Jennifer Widom sobre transacciones ([1](https://www.youtube.com/watch?v=-NPyRXCysW0), [2](https://www.youtube.com/watch?v=usgUgO8xNDY), [3](https://www.youtube.com/watch?v=zz-Xbqp0g0A)) y un [vídeo sobre el enfoque de validación](https://www.youtube.com/watch?v=SGR-WR4w-Jk).
-- Las [diapositivas 54–55](Transacciones_original.pdf#page=54) enumeran otras lecturas y vídeos adicionales sobre conflictos de concurrencia, aislamiento y control de concurrencia.
+```java title="Sensitive.createStatement" origen="código original del proyecto"
+Statement stmnt = conn.createStatement(
+    ResultSet.TYPE_SCROLL_SENSITIVE,
+    ResultSet.CONCUR_UPDATABLE);
+// Set the statement fetch size to 1; default value is 10
+stmnt.setFetchSize(1);
+return stmnt;
+```
+
+```java title="Insensitive.createStatement" origen="código original del proyecto"
+Statement stmnt = conn.createStatement(
+    ResultSet.TYPE_SCROLL_INSENSITIVE,
+    ResultSet.CONCUR_UPDATABLE);
+// El comentario original dice 1, pero el experimento usa 100.
+stmnt.setFetchSize(100);
+return stmnt;
+```
+
+`TYPE_SCROLL_SENSITIVE` y `TYPE_SCROLL_INSENSITIVE` describen la visibilidad
+solicitada, mientras `CONCUR_UPDATABLE` describe la posibilidad de modificar
+filas. Son parámetros independientes.
+
+### INSERT, DELETE y UPDATE desde el cursor
+
+Para las tres operaciones se necesita un `ResultSet` actualizable. La modificación de una fila del resultado llega a la tabla subyacente y queda sometida a la transacción; su permanencia definitiva requiere `commit()` cuando la confirmación es manual.
+
+#### INSERT
+
+1. `moveToInsertRow()` sitúa el cursor en el área de nueva fila.
+2. `updateXXX()` establece columnas.
+3. `insertRow()` inserta en la tabla.
+
+#### DELETE
+
+1. Posicionarse en la fila.
+2. `deleteRow()` elimina la fila actual; no puede llamarse desde la fila de inserción.
+3. Para asegurar que el resultado refleje la eliminación, cerrar y volver a ejecutar la consulta.
+
+#### UPDATE
+
+1. Posicionarse en la fila.
+2. `updateXXX()` prepara valores.
+3. `updateRow()` aplica el cambio; no desde la fila de inserción.
+4. `cancelRowUpdates()` descarta cambios pendientes antes de aplicarlos.
+
+```java
+// Ejemplos didácticos: cada bloque requiere un ResultSet actualizable.
+rs.moveToInsertRow();
+rs.updateInt("id", 100);
+rs.updateString("name", "Ana");
+rs.insertRow();
+rs.moveToCurrentRow();
+
+if (rs.first()) {
+    rs.updateString("name", "Ana María");
+    rs.updateRow();        // O cancelRowUpdates() antes de aplicarlo.
+}
+if (rs.last()) rs.deleteRow();
+```
+
+Ejemplo didáctico · probar por separado y con los campos obligatorios de la tabla real
+
+¿Cuándo compensa? Si ya recorres filas y vas a modificar las que cumplan una condición, actualizar el cursor evita escribir otro `UPDATE` e indicar de nuevo la clave de cada fila. El PDF destaca **comodidad y encapsulación**, no que sea siempre más rápido.
+
+::: practica ResultSet-Sensitivity-Oracle
+`DatabaseOperations.java` consulta `TPRUEBA`, muestra la tabla, lee capacidades mediante `DatabaseMetaData`, aplica una operación y vuelve a recorrer hacia atrás. Las estrategias `Sensitive`/`Insensitive` eligen el cursor; `InternalUpdate/Insert/Delete` ejecutan sobre el cursor y `ExternalUpdate/Insert/Delete` esperan una modificación desde SQL Developer. `UserInterface` y `Menu` presentan 12 combinaciones (2 sensibilidades × 3 operaciones × 2 orígenes). Los métodos de metadatos correspondientes son `ownUpdatesAreVisible`, `ownInsertsAreVisible`, `ownDeletesAreVisible` y sus versiones `others…`. Compara previsión y observación, atendiendo al fetch size.
+:::
+
+El flujo central del laboratorio es literalmente:
+
+```java title="DatabaseOperations.operate" origen="código original del proyecto"
+stmnt = css.createStatement(conn);
+rst = stmnt.executeQuery(queryTable);
+meta = stmnt.getConnection().getMetaData();
+
+showMessage(" TABLE BEFORE  " + eos.opName());
+printTableContent(rst);
+
+showMessage(eos.opName() + " SHOULD BE "
+    + (eos.getIsVisible(rst, meta) ? "VISIBLE" : "NOT VISIBLE"));
+
+eos.doOperation(rst);
+printResultBackward(rst);
+```
+
+El programa imprime una predicción obtenida de `DatabaseMetaData`, realiza la
+operación y después observa el resultado recorriendo el cursor hacia atrás.
+
+Ejemplos de operaciones internas del cursor:
+
+Antes y después de cada operación, el laboratorio reposiciona el cursor y lee
+las columnas por índice. Recuerda que JDBC utiliza índices desde 1:
+
+```java title="DatabaseOperations.printTableContent / printResultBackward" origen="código original del proyecto"
+rst.beforeFirst();
+while (rst.next())
+    System.out.println("col1 = " + rst.getInt(1)
+        + " col2 = " + rst.getInt(2)
+        + " col3 = " + rst.getInt(3));
+
+rst.afterLast();
+while (rst.previous())
+    System.out.println("col1 = " + rst.getInt(1)
+        + " col2 = " + rst.getInt(2)
+        + " col3 = " + rst.getInt(3));
+```
+
+```java title="InternalUpdate.doOperation" origen="código original del proyecto"
+rst.beforeFirst();
+while (rst.next()) {
+    value = rst.getInt(2) + 1;
+    rst.updateInt(2, value);
+    value = rst.getInt(3) + 1;
+    rst.updateInt(3, value);
+    rst.updateRow();
+}
+```
+
+```java title="InternalInsert / InternalDelete" origen="código original del proyecto"
+rst.moveToInsertRow();
+rst.updateInt(1, 111);
+rst.updateInt(2, 111);
+rst.updateInt(3, 111);
+rst.insertRow();
+
+rst.last();
+rst.deleteRow();
+```
+
+Las operaciones de inserción y borrado utilizan valores y filas concretas del
+laboratorio: no deben copiarse sin comprobar claves y restricciones de la
+tabla real. El laboratorio consulta además la visibilidad anunciada por el
+driver:
+
+```java title="DatabaseMetaData" origen="código original del proyecto"
+return meta.ownUpdatesAreVisible(rst.getType());
+// ownInsertsAreVisible, ownDeletesAreVisible
+// othersUpdatesAreVisible, othersInsertsAreVisible,
+// othersDeletesAreVisible
+```
+
+Para los cambios externos, el programa se detiene y pide modificar la primera
+y la última fila desde SQL Developer. Así se comprueba la diferencia entre
+`own...AreVisible` y `others...AreVisible`.
+
+Las estrategias externas no ejecutan un `UPDATE` desde Java: coordinan la
+observación manual en SQL Developer y consultan el metadato correspondiente.
+
+```java title="ExternalUpdate / ExternalInsert / ExternalDelete" origen="código original del proyecto"
+showMessage("From SQLDeveloper, change some value in the last AND first row");
+showMessage("Then, ResultSet will be printed backwards");
+pressAnyKey();
+
+return meta.othersUpdatesAreVisible(rst.getType());
+```
+
+Para inserción y borrado externos el laboratorio cambia el mensaje y usa
+`othersInsertsAreVisible` o `othersDeletesAreVisible`. La espera con
+`pressAnyKey()` es parte del experimento interactivo, no un mecanismo de
+sincronización general de JDBC.
+
+PDF original: diapositivas 35–47.
+
+## DataSource y JNDI {#datasource}
+
+El cliente pide conexiones a un recurso lógico cuya configuración vive en el entorno.
+
+`javax.sql.DataSource` ofrece otra vía para obtener `Connection`. Puede entregar conexiones directamente o administrar un pool. La aplicación ya no tiene que llamar a `DriverManager.getConnection()` ni conocer en su código el driver y la URL. La configuración concreta del `DataSource` depende del entorno.
+
+```java
+DataSource ds = /* configurado por la aplicación o el servidor */;
+try (Connection conn = ds.getConnection()) {
+    // Ejecutar sentencias con normalidad.
+}
+```
+
+### Servicio de nombres JNDI
+
+**JNDI** permite buscar un recurso por un nombre lógico. Primero se crea y configura el `DataSource` con host, base, puerto y propiedades del driver; después se registra con un nombre. El cliente obtiene un `Context`, hace `lookup(nombre)`, convierte el recurso en `DataSource` y llama a `getConnection()`. Cambiar los parámetros de conexión en el servidor no obliga a cambiar el código de consulta del cliente.
+
+```java
+// Ejemplo didáctico del mecanismo mostrado en el tema.
+Context ctx = new InitialContext();
+DataSource ds = (DataSource) ctx.lookup("MyDB");
+try (Connection conn = ds.getConnection()) {
+    // La conexión se usa como cualquier Connection JDBC.
+}
+```
+
+::: proceso
+Servidor configura DataSource → registra «ejemplo» → JNDI → cliente hace lookup
+:::
+
+::: practica JNDI-DataSource-Client / Server
+El cliente `Client.java` carga credenciales desde `config.properties`, crea un contexto inicial sobre un registro RMI, busca `"ejemplo"`, obtiene un `DataSource` y consulta `TPRUEBA`. `Main.java` lo arranca; `Conf.java` es un singleton genérico de propiedades, aunque el cliente descrito usa `FileInputStream` directamente. Del servidor se han descrito únicamente dos copias de `config.properties` (`src` y `bin`): **no se ha proporcionado su implementación Java**. El esquema de registro procede del PDF, no de un servidor cuya fuente hayamos leído.
+:::
+
+El cliente real obtiene el recurso lógico y solicita la conexión con usuario y
+contraseña:
+
+```java title="Client.operation" origen="código original del proyecto"
+String logicalName = "ejemplo";
+try {
+    dataSource = getDataSource(logicalName);
+    configure();
+
+    conn = dataSource.getConnection(USERNAME, PASSWORD);
+    Statement stmnt = conn.createStatement();
+    ResultSet rst = stmnt.executeQuery(queryTable);
+    printTableContent(rst);
+```
+
+La búsqueda utiliza el proveedor RMI del laboratorio:
+
+```java title="Client.getDataSource" origen="código original del proyecto"
+env.put(Context.INITIAL_CONTEXT_FACTORY,
+    "com.sun.jndi.rmi.registry.RegistryContextFactory");
+
+return (DataSource) new InitialContext(env).lookup(jndiUrl);
+```
+
+El nombre lógico (`"ejemplo"`) desacopla al cliente de la configuración real
+del servidor. En el árbol del proyecto, el servidor solo aporta un archivo de
+propiedades con `DATABASE=oracle`, `DRIVERTYPE=thin`, la dirección del servidor,
+el puerto `1521` y el SID `desa19`; no incluye la implementación Java que
+registra el `DataSource`.
+
+El proyecto incluye además una utilidad `Conf` que carga propiedades desde el
+*classpath*:
+
+```java title="Conf" origen="código original del proyecto"
+private static final String FILE_CONF = "config.properties";
+
+private Conf() {
+    this.props = new Properties();
+    try {
+        props.load(Conf.class.getClassLoader()
+            .getResourceAsStream(FILE_CONF));
+    } catch (IOException e) {
+        throw new RuntimeException("File properties cannot be loaded", e);
+    }
+}
+```
+
+`Client` no utiliza esta clase: carga el archivo con `FileInputStream`, por lo
+que el proyecto contiene dos estrategias distintas y no equivalentes (fichero
+en el directorio de trabajo frente a recurso del *classpath*).
+
+PDF original: diapositivas 49–54.
+
+## Pool de conexiones {#pool}
+
+Una reserva de conexiones físicas reutilizables reduce el coste de abrirlas repetidamente.
+
+Cuando el cliente solicita una conexión al `DataSource`, el pool puede prestar una libre; si necesita otra y su configuración lo permite, crea una nueva. Al cerrar la conexión lógica obtenida, esta normalmente vuelve al pool y queda disponible para otro cliente. Por eso `try-with-resources` sigue siendo esencial incluso con pooling. Un pool no elimina límites de tamaño ni garantiza una mejora idéntica en toda carga.
+
+::: proceso
+Pedir → Prestar o crear → Usar → Devolver al pool
+:::
+
+| Alternativa del PDF | Descripción |
+| --- | --- |
+| Servidor de aplicaciones | Configura grupos de conexiones JDBC y expone un `DataSource`, frecuentemente por JNDI. |
+| Standalone | `BasicDataSource` o `HikariCP` sin servidor de aplicaciones. |
+| Otros ejemplos mencionados | `OracleConnectionCacheManager` (Oracle), `c3p0`, `BoneCP` y `Jakarta DBCP`. |
+
+::: practica HSQLdb-ConnectionPool
+`Main.java` mide 100 iteraciones de consultas a `tmechanics` con `JDBCPool` (tamaño 5) y otras 100 con `DriverManager`. La observación debe interpretarse como medición de ese programa y entorno: influyen calentamiento, servidor, consultas y conexiones. El contraste conceptual es reutilizar conexiones frente a crearlas cada vez.
+:::
+
+El experimento utiliza la clase de pool incluida en HSQLDB:
+
+```java title="HSQLdb-ConnectionPool.Main" origen="código original del proyecto"
+JDBCPool p = new JDBCPool(5);
+for (int i = 0; i < 100; i++) {
+    p.setUrl(URL);
+    p.setUser(USERNAME);
+    p.setPassword(PASSWORD);
+    con = p.getConnection();
+
+    Statement s = con.createStatement();
+    s.executeQuery("SELECT id, name, surname, nif FROM tmechanics");
+    s.close();
+    con.close();
+}
+```
+
+La comparación abre conexiones nuevas con `DriverManager` en las otras 100
+iteraciones. El código original configura el pool dentro del bucle y no cierra
+explícitamente el `ResultSet`; ambas decisiones deben señalarse al interpretar
+la medición, no confundirse con la definición conceptual de un pool.
+
+PDF original: diapositivas 55–57.
+
+## Preparar y ejecutar los laboratorios {#entorno}
+
+Los ejemplos de la Unidad 1 son laboratorios Java de consola independientes,
+no un único proyecto Maven o Gradle. Para ejecutarlos hay que distinguir el
+código fuente, el driver JDBC y los servicios externos que necesita cada uno.
+
+| Laboratorio | SGBD o servicio | Dependencia / configuración | Qué demuestra |
+| --- | --- | --- | --- |
+| `unit1-manage-nulls` | HSQLDB en servidor | Driver HSQLDB, servidor activo en `localhost`, usuario `sa` y contraseña vacía | `Connection`, `Statement`, `ResultSet`, `NULL` y `wasNull()` |
+| `ResultSet-Mejorado-HSQLDB` | HSQLDB | Driver HSQLDB y tabla `TMechanics` | Scroll, posicionamiento y cursores actualizables |
+| `ResultSet-Sensitivity-Oracle` | Oracle | Driver `ojdbc`, `config.properties`, tabla `TPRUEBA` y, para operaciones externas, SQL Developer | Sensibilidad, metadatos, `fetchSize` y operaciones internas/externas |
+| `HSQLdb-ConnectionPool` | HSQLDB | Driver HSQLDB con `org.hsqldb.jdbc.JDBCPool` | Pool de cinco conexiones frente a `DriverManager` |
+| `JNDI-DataSource-Client` | Registro JNDI/RMI y Oracle | Servidor JNDI activo, `config.properties` y DataSource registrado como `ejemplo` | `InitialContext`, `lookup` y `DataSource.getConnection()` |
+| `JNDI-DataSource-Server` | Oracle/JNDI | Parámetros de entorno del servidor | Configuración y registro del DataSource |
+
+### Antes de ejecutar
+
+1. Identifica el driver JDBC que necesita el SGBD. El PDF explica la API, pero
+   el driver lo proporciona el proveedor y no aparece automáticamente por
+   tener instalado el JDK.
+2. Comprueba que la URL, usuario, contraseña, host, puerto y nombre de base de
+   datos coinciden con el laboratorio.
+3. Si el ejemplo lee `config.properties`, ejecútalo con ese archivo en el
+   directorio de trabajo esperado. El directorio de trabajo no tiene por qué
+   ser el directorio donde está el `.java`.
+4. Inicia HSQLDB, Oracle o el servicio JNDI/RMI que corresponda antes de
+   lanzar el cliente.
+5. Añade el JAR del driver al classpath. El laboratorio de pool, por ejemplo,
+   no compila si falta la clase `org.hsqldb.jdbc.JDBCPool`.
+6. Cierra la conexión al terminar. En un pool, `close()` libera normalmente la
+   conexión lógica y la devuelve al pool; no significa necesariamente destruir
+   la conexión física.
+
+::: aviso Seguridad y configuración
+Los laboratorios usan credenciales sencillas de HSQLDB y archivos de
+configuración con parámetros de Oracle porque son material docente. No copies
+credenciales, IPs o contraseñas en una aplicación real ni los subas a un
+repositorio público. Usa variables de entorno o un mecanismo seguro de
+configuración.
+:::
+
+### Qué está y qué no está en el proyecto de ejemplos
+
+La teoría del PDF incluye `PreparedStatement`, transacciones y
+`CallableStatement`, pero el conjunto de laboratorios analizado no contiene un
+ejemplo propio de `PreparedStatement`, `CallableStatement`, `commit()` o
+`rollback()`. Esos apartados de esta unidad se estudian mediante la teoría y
+los ejemplos didácticos. Tampoco hay una capa DAO ni un proyecto Maven/Gradle:
+no deben buscarse esas clases en los seis laboratorios.
+
+## Código de los laboratorios y buenas prácticas {#buenas-practicas}
+
+Los laboratorios muestran la API en situaciones concretas, pero algunos usan
+el estilo clásico de `try/catch/finally`. En una aplicación nueva se recomienda
+`try-with-resources`, porque cierra `ResultSet`, `Statement` y `Connection`
+incluso si se produce una excepción.
+
+### Diferencias que conviene reconocer
+
+| En el laboratorio | En una implementación recomendada |
+| --- | --- |
+| Cierre manual en `finally` | `try-with-resources` con el recurso declarado en el encabezado |
+| Solo se cierra la conexión en algunos ejemplos | Se cierran también `Statement` y `ResultSet` |
+| Configuración en `config.properties` o literales didácticos | Secretos fuera del código y configuración por entorno |
+| `Statement` para consultas fijas | `PreparedStatement` cuando hay valores dinámicos |
+| Resultado de una medición de 100 consultas | Benchmark controlado, con calentamiento y condiciones documentadas |
+
+El código docente no debe «corregirse» mentalmente sin entenderlo: primero hay
+que identificar qué API pretende demostrar y después señalar qué cambiaríamos
+en producción. En el informe de los ejemplos se detectaron, entre otros,
+cierres incompletos de recursos, un `finally` que puede cerrar la conexión en
+vez del `Statement`, y un cierre de conexión JNDI sin comprobar que la
+conexión se hubiera obtenido correctamente. Son incidencias del material de
+prácticas, no nuevas reglas de JDBC.
+
+::: aviso No confundas teoría y código del laboratorio
+Que un laboratorio use `Statement` no convierte `PreparedStatement` en
+innecesario. El PDF compara ambos y recomienda separar la sentencia de sus
+valores; el laboratorio solo está mostrando otra parte de la API.
+:::
+
+## Mapa de los seis mini-proyectos {#laboratorios}
+
+Qué demuestra cada uno, dónde mirar y qué comparar al ejecutarlo.
+
+::: proyecto unit1-manage-nulls
+01 · HSQLDB
+
+**Archivos:** `Problem1.java`, `Problem2.java`. **Pregunta:** ¿qué se muestra cuando `invoice_id` es SQL NULL? Compara lectura directa con `wasNull()`, sin perder de vista el filtro por `vehicle_id`/`mechanic_id`.
+
+[Ir a NULL y errores ↑](#null-errores)
+:::
+
+::: proyecto ResultSet-Mejorado-HSQLDB
+02 · HSQLDB
+
+**Archivo:** `ResultSetExample.java`. **Pregunta:** ¿puedes avanzar, retroceder e insertar/actualizar con el tipo y modo configurados? Los cambios de configuración y las operaciones están comentados en el punto de entrada según el índice recibido.
+
+[Ir a ResultSet mejorado ↑](#resultset)
+:::
+
+::: proyecto ResultSet-Sensitivity-Oracle
+03 · ORACLE
+
+**Entrada:** `Main.java` → `UserInterface.java`/`Menu.java` → `DatabaseOperations.java`. **Estrategias de cursor:** `Sensitive`, `Insensitive`. **Operaciones:** `InternalUpdate`, `InternalInsert`, `InternalDelete`, `ExternalUpdate`, `ExternalInsert`, `ExternalDelete`. `CreateStatementStrategy` y `ExecuteOperationStrategy` son las interfaces; `Internal` y `External` son las bases, `Console` maneja la consola. **Pregunta:** ¿coincide lo observado con los metadatos `own…AreVisible` y `others…AreVisible`? Prueba las 12 combinaciones.
+
+[Ir a sensibilidad ↑](#resultset)
+:::
+
+::: proyecto HSQLdb-ConnectionPool
+04 · HSQLDB
+
+**Archivo:** `Main.java`. **Pregunta:** ¿cuánto tardan 100 consultas usando `JDBCPool` de tamaño 5 y otras 100 abriendo conexiones con `DriverManager`? Anota condiciones de la medición.
+
+[Ir a pool ↑](#pool)
+:::
+
+::: proyecto JNDI-DataSource-Client
+05 · JNDI
+
+**Archivos:** `Main.java`, `Client.java`, `Conf.java`. **Pregunta:** ¿de dónde sale el `DataSource` que permite consultar `TPRUEBA`? Sigue el `InitialContext`, el lookup `"ejemplo"`, las credenciales y `getConnection()`.
+
+[Ir a JNDI ↑](#datasource)
+:::
+
+::: proyecto JNDI-DataSource-Server
+06 · JNDI
+
+**Archivos disponibles en el índice:** `src/config.properties` y `bin/config.properties`, con host, puerto, SID `desa19` y driver Oracle thin. No hay archivos `.java` del servidor en el material descrito; para estudiar su implementación hará falta incorporarlos.
+
+[Ir a registro de DataSource ↑](#datasource)
+:::
+
+## Ejercicios del tema y preguntas guía {#ejercicios}
+
+Las actividades que aparecen en las diapositivas, agrupadas para repasarlas después de estudiar.
+
+1. **Conexiones.** Construye URL y `Connection` para los tres escenarios de Oracle/HSQLDB de la diapositiva 15. ¿Qué parte de la URL escoge el protocolo?
+2. **Sentencias.** Recupera todas las filas y columnas de la tabla propuesta, recupera solo las que tengan estado `FINISHED` e inserta una fila (diapositiva 17). Decide entre `executeQuery` y `executeUpdate`.
+3. **Lectura.** Recorre los resultados de las dos consultas e imprime identificadores e importe a pagar (diapositiva 20). ¿Dónde está el cursor antes del primer `next()`?
+4. **Parámetros.** Recupera nombre y apellidos de clientes de LLANERA y de una lista de localidades recibida en tiempo de ejecución (diapositiva 30). ¿Por qué un `?` no ejecuta el texto de una población como SQL?
+5. **Transacción.** Convierte la facturación de `TWORKORDERS` y `TINVOICES` en una sola transacción (diapositiva 33). ¿Qué queda confirmado si falla la inserción con `autoCommit` activado?
+6. **Cursor.** Cambia tipo y concurrencia en el proyecto HSQLDB y explica las operaciones que pasan o fallan (diapositiva 40). ¿Basta con solicitar `CONCUR_UPDATABLE`?
+7. **Sensibilidad.** Prueba UPDATE externo en la primera y última fila del proyecto Oracle; altera el fetch size y, en casa, compara `ojdbc6` con `ojdbc8` (diapositivas 40–43). ¿Por qué importa la ventana de filas?
+
+### Comprobación rápida
+
+::: pregunta ¿`getInt()` permite detectar por sí solo SQL NULL?
+No. Tras leer la columna, usa `wasNull()` antes de leer otra.
+:::
+
+::: pregunta ¿Qué indica el booleano de `Statement.execute()`?
+Que el primer resultado es un `ResultSet`; `false` no es sinónimo de fallo.
+:::
+
+::: pregunta ¿`TYPE_SCROLL_SENSITIVE` equivale a `CONCUR_UPDATABLE`?
+No. El primero solicita desplazamiento y sensibilidad; el segundo, capacidad de modificación.
+:::
+
+::: pregunta ¿Se puede ver siempre un INSERT ajeno sin repetir SELECT?
+Según la tabla Oracle del tema, no para ninguno de sus tres tipos de cursor.
+:::
+
+::: pregunta ¿Cerrar una conexión de pool destruye siempre la conexión física?
+No. Normalmente libera la conexión lógica y devuelve la física al pool.
+:::
+
+## Fuente y alcance de estos apuntes {#fuentes}
+
+
+
+El contenido teórico sigue [*JDBC*, Repositorios de Información, Escuela de Ingeniería Informática, curso 2026–2027](JDBC_original.pdf) (60 páginas de archivo, numeración interna de las diapositivas hasta 60/66). Se han preservado las condiciones, la tabla de visibilidad y los ejercicios; se han añadido aclaraciones técnicas donde una afirmación dependía del driver o del esquema. En el PDF la numeración de secciones salta de 3 a 5. La fuente original se puede consultar íntegra desde esta web.
+
+La correspondencia con los seis proyectos se ha contrastado con el análisis de
+los 26 archivos del repositorio de ejemplos. Las rutas, nombres de clases y
+dependencias se describen únicamente cuando aparecen en ese análisis. Los
+fragmentos Java de esta web que no llevan la etiqueta «proyecto» son ejemplos
+didácticos independientes y no pretenden ser copias literales de esos
+archivos.
+
+### Lecturas complementarias citadas en el PDF
+
+El material incluye referencias sobre carga de drivers, `ResultSet` Oracle,
+`DataSource` y `RowSet`. Para estudiar el examen, las diapositivas son la
+fuente principal:
+
+1. [Baeldung: carga de drivers JDBC](https://www.baeldung.com/java-jdbc-loading-drivers).
+2. [Class loaders, service providers and JDBC](https://northcoder.com/post/class-loaders-service-providers-and/).
+3. [JDBC driver, Wikipedia](https://en.wikipedia.org/wiki/JDBC_driver).
+4. [TutorialsPoint: conexiones JDBC](https://www.tutorialspoint.com/jdbc/jdbc-db-connections.htm).
+5. [Oracle JDBC Developer's Guide: ResultSet](https://docs.oracle.com/cd/B19306_01/java.102/b14355/resltset.htm).
+6. [Oracle JDBC 8.1.6: ResultSet](https://docs.oracle.com/cd/A84870_01/doc/java.816/a81354/resltse7.htm).
+7. *Oracle Database JDBC Developer's Guide and Reference*, capítulo 8.
+8. [Oracle Java Tutorial: DataSource](https://docs.oracle.com/javase/tutorial/jdbc/basics/sqldatasources.html).
+9. [Oracle Java Tutorial: RowSet](https://docs.oracle.com/javase/tutorial/jdbc/basics/rowsets.html).
+10. [Oracle Java Tutorial: JdbcRowSet](https://docs.oracle.com/javase/tutorial/jdbc/basics/jdbcrowset.html#creating-jdbcrowset-object).
+11. [JDBCRowSet example](https://examples.javacodegeeks.com/enterprise-java/sql-enterprise-java/javax-sql-rowset-jdbcrowset-example/).
+12. [J2EE Online: introducción a JDBC](https://www.j2eeonline.com/jdbc/module1/intro-to-jdbc.jsp).
+
+La [lectura de Oracle sobre `DataSource`](https://docs.oracle.com/javase/tutorial/jdbc/basics/sqldatasources.html) es la referencia [8] que recomienda el PDF para JNDI.
