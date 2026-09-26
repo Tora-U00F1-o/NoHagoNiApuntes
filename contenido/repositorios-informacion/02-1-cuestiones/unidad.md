@@ -1,9 +1,10 @@
 ---
 id: transacciones-cuestionario
 asignatura: Repositorios de Información
-unidad: 2.5
+unidad: 2
+parte: 1
 titulo: Cuestionario de Transacciones
-orden: 2.5
+orden: 3
 resumen: Cuestionario de repaso de la Unidad 2 sobre transacciones, ACID, planificación, serialización, anomalías y niveles de aislamiento.
 fuente: Cuestiones_es.pdf
 ---

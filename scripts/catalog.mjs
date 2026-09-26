@@ -23,6 +23,13 @@ export function parseFrontMatter(text, filename) {
   if (!/^[1-9]\d*$/.test(data.unidad) || !/^[1-9]\d*$/.test(data.orden)) {
     throw new Error(`${filename}: unidad y orden deben ser números enteros positivos`);
   }
+  if (data.parte != null && data.parte !== '') {
+    if (!/^[1-9]\d*$/.test(data.parte)) {
+      throw new Error(`${filename}: parte debe ser un número entero positivo (p. ej. 1 para mostrar 2.1)`);
+    }
+  } else {
+    delete data.parte;
+  }
   return data;
 }
 
@@ -53,10 +60,24 @@ export async function makeCatalog(root) {
         catch { throw new Error(`${path}: falta el archivo fuente ${meta.fuente}`); }
       }
       const rel = relative(root, path).split(sep).join('/');
-      units.push({ id: meta.id, title: meta.titulo, number: Number(meta.unidad), order: Number(meta.orden), summary: meta.resumen, source: meta.fuente || null, path: `contenido/${rel}` });
+      const parte = meta.parte ? Number(meta.parte) : null;
+      units.push({
+        id: meta.id,
+        title: meta.titulo,
+        number: Number(meta.unidad),
+        parte,
+        order: Number(meta.orden),
+        summary: meta.resumen,
+        source: meta.fuente || null,
+        path: `contenido/${rel}`,
+      });
     }
     if (units.length) {
-      units.sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, 'es'));
+      units.sort((a, b) =>
+        a.order - b.order
+        || a.number - b.number
+        || (a.parte ?? 0) - (b.parte ?? 0)
+        || a.title.localeCompare(b.title, 'es'));
       subjects.push({ id: dir.name, title: subjectTitle, units });
     }
   }

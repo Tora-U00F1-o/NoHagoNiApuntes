@@ -4,6 +4,10 @@ const markdown = window.marked.marked || window.marked;
 const state = { markdownUrl: null, ids: new Map(), observer: null };
 const BLOCKS = new Set(['aviso', 'examen', 'practica', 'proyecto', 'pregunta', 'proceso', 'cifras']);
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function formatUnitLabel(unit) {
+  if (unit.parte != null) return `${unit.number}.${unit.parte}`;
+  return String(unit.number).padStart(2, '0');
+}
 function safeUrl(href) {
   if (!href) return null;
   if (href.startsWith('#')) return href;
@@ -106,7 +110,7 @@ function sidebar(catalog, selectedSubject, selectedUnit) {
       const a = document.createElement('a');
       a.href = `?u=${encodeURIComponent(subject.id + '/' + unit.id)}`;
       const number = document.createElement('span');
-      number.textContent = String(unit.number).padStart(2, '0');
+      number.textContent = formatUnitLabel(unit);
       a.append(number, document.createTextNode(unit.title));
       if (subject.id === selectedSubject.id && unit.id === selectedUnit.id) {
         a.classList.add('active');
@@ -128,7 +132,7 @@ function content(markdownText, subject, unit) {
   section.id = 'inicio';
   const eyebrow = document.createElement('div');
   eyebrow.className = 'eyebrow';
-  eyebrow.textContent = `${subject.title.toUpperCase()} · UNIDAD ${unit.number}`;
+  eyebrow.textContent = `${subject.title.toUpperCase()} · UNIDAD ${formatUnitLabel(unit)}`;
   section.append(eyebrow);
   for (const element of [...buffer.children]) {
     if (element.tagName === 'H2') {
@@ -175,7 +179,7 @@ async function init() {
     sidebar(catalog, subject, unit);
     content(await source.text(), subject, unit);
     document.title = `${unit.title} · ${subject.title}`;
-    $('#ruta').textContent = `${subject.title.toUpperCase()} / UNIDAD ${unit.number}`;
+    $('#ruta').textContent = `${subject.title.toUpperCase()} / UNIDAD ${formatUnitLabel(unit)}`;
     for (const a of [$('#fuente'), $('#pdf-top')]) {
       a.hidden = !unit.source;
       if (unit.source) a.href = new URL(unit.source, state.markdownUrl).href;
