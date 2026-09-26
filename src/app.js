@@ -27,6 +27,17 @@ function renderHeading(token) {
   const id = uniqueId(match ? match[1] : slug(title.replace(/[`*_]/g, '')));
   return `<h${token.depth} id="${id}">${markdown.parseInline(title)}</h${token.depth}>\n`;
 }
+const HLJS_LANG = { texto: 'plaintext', text: 'plaintext' };
+function highlightCodeBlocks(root) {
+  const hljs = window.hljs;
+  if (!hljs) return;
+  for (const code of root.querySelectorAll('.code-block code[class*="language-"]')) {
+    const raw = /language-([a-z0-9+#-]+)/i.exec(code.className)?.[1]?.toLowerCase() || '';
+    const lang = HLJS_LANG[raw] || raw;
+    if (lang && hljs.getLanguage(lang)) hljs.highlightElement(code);
+    else code.classList.add('hljs');
+  }
+}
 function renderCode(token) {
   const info = token.lang || '';
   const lang = /^([a-z0-9+#-]+)/i.exec(info)?.[1] || 'texto';
@@ -130,6 +141,7 @@ function content(markdownText, subject, unit) {
   }
   output.append(section);
   $('#contenido').replaceChildren(output);
+  highlightCodeBlocks($('#contenido'));
   const nav = $('#apartados');
   nav.replaceChildren();
   for (const h of $('#contenido').querySelectorAll('h2, h3[id]')) {
