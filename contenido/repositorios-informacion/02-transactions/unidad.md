@@ -192,6 +192,8 @@ El objetivo es impedir anomalías incluso cuando las operaciones de varias trans
 
 Para leer se solicita un **bloqueo compartido** `S(X)`: otros lectores pueden seguir leyendo X, pero un escritor debe esperar. Para escribir se solicita un **bloqueo exclusivo** `X(X)`: no se permiten otras lecturas ni escrituras concurrentes del objeto bloqueado. Los compartidos pueden liberarse explícitamente o al final de la transacción; el esquema del tema mantiene el exclusivo hasta el final. `U(X)` significa liberar el bloqueo. [Diapositivas 35–36](Transacciones_original.pdf#page=35).
 
+La diapositiva 36 precisa además la notación de desbloqueo: `U(A)` significa liberar el bloqueo sobre A de forma genérica; cuando se necesita distinguir el tipo, `US(A)` significa **liberar un bloqueo compartido** sobre A y `UX(A)` **liberar un bloqueo exclusivo** sobre A. [Diapositiva 36](Transacciones_original.pdf#page=36).
+
 | Bloqueo ya existente | Otro lector pide S(X) | Otro escritor pide X(X) |
 | --- | --- | --- |
 | S(X) | Compatible: varios lectores. | Incompatible: espera. |
@@ -208,6 +210,20 @@ El material titula este enfoque **MVCC** y lo explica suponiendo que no habrá c
 3. **Escritura o commit.** La versión local válida pasa a ser visible; la persistencia física en disco puede realizarse después según el mecanismo del SGBD.
 
 Los diagramas comienzan con `a=5`. T1 y T2 leen 5 y preparan, respectivamente, **`W₁(a=15)`** y **`W₂(a=25)`** en sus áreas privadas. T2 llega a validación sin que otra transacción haya confirmado durante su trabajo, por lo que puede consolidar 25. Cuando T1 intenta confirmar, su conjunto de escritura sobre `a` se cruza con el de T2, ya confirmado: el ejemplo de la diapositiva 44 muestra **fallo de validación** para T1. [Secuencia gráfica 38–44](Transacciones_original.pdf#page=38).
+
+### Regla de validación mostrada en el ejemplo
+
+La diapositiva 45 formula de manera explícita la comprobación usada cuando T1 entra en validación. Se consideran las transacciones que hicieron `COMMIT` **durante el tiempo de vida de T1** y se compara su conjunto de escritura con el de T1. [Diapositiva 45](Transacciones_original.pdf#page=45).
+
+```text title="Validación de T1 según la diapositiva 45"
+Para cada transacción Ti que confirmó mientras T1 estaba ejecutándose:
+    si write_set(T1) ∩ write_set(Ti) ≠ ∅
+        abortar T1
+    en caso contrario
+        continuar hacia la fase de COMMIT
+```
+
+En el ejemplo, `write_set_T1 = {a}` y T2 también ha confirmado escribiendo `a`, de modo que la intersección no es vacía y T1 falla la validación. Esta regla corresponde al **ejemplo de validación dibujado en el PDF**.
 
 ::: aviso Matiz del ejemplo
 El PDF agrupa estos pasos bajo «MVCC, enfoque optimista». Son las fases del **esquema de validación que dibujan esas diapositivas**; no debe concluirse que todas las implementaciones de MVCC usen exactamente esa misma política. En la figura final, una transacción que sigue leyendo su instantánea puede continuar viendo el valor antiguo; el propio material contrasta esa situación con una nueva lectura en `Read Committed`.

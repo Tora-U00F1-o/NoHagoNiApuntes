@@ -48,7 +48,11 @@ Aplicación Java → API JDBC → DriverManager / DataSource → Driver → SGBD
 **Dos independencias diferentes.** La JVM aporta independencia de plataforma. Las interfaces JDBC y los drivers aportan independencia de los detalles de cada SGBD. Cambiar de SGBD puede requerir ajustar el SQL y la configuración, aunque se conserve la API.
 :::
 
+El PDF añade que `DriverManager` **desacopla el código cliente del controlador real utilizado**: mantiene los drivers disponibles y selecciona el adecuado al intentar establecer la conexión, de forma transparente para el programador. En el esquema presentado no existe una dependencia en tiempo de compilación con un controlador JDBC concreto. [Diapositiva 7](JDBC_original.pdf#page=7).
+
 ### Mapeo de tipos SQL ↔ Java
+
+La diapositiva 10 presenta JDBC como una **BBDD virtual orientada a objetos sobre la base relacional**: desde Java se accede a la base de datos mediante los métodos de la API JDBC y el driver realiza la **conversión automática entre tipos Java y SQL**. Esta capa orientada a objetos no sustituye al modelo relacional; describe la forma en la que la aplicación Java interactúa con él a través de objetos e interfaces JDBC. [Diapositiva 10](JDBC_original.pdf#page=10).
 
 El driver convierte los valores entre ambos mundos. La tabla del tema recoge los tipos habituales:
 
@@ -78,6 +82,19 @@ Connection conn = DriverManager.getConnection(url, usuario, clave);
 ```
 
 La URL comienza por `jdbc:` e identifica la base y el protocolo/driver. Su forma concreta depende del controlador: `jdbc:[subprotocol]:[host[:port]]:[dbName][;attribute=value]*` es el esquema orientativo del PDF, no una plantilla literal universal. En el tema aparecen `oracle:thin`, `hsqldb:hsql` (servidor) y `hsqldb:mem` (memoria).
+
+El PDF descompone ese formato general de la siguiente manera: [Diapositiva 14](JDBC_original.pdf#page=14).
+
+| Parte | Significado en el PDF |
+| --- | --- |
+| `jdbc:` | Prefijo obligatorio de una URL JDBC. |
+| `subprotocol` | Identifica el SGBD y el driver o protocolo utilizado. |
+| `host` | Servidor donde se encuentra la base de datos. |
+| `port` | Puerto del servidor. |
+| `dbName` | Identifica la base de datos. |
+| `attribute=value` | Atributos opcionales del driver. |
+
+En los ejemplos del material, `oracle:thin` identifica Oracle mediante el driver Thin, `hsqldb:hsql` corresponde a HSQLDB en modo servidor y `hsqldb:mem` a HSQLDB en memoria.
 
 ```java title="URLs JDBC" origen="ejemplo didáctico"
 // Ejemplos didácticos de forma de URL; sustituye host y credenciales.
@@ -167,6 +184,14 @@ try (Connection conn = DriverManager.getConnection(url, usuario, clave);
 ```
 
 Ejemplo didáctico · cierre automático
+
+### Flujo completo desde `Statement` hasta `ResultSet`
+
+El esquema-resumen de la diapositiva 24 muestra conjuntamente el recorrido de una consulta: la aplicación llama a `executeQuery()` sobre el `Statement`; el driver lleva la consulta al SGBD para compilarla y ejecutarla; el SGBD mantiene el resultado en un **cursor o buffer**; el `Statement` devuelve el objeto `ResultSet`; y las llamadas posteriores a `next()` y `getXXX()` van recuperando filas y columnas hacia la aplicación. [Diapositiva 24](JDBC_original.pdf#page=24).
+
+::: proceso
+Aplicación → `Statement.executeQuery()` → driver JDBC → compilación y ejecución en el SGBD → cursor/buffer → `ResultSet` → `next()` / `getXXX()` → aplicación
+:::
 
 El orden de los recursos en `try-with-resources` permite cerrarlos en orden inverso: `ResultSet`, `Statement`, `Connection`, también ante una excepción. El resultado y la sentencia pueden retener cursores y otros recursos limitados del servidor.
 
@@ -338,6 +363,14 @@ Ejemplo didáctico · nombres de tabla y columnas adaptables al esquema real
 
 La diapositiva de fases muestra análisis y normalización (sintaxis, semántica, tablas y columnas), compilación, optimización, caché y ejecución. Su esquema explica que una consulta preparada puede reutilizar trabajo anterior al cambiar los parámetros. Es un modelo didáctico: la caché, la preparación efectiva y la ganancia concreta dependen del driver y del motor. Los valores suministrados a `?` son datos, no SQL ejecutable.
 
+En la parte inferior del gráfico aparece explícitamente la fase **`Placeholder Replacement`**: cuando la consulta preparada ya está compilada y almacenada en caché, se sustituyen los marcadores `?` por los valores suministrados y se pasa a ejecución, sin volver a compilar la consulta completa en el modelo mostrado. El propio gráfico remarca que los valores introducidos como parámetros se tratan como **datos**; si contienen texto que parece SQL, no se interpreta como parte de la sentencia. [Diapositiva 28](JDBC_original.pdf#page=28).
+
+::: proceso
+Primera preparación: análisis y normalización → compilación → optimización → caché → ejecución
+
+Reutilización mostrada en el PDF: caché → sustitución de `?` → ejecución
+:::
+
 ::: aviso Ojo
 **Para el ejercicio de la diapositiva 30.** Consultar LLANERA y, después, una lista introducida por el usuario. En este último caso la plantilla preparada evita construir la condición concatenando cada población. Los `?` representan valores, no nombres de columnas o tablas.
 :::
@@ -394,6 +427,18 @@ Son tres dimensiones distintas: tipo de cursor, sensibilidad a cambios y concurr
 ### Tipos y modos
 
 `Connection.createStatement(rsType, rsConcurrency)` solicita cómo será el `ResultSet` producido por esa sentencia. También existen sobrecargas para otros modos de creación. El driver puede limitar o ajustar las capacidades disponibles: hay que observar el comportamiento real.
+
+La diapositiva 36 muestra que estos parámetros también pueden solicitarse al crear un `PreparedStatement`, mediante la sobrecarga: [Diapositiva 36](JDBC_original.pdf#page=36).
+
+```java title="PreparedStatement con tipo y concurrencia de ResultSet" origen="código mostrado en el PDF"
+PreparedStatement prepareStatement(
+    String sql,
+    int resultSetType,
+    int resultSetConcurrency
+);
+```
+
+Por tanto, `rsType` establece la navegabilidad, el posicionamiento y la sensibilidad del `ResultSet`, mientras que `rsConcurrency` determina si el resultado será de solo lectura o modificable.
 
 | Tipo (`rsType`) | Navegación | Cambios externos |
 | --- | --- | --- |
@@ -694,6 +739,18 @@ try (Connection conn = ds.getConnection()) {
 ### Servicio de nombres JNDI
 
 **JNDI** permite buscar un recurso por un nombre lógico. Primero se crea y configura el `DataSource` con host, base, puerto y propiedades del driver; después se registra con un nombre. El cliente obtiene un `Context`, hace `lookup(nombre)`, convierte el recurso en `DataSource` y llama a `getConnection()`. Cambiar los parámetros de conexión en el servidor no obliga a cambiar el código de consulta del cliente.
+
+El PDF concreta el primer paso con un `OracleDataSource`: [Diapositiva 52](JDBC_original.pdf#page=52).
+
+```java title="Configuración de OracleDataSource" origen="código mostrado en el PDF"
+OracleDataSource ods = new OracleDataSource();
+ods.setDriverType(driverType);   // thin
+ods.setServerName(serverName);   // 156.35.94.98
+ods.setDatabaseName(dbName);     // desa19
+ods.setPortNumber(portNumber);   // 1521
+```
+
+Después de configurarlo, la diapositiva indica como segundo paso **registrar el `DataSource` en un servicio de nombres mediante un nombre lógico**. El proyecto de referencia indicado por el propio PDF es `JNDI-DataSource-Server`.
 
 ```java
 // Ejemplo didáctico del mecanismo mostrado en el tema.
