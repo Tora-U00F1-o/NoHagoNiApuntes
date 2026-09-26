@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101a31">
+  <meta name="description" content="Apuntes por asignatura y unidad, con teoría, código y prácticas.">
+  <title>Apuntes universitarios</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23101a31'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-family='Arial' font-size='29' font-weight='bold' fill='%236fe3c1'%3EA%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+  <div class="shell">
+    <aside class="sidebar" id="indice" aria-label="Índice de apuntes">
+      <div class="brand"><span class="brandmark">A</span><div><strong>Apuntes</strong><small>Asignaturas y unidades</small></div></div>
+      <div class="nav-label">ASIGNATURAS</div>
+      <nav id="unidades" aria-label="Unidades"></nav>
+      <div class="nav-label">EN ESTA UNIDAD</div>
+      <nav id="apartados" aria-label="Apartados"></nav>
+      <a class="source-link" id="fuente" hidden target="_blank" rel="noopener">Abrir fuente original ↗</a>
+    </aside>
+    <div class="workspace">
+      <header class="topbar"><button class="menu" id="menu" aria-controls="indice" aria-expanded="false">☰ <span>Índice</span></button><span id="ruta">APUNTES</span><a id="pdf-top" hidden target="_blank" rel="noopener">PDF original ↗</a></header>
+      <main id="contenido" tabindex="-1" aria-live="polite"><p class="loading">Cargando apuntes…</p></main>
+    </div>
+  </div>
+  <script src="vendor/marked.umd.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
