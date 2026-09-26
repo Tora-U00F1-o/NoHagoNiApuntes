@@ -106,9 +106,9 @@ function sidebar(catalog, selectedSubject, selectedUnit) {
     nav.append(group);
   }
 }
-function content(markdown, subject, unit) {
+function content(markdownText, subject, unit) {
   state.ids.clear();
-  const text = markdown.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
+  const text = markdownText.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
   const buffer = document.createElement('div');
   buffer.innerHTML = markdown.parse(text);
   const output = document.createDocumentFragment();
