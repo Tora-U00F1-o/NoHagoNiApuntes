@@ -3,7 +3,7 @@ id: patrones-estandares-acceso-datos
 asignatura: Repositorios de Información
 unidad: 3
 titulo: Patrones y estándares de acceso a datos
-orden: 3
+orden: 4
 resumen: Atributos de calidad, diagnóstico de CWS0 y aplicación de Layers, Fachada y Factoría Simple.
 fuente: 3.DesignPrinciplesES (1).pdf
 ---

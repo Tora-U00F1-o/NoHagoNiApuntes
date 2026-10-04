@@ -1,11 +1,12 @@
 ---
 id: separar-logica-negocio-persistencia
 asignatura: Repositorios de Información
-unidad: 3.2
+unidad: 3
+parte: 1
 titulo: Separar la Lógica de Negocio de la Persistencia
-orden: 3.2
+orden: 5
 resumen: Separación entre negocio y persistencia mediante DAO, Row Data Gateway, Table Data Gateway, factorías, Transaction Scripts y Command.
-fuente: 3.2.DesignPrinciplesES.pdf
+fuente: 32.DesignPrinciplesES.pdf
 ---
 
 # Separar la Lógica de Negocio de la Persistencia
@@ -23,7 +24,7 @@ A partir de esta separación, el documento introduce patrones para ambas capas:
 - **Creación de gateways:** Abstract Factory, Factory Method y Simple Factory.
 - **Negocio:** Transaction Script y Command.
 
-[Abrir el documento original](3.2.DesignPrinciplesES.pdf).
+[Abrir el documento original](32.DesignPrinciplesES.pdf).
 
 ::: cifras
 2 | capas que se separan: service y persistence
@@ -52,7 +53,7 @@ Service con negocio + persistencia → Service + Persistence → DAO / Gateways 
 
 El documento comienza mostrando que la capa `service` todavía conoce demasiados detalles de persistencia.
 
-[Ver diapositivas 1–3](3.2.DesignPrinciplesES.pdf#page=1).
+[Ver diapositivas 1–3](32.DesignPrinciplesES.pdf#page=1).
 
 En el código aparecen elementos como:
 
@@ -124,11 +125,11 @@ Para la capa de negocio se introducen:
 - **Transaction Scripts**.
 - **Command**.
 
-[Ver separación propuesta](3.2.DesignPrinciplesES.pdf#page=3).
+[Ver separación propuesta](32.DesignPrinciplesES.pdf#page=3).
 
 ## 2. Persistencia: patrón DAO {#dao}
 
-[Ver diapositivas 4–9](3.2.DesignPrinciplesES.pdf#page=4).
+[Ver diapositivas 4–9](32.DesignPrinciplesES.pdf#page=4).
 
 ### Fuentes de patrones de acceso a datos
 
@@ -156,7 +157,7 @@ La consecuencia fundamental es:
 
 > **La capa de negocio no necesita saber cómo se accede a la base de datos.**
 
-[Ver definición de DAO](3.2.DesignPrinciplesES.pdf#page=6).
+[Ver definición de DAO](32.DesignPrinciplesES.pdf#page=6).
 
 ### Responsabilidades de un DAO
 
@@ -180,7 +181,7 @@ El diagrama de la diapositiva 8 identifica:
 | `ResultSet` | Resultado en una implementación JDBC |
 | Transfer Object | Información devuelta a la aplicación |
 
-[Ver diagrama de clases](3.2.DesignPrinciplesES.pdf#page=8).
+[Ver diagrama de clases](32.DesignPrinciplesES.pdf#page=8).
 
 ### Principales ventajas de DAO
 
@@ -215,11 +216,11 @@ El documento estudia dos patrones de gateway como posibles formas de estructurar
 - **Row Data Gateway**.
 - **Table Data Gateway**.
 
-[Ver diapositiva 10](3.2.DesignPrinciplesES.pdf#page=10).
+[Ver diapositiva 10](32.DesignPrinciplesES.pdf#page=10).
 
 ## 4. Row Data Gateway {#row-data-gateway}
 
-[Ver diapositivas 11–14](3.2.DesignPrinciplesES.pdf#page=11).
+[Ver diapositivas 11–14](32.DesignPrinciplesES.pdf#page=11).
 
 ### Idea principal
 
@@ -249,7 +250,7 @@ El Finder:
 
 El diagrama de la diapositiva 12 muestra esta colaboración entre `PersonFinder`, la base de datos y los objetos `PersonGateway`.
 
-[Ver diagrama](3.2.DesignPrinciplesES.pdf#page=12).
+[Ver diagrama](32.DesignPrinciplesES.pdf#page=12).
 
 ### Ejemplo `MechanicGateway` en CWS
 
@@ -355,7 +356,7 @@ El documento pone como ejemplo el caso de **borrar un mecánico**.
 
 ## 5. Table Data Gateway {#table-data-gateway}
 
-[Ver diapositivas 15–19](3.2.DesignPrinciplesES.pdf#page=15).
+[Ver diapositivas 15–19](32.DesignPrinciplesES.pdf#page=15).
 
 ### Definición
 
@@ -394,13 +395,13 @@ El PDF resume la diferencia así:
 | Organiza el acceso alrededor de conceptos del dominio | Organiza el acceso alrededor de tablas de la BBDD |
 | `MechanicDao`, `WorkOrderDao`, `InvoiceDao` | `MechanicsGateway`, `WorkOrdersGateway`, `InvoicesGateway` |
 
-[Ver comparación DAO–TDG](3.2.DesignPrinciplesES.pdf#page=16).
+[Ver comparación DAO–TDG](32.DesignPrinciplesES.pdf#page=16).
 
 ### Estructura
 
 La diapositiva 17 muestra un `PersonGateway` relacionado directamente con la tabla `person`, con métodos de consulta, inserción, actualización y borrado.
 
-[Ver diagrama](3.2.DesignPrinciplesES.pdf#page=17).
+[Ver diagrama](32.DesignPrinciplesES.pdf#page=17).
 
 ### Ventajas
 
@@ -431,13 +432,13 @@ De forma general:
 Cliente → TDG → DataSource → ResultSet → Transfer Object → Cliente
 :::
 
-[Ver diagrama de secuencia](3.2.DesignPrinciplesES.pdf#page=19).
+[Ver diagrama de secuencia](32.DesignPrinciplesES.pdf#page=19).
 
 ## 6. Ejercicio de refactorización con DAO/TDG {#ejercicio-dao-tdg}
 
 La diapositiva 20 plantea un ejercicio amplio que después se reorganiza en las diapositivas 21–23.
 
-[Ver ejercicio original](3.2.DesignPrinciplesES.pdf#page=20).
+[Ver ejercicio original](32.DesignPrinciplesES.pdf#page=20).
 
 ::: practica Aplicar DAO/TDG a UpdateMechanic y DeleteMechanic
 
@@ -555,7 +556,7 @@ Las diapositivas 21–23 vuelven a presentar esta actividad agrupándola en siet
 
 La diapositiva 24 muestra una interfaz genérica `Gateway<T>`.
 
-[Ver código](3.2.DesignPrinciplesES.pdf#page=24).
+[Ver código](32.DesignPrinciplesES.pdf#page=24).
 
 ```java title="Gateway.java" origen="diapositiva 24"
 public interface Gateway<T> {
@@ -617,7 +618,7 @@ Cuando existen varios gateways, por ejemplo:
 
 el documento plantea cómo crearlos de manera flexible.
 
-[Ver diapositiva 25](3.2.DesignPrinciplesES.pdf#page=25).
+[Ver diapositiva 25](32.DesignPrinciplesES.pdf#page=25).
 
 Se consideran:
 
@@ -629,7 +630,7 @@ También se menciona la posibilidad de una **estrategia de generación automáti
 
 ## 9. Abstract Factory {#abstract-factory}
 
-[Ver diapositivas 26–28](3.2.DesignPrinciplesES.pdf#page=26).
+[Ver diapositivas 26–28](32.DesignPrinciplesES.pdf#page=26).
 
 ### Definición
 
@@ -678,11 +679,11 @@ La diferencia principal es que el cliente solicita los gateways a una factoría 
 
 La diapositiva 28 muestra el diagrama UML de esta organización.
 
-[Ver diagrama](3.2.DesignPrinciplesES.pdf#page=28).
+[Ver diagrama](32.DesignPrinciplesES.pdf#page=28).
 
 ## 10. Factory Method {#factory-method}
 
-[Ver diapositiva 29](3.2.DesignPrinciplesES.pdf#page=29).
+[Ver diapositiva 29](32.DesignPrinciplesES.pdf#page=29).
 
 El **Factory Method** es un patrón de diseño creacional que:
 
@@ -695,7 +696,7 @@ El diagrama del documento muestra una jerarquía de factorías de `MechanicGatew
 
 La diapositiva 30 aplica **Simple Factory** a la creación de los gateways.
 
-[Ver diagrama](3.2.DesignPrinciplesES.pdf#page=30).
+[Ver diagrama](32.DesignPrinciplesES.pdf#page=30).
 
 En el diagrama aparecen:
 
@@ -709,7 +710,7 @@ El documento había indicado en la diapositiva 25 que **Class Factory o Simple F
 
 ## 12. Separar la lógica de negocio: patrones de `service` {#patrones-negocio}
 
-[Ver diapositivas 31–34](3.2.DesignPrinciplesES.pdf#page=31).
+[Ver diapositivas 31–34](32.DesignPrinciplesES.pdf#page=31).
 
 Una vez separada la persistencia, la pregunta pasa a ser:
 
@@ -777,7 +778,7 @@ conn.commit();
 conn.rollback();
 ```
 
-[Ver ejercicio](3.2.DesignPrinciplesES.pdf#page=35).
+[Ver ejercicio](32.DesignPrinciplesES.pdf#page=35).
 
 ### Separación entre script y gateway
 
@@ -872,7 +873,7 @@ Este código común repetido motiva la introducción del patrón **Command**.
 
 ## 15. Patrón Command {#command}
 
-[Ver diapositivas 37–43](3.2.DesignPrinciplesES.pdf#page=37).
+[Ver diapositivas 37–43](32.DesignPrinciplesES.pdf#page=37).
 
 ### Idea principal
 
@@ -908,7 +909,7 @@ El diagrama del documento muestra como comandos concretos:
 - `DeleteMechanic`;
 - `ListAllMechanics`.
 
-[Ver diagrama](3.2.DesignPrinciplesES.pdf#page=38).
+[Ver diagrama](32.DesignPrinciplesES.pdf#page=38).
 
 ### Relación con la fachada
 
@@ -918,7 +919,7 @@ El diagrama de la diapositiva 40 muestra `MechanicCrudServiceImpl` utilizando un
 - `DeleteMechanic`;
 - `CreateInvoice`.
 
-[Ver diagrama](3.2.DesignPrinciplesES.pdf#page=40).
+[Ver diagrama](32.DesignPrinciplesES.pdf#page=40).
 
 ### Implementación de `CommandExecutor`
 
@@ -957,7 +958,7 @@ public class CommandExecutor {
 
 Aquí la apertura de conexión, desactivación de `autocommit`, `commit` y `rollback` quedan concentrados en el executor.
 
-[Ver código original](3.2.DesignPrinciplesES.pdf#page=41).
+[Ver código original](32.DesignPrinciplesES.pdf#page=41).
 
 ### Ventajas
 
@@ -966,7 +967,7 @@ El PDF señala dos:
 1. **Desacoplamiento:** separa las clases que invocan una operación de la clase que sabe cómo realizarla.
 2. **Extensibilidad:** puede añadirse un nuevo `Command` sin modificar el código existente.
 
-[Ver ventajas](3.2.DesignPrinciplesES.pdf#page=42).
+[Ver ventajas](32.DesignPrinciplesES.pdf#page=42).
 
 ::: practica Refactorización con Command
 Suponiendo el `CommandExecutor` de la diapositiva 41:
@@ -975,7 +976,7 @@ Suponiendo el `CommandExecutor` de la diapositiva 41:
 2. reescribe el código de la fachada que llama a ese Transaction Script.
 :::
 
-[Ver ejercicio](3.2.DesignPrinciplesES.pdf#page=43).
+[Ver ejercicio](32.DesignPrinciplesES.pdf#page=43).
 
 ## 16. Evolución completa del diseño {#evolucion}
 
@@ -1107,19 +1108,19 @@ Cada patrón responde a un problema concreto de separación de responsabilidades
 
 ## Referencias al documento original {#referencias}
 
-- [Problema inicial y separación de capas](3.2.DesignPrinciplesES.pdf#page=1)
-- [DAO](3.2.DesignPrinciplesES.pdf#page=6)
-- [Row Data Gateway](3.2.DesignPrinciplesES.pdf#page=11)
-- [Table Data Gateway](3.2.DesignPrinciplesES.pdf#page=15)
-- [Ejercicios DAO/TDG](3.2.DesignPrinciplesES.pdf#page=20)
-- [Interfaces de gateways y DTO](3.2.DesignPrinciplesES.pdf#page=24)
-- [Factorías para TDG](3.2.DesignPrinciplesES.pdf#page=25)
-- [Abstract Factory](3.2.DesignPrinciplesES.pdf#page=26)
-- [Factory Method](3.2.DesignPrinciplesES.pdf#page=29)
-- [Simple Factory](3.2.DesignPrinciplesES.pdf#page=30)
-- [Transaction Scripts](3.2.DesignPrinciplesES.pdf#page=33)
-- [Command](3.2.DesignPrinciplesES.pdf#page=37)
-- [CommandExecutor](3.2.DesignPrinciplesES.pdf#page=41)
-- [Ejercicio final](3.2.DesignPrinciplesES.pdf#page=43)
-- [Lecturas complementarias](3.2.DesignPrinciplesES.pdf#page=44)
-- [Abrir el documento completo](3.2.DesignPrinciplesES.pdf)
+- [Problema inicial y separación de capas](32.DesignPrinciplesES.pdf#page=1)
+- [DAO](32.DesignPrinciplesES.pdf#page=6)
+- [Row Data Gateway](32.DesignPrinciplesES.pdf#page=11)
+- [Table Data Gateway](32.DesignPrinciplesES.pdf#page=15)
+- [Ejercicios DAO/TDG](32.DesignPrinciplesES.pdf#page=20)
+- [Interfaces de gateways y DTO](32.DesignPrinciplesES.pdf#page=24)
+- [Factorías para TDG](32.DesignPrinciplesES.pdf#page=25)
+- [Abstract Factory](32.DesignPrinciplesES.pdf#page=26)
+- [Factory Method](32.DesignPrinciplesES.pdf#page=29)
+- [Simple Factory](32.DesignPrinciplesES.pdf#page=30)
+- [Transaction Scripts](32.DesignPrinciplesES.pdf#page=33)
+- [Command](32.DesignPrinciplesES.pdf#page=37)
+- [CommandExecutor](32.DesignPrinciplesES.pdf#page=41)
+- [Ejercicio final](32.DesignPrinciplesES.pdf#page=43)
+- [Lecturas complementarias](32.DesignPrinciplesES.pdf#page=44)
+- [Abrir el documento completo](32.DesignPrinciplesES.pdf)
