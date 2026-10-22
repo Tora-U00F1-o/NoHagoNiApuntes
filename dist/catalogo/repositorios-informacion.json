@@ -1,0 +1,46 @@
+{
+  "id": "repositorios-informacion",
+  "title": "Repositorios de Información",
+  "units": [
+    {
+      "id": "jdbc",
+      "title": "JDBC",
+      "number": 1,
+      "parte": null,
+      "order": 1,
+      "summary": "Teoría completa de JDBC: arquitectura, conexiones, sentencias, resultados, NULL, transacciones, ResultSet avanzado, DataSource, JNDI y pools.",
+      "source": "JDBC_original.pdf",
+      "path": "contenido/repositorios-informacion/01-jdbc/unidad.md"
+    },
+    {
+      "id": "transacciones",
+      "title": "Transacciones",
+      "number": 2,
+      "parte": null,
+      "order": 2,
+      "summary": "ACID, serialización, anomalías, control de concurrencia, aislamiento y JDBC.",
+      "source": "Transacciones_original.pdf",
+      "path": "contenido/repositorios-informacion/02-transactions/unidad.md"
+    },
+    {
+      "id": "transacciones-cuestionario",
+      "title": "Cuestionario de Transacciones",
+      "number": 2,
+      "parte": 1,
+      "order": 3,
+      "summary": "Cuestionario de repaso de la Unidad 2 sobre transacciones, ACID, planificación, serialización, anomalías y niveles de aislamiento.",
+      "source": "Cuestiones_es.pdf",
+      "path": "contenido/repositorios-informacion/02-1-cuestiones/unidad.md"
+    },
+    {
+      "id": "patrones-estandares-acceso-datos",
+      "title": "Patrones y estándares de acceso a datos",
+      "number": 3,
+      "parte": null,
+      "order": 3,
+      "summary": "Atributos de calidad, diagnóstico de CWS0 y aplicación de Layers, Fachada y Factoría Simple.",
+      "source": "3.DesignPrinciplesES (1).pdf",
+      "path": "contenido/repositorios-informacion/03-DesignPrinciples/unidad.md"
+    }
+  ]
+}

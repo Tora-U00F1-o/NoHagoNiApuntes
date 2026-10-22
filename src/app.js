@@ -97,29 +97,50 @@ markdown.use({
     renderer: renderBlock
   }]
 });
-function sidebar(catalog, selectedSubject, selectedUnit) {
+function sidebar(subject, selectedUnit) {
   const nav = $('#unidades');
   nav.replaceChildren();
-  for (const subject of catalog.subjects) {
-    const group = document.createElement('div');
-    group.className = 'subject-group';
-    const label = document.createElement('strong');
-    label.textContent = subject.title;
-    group.append(label);
-    for (const unit of subject.units) {
-      const a = document.createElement('a');
-      a.href = `?u=${encodeURIComponent(subject.id + '/' + unit.id)}`;
-      const number = document.createElement('span');
-      number.textContent = formatUnitLabel(unit);
-      a.append(number, document.createTextNode(unit.title));
-      if (subject.id === selectedSubject.id && unit.id === selectedUnit.id) {
-        a.classList.add('active');
-        a.setAttribute('aria-current', 'page');
-      }
-      group.append(a);
+  const group = document.createElement('div');
+  group.className = 'subject-group';
+  const label = document.createElement('strong');
+  label.textContent = subject.title;
+  group.append(label);
+  for (const unit of subject.units) {
+    const a = document.createElement('a');
+    a.href = `?u=${encodeURIComponent(subject.id + '/' + unit.id)}`;
+    const number = document.createElement('span');
+    number.textContent = formatUnitLabel(unit);
+    a.append(number, document.createTextNode(unit.title));
+    if (unit.id === selectedUnit.id) {
+      a.classList.add('active');
+      a.setAttribute('aria-current', 'page');
     }
-    nav.append(group);
+    group.append(a);
   }
+  nav.append(group);
+}
+function home(catalog) {
+  document.body.classList.add('home');
+  document.title = 'Apuntes universitarios';
+  $('#ruta').textContent = 'APUNTES';
+  const wrap = document.createElement('section');
+  wrap.className = 'home-intro';
+  const h1 = document.createElement('h1'); h1.textContent = 'Elige una asignatura';
+  const p = document.createElement('p'); p.textContent = 'Los apuntes se cargan solo al entrar en la asignatura.';
+  const grid = document.createElement('div');
+  grid.className = 'subject-grid';
+  for (const subject of catalog.subjects) {
+    const a = document.createElement('a');
+    a.className = 'subject-card';
+    a.href = `?u=${encodeURIComponent(subject.id)}`;
+    const initial = document.createElement('span'); initial.className = 'subject-initial'; initial.textContent = subject.title.trim().charAt(0).toUpperCase();
+    const name = document.createElement('strong'); name.textContent = subject.title;
+    const count = document.createElement('small'); count.textContent = subject.count === 1 ? '1 unidad' : `${subject.count} unidades`;
+    a.append(initial, name, count);
+    grid.append(a);
+  }
+  wrap.append(h1, p, grid);
+  $('#contenido').replaceChildren(wrap);
 }
 function content(markdownText, subject, unit) {
   state.ids.clear();
@@ -164,19 +185,25 @@ function content(markdownText, subject, unit) {
   $('#contenido').querySelectorAll('h2,h3[id]').forEach(h => state.observer.observe(h));
   if (location.hash) requestAnimationFrame(() => document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView());
 }
+async function loadJson(path) {
+  const response = await fetch(new URL(path, document.baseURI));
+  if (!response.ok) throw new Error(`No se pudo cargar ${path}`);
+  return response.json();
+}
 async function init() {
   try {
-    const response = await fetch(new URL('catalogo.json', document.baseURI));
-    if (!response.ok) throw new Error('No se pudo cargar el catálogo');
-    const catalog = await response.json();
+    const catalog = await loadJson('catalogo.json');
     const requested = new URLSearchParams(location.search).get('u');
     const [subjectId, unitId] = requested?.split('/') || [];
-    const subject = catalog.subjects.find(s => s.id === subjectId) || catalog.subjects[0];
+    const entry = catalog.subjects.find(s => s.id === subjectId);
+    if (!entry) return home(catalog);
+    // Solo se descarga el catálogo y el .md de la asignatura/unidad elegidas.
+    const subject = await loadJson(`catalogo/${encodeURIComponent(entry.id)}.json`);
     const unit = subject.units.find(u => u.id === unitId) || subject.units[0];
     const source = await fetch(new URL(unit.path, document.baseURI));
     if (!source.ok) throw new Error(`No se pudo cargar ${unit.path}`);
     state.markdownUrl = source.url;
-    sidebar(catalog, subject, unit);
+    sidebar(subject, unit);
     content(await source.text(), subject, unit);
     document.title = `${unit.title} · ${subject.title}`;
     $('#ruta').textContent = `${subject.title.toUpperCase()} / UNIDAD ${formatUnitLabel(unit)}`;
@@ -185,9 +212,11 @@ async function init() {
       if (unit.source) a.href = new URL(unit.source, state.markdownUrl).href;
     }
   } catch (error) {
+    document.body.classList.add('home');
     const h = document.createElement('h1'); h.textContent = 'No se pudieron cargar los apuntes';
     const p = document.createElement('p'); p.textContent = error.message;
-    $('#contenido').replaceChildren(h, p);
+    const back = document.createElement('a'); back.href = './'; back.textContent = '← Volver a asignaturas';
+    $('#contenido').replaceChildren(h, p, back);
   }
 }
 $('#menu').addEventListener('click', () => {
