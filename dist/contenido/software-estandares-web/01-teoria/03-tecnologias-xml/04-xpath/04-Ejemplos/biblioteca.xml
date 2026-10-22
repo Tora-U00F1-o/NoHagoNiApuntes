@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE biblioteca SYSTEM "biblioteca.dtd">
+<biblioteca>
+  <libro id="ISBN-978-84-376-0494-7">
+    <titulo>Cien años de soledad</titulo>
+    <autor>Gabriel García Márquez</autor>
+    <editorial>Editorial Sudamericana</editorial>
+    <anio>1967</anio>
+    <isbn>978-84-376-0494-7</isbn>
+  </libro>
+  <libro id="ISBN-978-84-339-7882-0">
+    <titulo>1984</titulo>
+    <autor>George Orwell</autor>
+    <editorial>Editorial Debolsillo</editorial>
+    <anio>1949</anio>
+    <isbn>978-84-339-7882-0</isbn>
+  </libro>
+  <libro id="ISBN-978-84-670-5191-1">
+    <titulo>El gran Gatsby</titulo>
+    <autor>F. Scott Fitzgerald</autor>
+    <editorial>Editorial Planeta</editorial>
+    <anio>1925</anio>
+    <isbn>978-84-670-5191-1</isbn>
+  </libro>
+</biblioteca>
