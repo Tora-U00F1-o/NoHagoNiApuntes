@@ -6,6 +6,7 @@ const BLOCKS = new Set(['aviso', 'examen', 'practica', 'proyecto', 'pregunta', '
 const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function formatUnitLabel(unit) {
   if (unit.parte != null) return `${unit.number}.${unit.parte}`;
+  if (unit.number == null) return '';
   return String(unit.number).padStart(2, '0');
 }
 function safeUrl(href) {
@@ -97,6 +98,51 @@ markdown.use({
     renderer: renderBlock
   }]
 });
+function unitMap(subject) { return new Map(subject.units.map(u => [u.id, u])); }
+function findTrail(nodes, id, trail = []) {
+  for (const n of nodes) {
+    if (n.type === 'unit' && n.id === id) return trail;
+    if (n.type === 'group') {
+      const found = findTrail(n.children, id, [...trail, n]);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+function unitLink(subject, unit, selected) {
+  const a = document.createElement('a');
+  a.href = `?u=${encodeURIComponent(subject.id + '/' + unit.id)}`;
+  const label = formatUnitLabel(unit);
+  if (label) {
+    const number = document.createElement('span');
+    number.textContent = label;
+    a.append(number);
+  }
+  a.append(document.createTextNode(unit.title));
+  if (selected && unit.id === selected.id) {
+    a.classList.add('active');
+    a.setAttribute('aria-current', 'page');
+  }
+  return a;
+}
+function containsUnit(node, id) {
+  return node.children.some(c => c.type === 'unit' ? c.id === id : containsUnit(c, id));
+}
+function treeNav(nodes, subject, units, selected) {
+  const box = document.createElement('div');
+  box.className = 'tree';
+  for (const node of nodes) {
+    if (node.type === 'unit') { box.append(unitLink(subject, units.get(node.id), selected)); continue; }
+    const details = document.createElement('details');
+    details.className = 'tree-group';
+    details.open = containsUnit(node, selected.id);
+    const summary = document.createElement('summary');
+    summary.textContent = node.title;
+    details.append(summary, treeNav(node.children, subject, units, selected));
+    box.append(details);
+  }
+  return box;
+}
 function sidebar(subject, selectedUnit) {
   const nav = $('#unidades');
   nav.replaceChildren();
@@ -104,20 +150,76 @@ function sidebar(subject, selectedUnit) {
   group.className = 'subject-group';
   const label = document.createElement('strong');
   label.textContent = subject.title;
-  group.append(label);
-  for (const unit of subject.units) {
-    const a = document.createElement('a');
-    a.href = `?u=${encodeURIComponent(subject.id + '/' + unit.id)}`;
-    const number = document.createElement('span');
-    number.textContent = formatUnitLabel(unit);
-    a.append(number, document.createTextNode(unit.title));
-    if (unit.id === selectedUnit.id) {
-      a.classList.add('active');
-      a.setAttribute('aria-current', 'page');
-    }
-    group.append(a);
-  }
+  group.append(label, treeNav(subject.tree, subject, unitMap(subject), selectedUnit));
   nav.append(group);
+}
+function fileList(unit) {
+  const nav = $('#archivos');
+  nav.replaceChildren();
+  const none = !unit.files?.length;
+  $('#archivos-label').hidden = none;
+  nav.hidden = none;
+  for (const file of unit.files || []) {
+    const a = document.createElement('a');
+    a.href = new URL(file.path, document.baseURI).href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.className = 'file-link';
+    a.textContent = file.name;
+    nav.append(a);
+  }
+}
+function overview(subject) {
+  document.body.classList.add('home');
+  document.title = subject.title;
+  $('#ruta').textContent = subject.title.toUpperCase();
+  const units = unitMap(subject);
+  const wrap = document.createElement('section');
+  wrap.className = 'home-intro subject-overview';
+  const back = document.createElement('a');
+  back.href = './';
+  back.textContent = '← Todas las asignaturas';
+  back.className = 'overview-back';
+  const h1 = document.createElement('h1');
+  h1.textContent = subject.title;
+  wrap.append(back, h1);
+  const loose = subject.tree.filter(n => n.type === 'unit');
+  const cards = subject.tree.filter(n => n.type === 'group');
+  if (loose.length) cards.unshift({ type: 'group', id: '_sueltas', title: 'Unidades', children: loose });
+  const list = (nodes, depth) => {
+    const ul = document.createElement('ul');
+    ul.className = 'overview-list';
+    for (const node of nodes) {
+      const li = document.createElement('li');
+      if (node.type === 'unit') {
+        const a = unitLink(subject, units.get(node.id));
+        a.className = 'overview-unit';
+        li.append(a);
+      } else {
+        const name = document.createElement('span');
+        name.className = 'overview-folder';
+        name.textContent = node.title;
+        li.append(name);
+        if (node.children.length) li.append(list(node.children, depth + 1));
+        else {
+          const empty = document.createElement('small');
+          empty.textContent = 'Sin contenido todavía';
+          li.append(empty);
+        }
+      }
+      ul.append(li);
+    }
+    return ul;
+  };
+  for (const card of cards) {
+    const section = document.createElement('section');
+    section.className = 'overview-card';
+    const h2 = document.createElement('h2');
+    h2.textContent = card.title;
+    section.append(h2, list(card.children, 0));
+    wrap.append(section);
+  }
+  $('#contenido').replaceChildren(wrap);
 }
 function home(catalog) {
   document.body.classList.add('home');
@@ -153,7 +255,8 @@ function content(markdownText, subject, unit) {
   section.id = 'inicio';
   const eyebrow = document.createElement('div');
   eyebrow.className = 'eyebrow';
-  eyebrow.textContent = `${subject.title.toUpperCase()} · UNIDAD ${formatUnitLabel(unit)}`;
+  const trail = (findTrail(subject.tree, unit.id) || []).map(g => g.title);
+  eyebrow.textContent = [subject.title, ...trail].join(' · ').toUpperCase();
   section.append(eyebrow);
   for (const element of [...buffer.children]) {
     if (element.tagName === 'H2') {
@@ -199,14 +302,19 @@ async function init() {
     if (!entry) return home(catalog);
     // Solo se descarga el catálogo y el .md de la asignatura/unidad elegidas.
     const subject = await loadJson(`catalogo/${encodeURIComponent(entry.id)}.json`);
-    const unit = subject.units.find(u => u.id === unitId) || subject.units[0];
+    const chosen = subject.units.find(u => u.id === unitId);
+    // Sin unidad indicada: si la asignatura tiene grupos se muestra su estructura; si no, la primera unidad.
+    if (!chosen && !unitId && subject.tree.some(n => n.type === 'group')) return overview(subject);
+    const unit = chosen || subject.units[0];
     const source = await fetch(new URL(unit.path, document.baseURI));
     if (!source.ok) throw new Error(`No se pudo cargar ${unit.path}`);
     state.markdownUrl = source.url;
     sidebar(subject, unit);
     content(await source.text(), subject, unit);
     document.title = `${unit.title} · ${subject.title}`;
-    $('#ruta').textContent = `${subject.title.toUpperCase()} / UNIDAD ${formatUnitLabel(unit)}`;
+    const trail = (findTrail(subject.tree, unit.id) || []).map(g => g.title);
+    $('#ruta').textContent = [subject.title, ...trail, formatUnitLabel(unit) ? `Unidad ${formatUnitLabel(unit)}` : unit.title].join(' / ').toUpperCase();
+    fileList(unit);
     for (const a of [$('#fuente'), $('#pdf-top')]) {
       a.hidden = !unit.source;
       if (unit.source) a.href = new URL(unit.source, state.markdownUrl).href;

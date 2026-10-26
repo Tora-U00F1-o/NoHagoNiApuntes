@@ -1,6 +1,28 @@
 {
   "id": "repositorios-informacion",
   "title": "Repositorios de Información",
+  "tree": [
+    {
+      "type": "unit",
+      "id": "jdbc"
+    },
+    {
+      "type": "unit",
+      "id": "transacciones"
+    },
+    {
+      "type": "unit",
+      "id": "transacciones-cuestionario"
+    },
+    {
+      "type": "unit",
+      "id": "patrones-estandares-acceso-datos"
+    },
+    {
+      "type": "unit",
+      "id": "separar-logica-negocio-persistencia"
+    }
+  ],
   "units": [
     {
       "id": "jdbc",
@@ -10,6 +32,12 @@
       "order": 1,
       "summary": "Teoría completa de JDBC: arquitectura, conexiones, sentencias, resultados, NULL, transacciones, ResultSet avanzado, DataSource, JNDI y pools.",
       "source": "JDBC_original.pdf",
+      "files": [
+        {
+          "name": "JDBC_original.pdf",
+          "path": "contenido/repositorios-informacion/01-jdbc/JDBC_original.pdf"
+        }
+      ],
       "path": "contenido/repositorios-informacion/01-jdbc/unidad.md"
     },
     {
@@ -20,6 +48,12 @@
       "order": 2,
       "summary": "ACID, serialización, anomalías, control de concurrencia, aislamiento y JDBC.",
       "source": "Transacciones_original.pdf",
+      "files": [
+        {
+          "name": "Transacciones_original.pdf",
+          "path": "contenido/repositorios-informacion/02-transactions/Transacciones_original.pdf"
+        }
+      ],
       "path": "contenido/repositorios-informacion/02-transactions/unidad.md"
     },
     {
@@ -30,6 +64,12 @@
       "order": 3,
       "summary": "Cuestionario de repaso de la Unidad 2 sobre transacciones, ACID, planificación, serialización, anomalías y niveles de aislamiento.",
       "source": "Cuestiones_es.pdf",
+      "files": [
+        {
+          "name": "Cuestiones_es.pdf",
+          "path": "contenido/repositorios-informacion/02-1-cuestiones/Cuestiones_es.pdf"
+        }
+      ],
       "path": "contenido/repositorios-informacion/02-1-cuestiones/unidad.md"
     },
     {
@@ -37,10 +77,32 @@
       "title": "Patrones y estándares de acceso a datos",
       "number": 3,
       "parte": null,
-      "order": 3,
+      "order": 4,
       "summary": "Atributos de calidad, diagnóstico de CWS0 y aplicación de Layers, Fachada y Factoría Simple.",
       "source": "3.DesignPrinciplesES (1).pdf",
+      "files": [
+        {
+          "name": "3.DesignPrinciplesES (1).pdf",
+          "path": "contenido/repositorios-informacion/03-DesignPrinciples/3.DesignPrinciplesES (1).pdf"
+        }
+      ],
       "path": "contenido/repositorios-informacion/03-DesignPrinciples/unidad.md"
+    },
+    {
+      "id": "separar-logica-negocio-persistencia",
+      "title": "Separar la Lógica de Negocio de la Persistencia",
+      "number": 3,
+      "parte": 1,
+      "order": 5,
+      "summary": "Separación entre negocio y persistencia mediante DAO, Row Data Gateway, Table Data Gateway, factorías, Transaction Scripts y Command.",
+      "source": "32.DesignPrinciplesES.pdf",
+      "files": [
+        {
+          "name": "32.DesignPrinciplesES.pdf",
+          "path": "contenido/repositorios-informacion/03-2-DesignPrinciples2/32.DesignPrinciplesES.pdf"
+        }
+      ],
+      "path": "contenido/repositorios-informacion/03-2-DesignPrinciples2/unidad.md"
     }
   ]
 }

@@ -28,3 +28,27 @@ main{padding-left:max(1.2rem,env(safe-area-inset-left));padding-right:max(1.2rem
 .code-block pre{font-size:.8rem;padding:1rem}
 }
 @media(max-width:380px){.subject-grid{grid-template-columns:1fr}}
+/* Árbol de carpetas (barra lateral) y vista general de asignatura. */
+.tree{display:grid;gap:.1rem}.tree .tree{margin-left:.7rem;padding-left:.5rem;border-left:1px solid #ffffff1f}
+.tree-group>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:.5rem;padding:.6rem .75rem;border-radius:7px;color:#e6eff8;font-weight:700;font-size:.9rem;min-height:40px}
+.tree-group>summary::-webkit-details-marker{display:none}
+.tree-group>summary::before{content:"?";color:#6fe3c1;font-size:.75rem;transition:transform .15s}
+.tree-group[open]>summary::before{transform:rotate(90deg)}
+.tree-group>summary:hover{background:#203451}
+.sidebar nav a.file-link{font-size:.82rem;word-break:break-all;color:#9cc8e8}
+.sidebar nav[hidden],.nav-label[hidden]{display:none}
+.subject-overview{max-width:900px}
+.overview-back{display:inline-block;margin-bottom:1rem;text-decoration:none;font-weight:700}
+.overview-card{background:#fff;border:1px solid #dce5ed;border-radius:12px;padding:1.2rem 1.4rem;margin:1.2rem 0}
+.overview-card h2{margin:0 0 .6rem;font-size:1.4rem;letter-spacing:-.02em}
+.overview-list{list-style:none;margin:0;padding:0}
+.overview-list .overview-list{margin-left:1.6rem;border-left:1px dashed #c4d3df;padding-left:.8rem}
+.overview-list li{border-top:1px solid #e6edf3;padding:.7rem 0 .7rem}
+.overview-list li li:first-child{border-top:0}
+.overview-card>.overview-list>li:first-child{border-top:0}
+.overview-list li>small{display:block;color:#7a8da0;margin-top:.2rem}
+.overview-unit,.overview-folder{display:flex;align-items:center;gap:.6rem;font-size:.97rem}
+.overview-unit::before,.overview-folder::before{content:"";width:16px;height:13px;border:2px solid #2a9fb0;border-radius:3px;flex:none}
+.overview-unit::before{height:16px;width:12px;border-radius:2px}
+.overview-folder{font-weight:700;color:#182339}
+.overview-unit span{color:#7990ae;font-size:.75rem}

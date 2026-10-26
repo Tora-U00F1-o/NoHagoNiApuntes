@@ -1,0 +1,50 @@
+---
+description: Cómo se organiza el contenido de apuntes (asignaturas, grupos y unidades) y cómo montar andamiajes a partir de fotos de carpetas
+alwaysApply: true
+---
+
+# Organización de los apuntes
+
+Responde siempre en español. Formato completo de `unidad.md` en `FORMATO.md`; prompt de redacción en `prompts/generarUnidadesMD.md`.
+
+## Árbol de carpetas
+
+```
+contenido/<asignatura>/<grupo>/.../<unidad>/unidad.md
+```
+
+- `contenido/<asignatura>/`: nombre en minúsculas, números y guiones (sin tildes ni espacios).
+- Carpeta **con** `unidad.md` = unidad (hoja). Carpeta **sin** `unidad.md` = grupo (Teoría, Prácticas, un tema…), con cualquier profundidad.
+- `_grupo.md` (opcional) fija el título con tildes: `---\ntitulo: Tecnologías XML\n---`. Admite `orden:`. Un grupo vacío solo se muestra si tiene `_grupo.md`; sin él se descarta.
+- Las carpetas que empiezan por `.` o `_` se ignoran.
+- Orden: prefijo numérico de la carpeta (`01-`, `02-`…) o `orden:` en la cabecera.
+- Nombres de carpeta: minúsculas, sin tildes ni espacios, con prefijo numérico (`03-tecnologias-xml`).
+- `id` de una unidad = ruta sin prefijos numéricos unida con guiones (p. ej. `teoria-tecnologias-xml-dtds`), salvo que la cabecera lo fije. Debe ser único en la asignatura. Los ids se cambian si se renombran carpetas, así que usa `id:` en unidades que ya tengan enlaces.
+
+## Cabecera de `unidad.md`
+
+Obligatorios: `titulo`, `resumen`. Recomendado: `asignatura` (título legible con tildes; basta en una unidad, pero ponlo en todas y que coincida).
+Opcionales: `fuente` (PDF de la misma carpeta, activa el botón «PDF original»), `id`, `unidad`, `orden`, `parte`.
+No pongas `id`, `unidad` ni `orden` salvo necesidad: se deducen de la carpeta.
+Los demás archivos de la carpeta (PDF, zip…) se listan solos en «Archivos».
+Tiene que haber al menos un título `##` (lo exige `npm run check`).
+
+## Andamiaje a partir de fotos o listados
+
+El usuario suele pasar capturas de las carpetas de PDFs (p. ej. de Moodle) para que se monte la estructura y después va añadiendo los PDF y los `.md`. En ese caso:
+
+1. Traduce cada sección y carpeta de la foto a grupos, y cada archivo o tema a una unidad. Un `.pdf` con su `.zip` de ejemplos es **una** unidad: el PDF es la fuente y el contenido del zip pasa a bloques de código del `.md`.
+2. Crea las carpetas con prefijo numérico en el orden de la foto, y un `_grupo.md` por cada grupo con el título tal cual aparece (con tildes).
+3. Las carpetas sin archivos visibles se crean como grupos vacíos con solo `_grupo.md`.
+4. Para cada unidad crea un `unidad.md` esqueleto: cabecera mínima (`asignatura`, `titulo`, `resumen`), un `# Título` y un apartado `##` con una nota «Pendiente de completar a partir de …». No inventes teoría ni ejemplos que no se hayan visto; los PDF reales los añade el usuario.
+5. No crees PDF falsos ni pongas `fuente:` de un archivo que no exista (el catálogo falla si falta). Cuando el usuario añada el PDF, se activa `fuente` o basta con que esté en la carpeta.
+6. Si el nombre de una carpeta no permite deducir un id válido, añade `id:`.
+7. Ejemplo ya montado: `contenido/software-estandares-web/`.
+8. Al terminar, ejecuta `npm run check` y `npm run build`, y resume la estructura creada.
+
+## Comandos y notas
+
+- `npm run check` valida los `.md`; `npm run build` genera `dist/`; `npm run start` compila y sirve en `http://127.0.0.1:8000/` y recompila al guardar.
+- `dist/` es salida generada: no la edites a mano.
+- Una asignatura plana (solo unidades, sin grupos) abre la primera unidad; si tiene grupos muestra la vista general de estructura.
+- Las asignaturas antiguas (`repositorios-informacion`) usan cabeceras completas con `id`, `unidad`, `orden`: respétalas.

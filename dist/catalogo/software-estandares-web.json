@@ -1,0 +1,454 @@
+{
+  "id": "software-estandares-web",
+  "title": "Software y Estándares para la Web",
+  "tree": [
+    {
+      "type": "group",
+      "id": "teoria",
+      "title": "Teoría",
+      "summary": null,
+      "children": [
+        {
+          "type": "unit",
+          "id": "teoria-diseno-con-estandares"
+        },
+        {
+          "type": "unit",
+          "id": "teoria-lenguajes-de-marcado"
+        },
+        {
+          "type": "group",
+          "id": "teoria-tecnologias-xml",
+          "title": "Tecnologías XML",
+          "summary": null,
+          "children": [
+            {
+              "type": "unit",
+              "id": "teoria-tecnologias-xml-introduccion-xml"
+            },
+            {
+              "type": "unit",
+              "id": "teoria-tecnologias-xml-dtds"
+            },
+            {
+              "type": "unit",
+              "id": "teoria-tecnologias-xml-schemas"
+            },
+            {
+              "type": "unit",
+              "id": "teoria-tecnologias-xml-xpath"
+            },
+            {
+              "type": "unit",
+              "id": "teoria-tecnologias-xml-xslt"
+            },
+            {
+              "type": "unit",
+              "id": "teoria-tecnologias-xml-procesamiento-xml"
+            }
+          ]
+        },
+        {
+          "type": "unit",
+          "id": "teoria-lenguajes-de-marcado-html"
+        },
+        {
+          "type": "group",
+          "id": "teoria-lenguajes-de-presentacion",
+          "title": "Lenguajes de Presentación",
+          "summary": null,
+          "children": [
+            {
+              "type": "unit",
+              "id": "teoria-lenguajes-de-presentacion-lenguajes-de-presentacion"
+            },
+            {
+              "type": "unit",
+              "id": "teoria-lenguajes-de-presentacion-css"
+            },
+            {
+              "type": "unit",
+              "id": "teoria-lenguajes-de-presentacion-css-posicionamiento"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "seminarios",
+      "title": "Seminarios",
+      "summary": null,
+      "children": [
+        {
+          "type": "unit",
+          "id": "seminarios-usabilidad-web-parte1"
+        },
+        {
+          "type": "unit",
+          "id": "seminarios-usabilidad-web-parte2"
+        },
+        {
+          "type": "unit",
+          "id": "seminarios-adaptabilidad-web"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "id": "practicas",
+      "title": "Prácticas",
+      "summary": null,
+      "children": [
+        {
+          "type": "unit",
+          "id": "practicas-estandares-web"
+        },
+        {
+          "type": "unit",
+          "id": "practicas-recursos-proyecto"
+        },
+        {
+          "type": "group",
+          "id": "practicas-tecnologias-xml",
+          "title": "Tecnologías XML",
+          "summary": null,
+          "children": [
+            {
+              "type": "unit",
+              "id": "practicas-tecnologias-xml-p2-xml-sesion1"
+            },
+            {
+              "type": "unit",
+              "id": "practicas-tecnologias-xml-p3-xml-sesion2"
+            }
+          ]
+        },
+        {
+          "type": "group",
+          "id": "practicas-html-css",
+          "title": "HTML-CSS",
+          "summary": null,
+          "children": [
+            {
+              "type": "unit",
+              "id": "practicas-html-css-p4-html"
+            },
+            {
+              "type": "unit",
+              "id": "practicas-html-css-p5-html-css-inicial"
+            },
+            {
+              "type": "unit",
+              "id": "practicas-html-css-p6-html-css-posicionamiento"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "teoria-diseno-con-estandares",
+      "title": "Diseño con estándares",
+      "number": 1,
+      "parte": null,
+      "order": 1,
+      "summary": "Por qué diseñar la web con estándares abiertos.",
+      "source": null,
+      "files": [
+        {
+          "name": "Diseño-estandares.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/01-diseno-con-estandares/Diseño-estandares.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/01-diseno-con-estandares/unidad.md"
+    },
+    {
+      "id": "teoria-lenguajes-de-marcado",
+      "title": "Lenguajes de marcado",
+      "number": 2,
+      "parte": null,
+      "order": 2,
+      "summary": "Introducción a los lenguajes de marcado.",
+      "source": null,
+      "files": [
+        {
+          "name": "LenguajesMarcado.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/02-lenguajes-de-marcado/LenguajesMarcado.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/02-lenguajes-de-marcado/unidad.md"
+    },
+    {
+      "id": "teoria-tecnologias-xml-introduccion-xml",
+      "title": "Introducción a XML",
+      "number": 1,
+      "parte": null,
+      "order": 1,
+      "summary": "Estructura de un documento XML bien formado.",
+      "source": null,
+      "files": [
+        {
+          "name": "01-Introducción-XML.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/01-introduccion-xml/01-Introducción-XML.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/01-introduccion-xml/unidad.md"
+    },
+    {
+      "id": "teoria-tecnologias-xml-dtds",
+      "title": "DTDs",
+      "number": 2,
+      "parte": null,
+      "order": 2,
+      "summary": "Definición de la estructura de un XML con DTD.",
+      "source": null,
+      "files": [
+        {
+          "name": "02-DTDs.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/02-dtds/02-DTDs.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/02-dtds/unidad.md"
+    },
+    {
+      "id": "teoria-tecnologias-xml-schemas",
+      "title": "Schemas",
+      "number": 3,
+      "parte": null,
+      "order": 3,
+      "summary": "Validación de XML con XML Schema (XSD).",
+      "source": null,
+      "files": [
+        {
+          "name": "03-Schemas.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/03-schemas/03-Schemas.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/03-schemas/unidad.md"
+    },
+    {
+      "id": "teoria-tecnologias-xml-xpath",
+      "title": "XPath",
+      "number": 4,
+      "parte": null,
+      "order": 4,
+      "summary": "Selección de nodos en un documento XML con XPath.",
+      "source": null,
+      "files": [
+        {
+          "name": "04-XPath.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/04-xpath/04-XPath.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/04-xpath/unidad.md"
+    },
+    {
+      "id": "teoria-tecnologias-xml-xslt",
+      "title": "XSLT",
+      "number": 5,
+      "parte": null,
+      "order": 5,
+      "summary": "Transformación de XML con hojas XSLT.",
+      "source": null,
+      "files": [
+        {
+          "name": "05-XSLT.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/05-xslt/05-XSLT.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/05-xslt/unidad.md"
+    },
+    {
+      "id": "teoria-tecnologias-xml-procesamiento-xml",
+      "title": "Procesamiento de XML",
+      "number": 6,
+      "parte": null,
+      "order": 6,
+      "summary": "Lectura de XML desde programas (DOM y SAX).",
+      "source": null,
+      "files": [
+        {
+          "name": "06-Procesamiento-XML.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/06-procesamiento-xml/06-Procesamiento-XML.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/03-tecnologias-xml/06-procesamiento-xml/unidad.md"
+    },
+    {
+      "id": "teoria-lenguajes-de-marcado-html",
+      "title": "Lenguajes de Marcado - HTML",
+      "number": 4,
+      "parte": null,
+      "order": 4,
+      "summary": "Lenguaje de marcado HTML5.",
+      "source": "HTML5.pdf",
+      "files": [
+        {
+          "name": "HTML5.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/04-lenguajes-de-marcado-html/HTML5.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/04-lenguajes-de-marcado-html/unidad.md"
+    },
+    {
+      "id": "teoria-lenguajes-de-presentacion-lenguajes-de-presentacion",
+      "title": "Lenguajes de presentación",
+      "number": 1,
+      "parte": null,
+      "order": 1,
+      "summary": "Introducción a los lenguajes de presentación.",
+      "source": null,
+      "files": [
+        {
+          "name": "1 Lenguajes de presentación.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/05-lenguajes-de-presentacion/01-lenguajes-de-presentacion/1 Lenguajes de presentación.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/05-lenguajes-de-presentacion/01-lenguajes-de-presentacion/unidad.md"
+    },
+    {
+      "id": "teoria-lenguajes-de-presentacion-css",
+      "title": "CSS",
+      "number": 2,
+      "parte": null,
+      "order": 2,
+      "summary": "Hojas de estilo en cascada.",
+      "source": null,
+      "files": [
+        {
+          "name": "2 CSS.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/05-lenguajes-de-presentacion/02-css/2 CSS.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/05-lenguajes-de-presentacion/02-css/unidad.md"
+    },
+    {
+      "id": "teoria-lenguajes-de-presentacion-css-posicionamiento",
+      "title": "CSS - Posicionamiento",
+      "number": 3,
+      "parte": null,
+      "order": 3,
+      "summary": "Posicionamiento de elementos con CSS.",
+      "source": null,
+      "files": [
+        {
+          "name": "3 CSS-Posicionamiento.pdf",
+          "path": "contenido/software-estandares-web/01-teoria/05-lenguajes-de-presentacion/03-css-posicionamiento/3 CSS-Posicionamiento.pdf"
+        }
+      ],
+      "path": "contenido/software-estandares-web/01-teoria/05-lenguajes-de-presentacion/03-css-posicionamiento/unidad.md"
+    },
+    {
+      "id": "seminarios-usabilidad-web-parte1",
+      "title": "Usabilidad Web - Parte 1",
+      "number": 1,
+      "parte": null,
+      "order": 1,
+      "summary": "Usabilidad web (primera parte).",
+      "source": null,
+      "files": [],
+      "path": "contenido/software-estandares-web/02-seminarios/01-usabilidad-web-parte1/unidad.md"
+    },
+    {
+      "id": "seminarios-usabilidad-web-parte2",
+      "title": "Usabilidad Web - Parte 2",
+      "number": 2,
+      "parte": null,
+      "order": 2,
+      "summary": "Usabilidad web (segunda parte).",
+      "source": null,
+      "files": [],
+      "path": "contenido/software-estandares-web/02-seminarios/02-usabilidad-web-parte2/unidad.md"
+    },
+    {
+      "id": "seminarios-adaptabilidad-web",
+      "title": "Adaptabilidad Web",
+      "number": 3,
+      "parte": null,
+      "order": 3,
+      "summary": "Adaptabilidad de las páginas web.",
+      "source": null,
+      "files": [],
+      "path": "contenido/software-estandares-web/02-seminarios/03-adaptabilidad-web/unidad.md"
+    },
+    {
+      "id": "practicas-estandares-web",
+      "title": "P1 - Estándares Web",
+      "number": 1,
+      "parte": null,
+      "order": 1,
+      "summary": "Práctica 1 sobre estándares web.",
+      "source": null,
+      "files": [],
+      "path": "contenido/software-estandares-web/03-practicas/01-estandares-web/unidad.md"
+    },
+    {
+      "id": "practicas-recursos-proyecto",
+      "title": "Recursos para el proyecto",
+      "number": 2,
+      "parte": null,
+      "order": 2,
+      "summary": "Material de apoyo para el proyecto La Vuelta 2026.",
+      "source": null,
+      "files": [],
+      "path": "contenido/software-estandares-web/03-practicas/02-recursos-proyecto/unidad.md"
+    },
+    {
+      "id": "practicas-tecnologias-xml-p2-xml-sesion1",
+      "title": "P2 - XML sesión 1",
+      "number": 1,
+      "parte": null,
+      "order": 1,
+      "summary": "Práctica 2 de tecnologías XML, primera sesión.",
+      "source": null,
+      "files": [],
+      "path": "contenido/software-estandares-web/03-practicas/03-tecnologias-xml/01-p2-xml-sesion1/unidad.md"
+    },
+    {
+      "id": "practicas-tecnologias-xml-p3-xml-sesion2",
+      "title": "P3 - XML sesión 2",
+      "number": 2,
+      "parte": null,
+      "order": 2,
+      "summary": "Práctica 3 de tecnologías XML, segunda sesión (usa xml2svg.exe).",
+      "source": null,
+      "files": [],
+      "path": "contenido/software-estandares-web/03-practicas/03-tecnologias-xml/02-p3-xml-sesion2/unidad.md"
+    },
+    {
+      "id": "practicas-html-css-p4-html",
+      "title": "P4 - HTML",
+      "number": 1,
+      "parte": null,
+      "order": 1,
+      "summary": "Práctica 4 de HTML.",
+      "source": null,
+      "files": [],
+      "path": "contenido/software-estandares-web/03-practicas/04-html-css/01-p4-html/unidad.md"
+    },
+    {
+      "id": "practicas-html-css-p5-html-css-inicial",
+      "title": "P5 - HTML-CSS inicial",
+      "number": 2,
+      "parte": null,
+      "order": 2,
+      "summary": "Práctica 5 de HTML y CSS (versión inicial).",
+      "source": null,
+      "files": [],
+      "path": "contenido/software-estandares-web/03-practicas/04-html-css/02-p5-html-css-inicial/unidad.md"
+    },
+    {
+      "id": "practicas-html-css-p6-html-css-posicionamiento",
+      "title": "P6 - HTML-CSS posicionamiento",
+      "number": 3,
+      "parte": null,
+      "order": 3,
+      "summary": "Práctica 6 de HTML y CSS con posicionamiento.",
+      "source": null,
+      "files": [],
+      "path": "contenido/software-estandares-web/03-practicas/04-html-css/03-p6-html-css-posicionamiento/unidad.md"
+    }
+  ]
+}

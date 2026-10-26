@@ -4,7 +4,12 @@
     {
       "id": "repositorios-informacion",
       "title": "Repositorios de Información",
-      "count": 4
+      "count": 5
+    },
+    {
+      "id": "software-estandares-web",
+      "title": "Software y Estándares para la Web",
+      "count": 22
     }
   ]
 }

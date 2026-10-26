@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Apuntes: servidor + navegador",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://127.0.0.1:8000/",
+      "preLaunchTask": "Servidor local (build + recarga al guardar)"
+    }
+  ]
+}

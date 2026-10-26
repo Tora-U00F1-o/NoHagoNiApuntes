@@ -85,3 +85,16 @@ Usa la direcciÃ³n `?u=<asignatura>/<id-unidad>#apartado`; en Markdown, codifica 
 ```
 
 La URL de una unidad inexistente muestra la primera unidad disponible. Los identificadores de apartado explÃ­citos evitan que los enlaces de estudio cambien si reescribes los tÃ­tulos.
+
+## Estructura en árbol de carpetas
+
+Dentro de `contenido/<asignatura>/` puedes anidar carpetas a cualquier profundidad:
+
+- Una carpeta con `unidad.md` es una **unidad**.
+- Una carpeta sin `unidad.md` es un **grupo** (Teoría, Prácticas, un tema…). Un `_grupo.md` opcional, con `titulo:` (y `orden:` si hace falta), fija su nombre; sin él se deduce del nombre de la carpeta. Los grupos vacíos solo se muestran si tienen `_grupo.md`.
+- El orden sale del prefijo numérico de la carpeta (`01-`, `02-`) o de `orden:` si existe.
+- En `unidad.md` solo son obligatorios `titulo` y `resumen`. `id` se deduce de la ruta (sin prefijos numéricos, unida con guiones; nombres de carpeta en minúsculas, sin tildes) y `unidad` del prefijo. Si los pones en la cabecera, mandan ellos.
+- Todos los demás archivos de la carpeta de la unidad (PDF, zip…) aparecen en «Archivos» de la barra lateral.
+- Si una asignatura tiene grupos, `?u=<asignatura>` muestra su estructura completa; si es plana, abre la primera unidad.
+
+Ejemplo: `contenido/software-estandares-web/`.

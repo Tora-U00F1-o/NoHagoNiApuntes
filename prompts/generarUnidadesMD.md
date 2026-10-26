@@ -56,17 +56,32 @@ public class Ejemplo {
 
 ESTRUCTURA MARKDOWN OBLIGATORIA
 
-El archivo debe comenzar con este frontmatter:
+La web lee un árbol de carpetas: `contenido/<asignatura>/<grupo>/.../<unidad>/unidad.md`. Cada carpeta con `unidad.md` es una unidad; las carpetas intermedias son grupos (Teoría, Prácticas, un tema...). El orden sale del prefijo numérico de la carpeta (`01-`, `02-`...). La unidad se guardará en esta ruta:
+
+RUTA_CARPETA_UNIDAD (por ejemplo `contenido/software-estandares-web/01-teoria/03-tecnologias-xml/02-dtds/`; nombres de carpeta en minúsculas, sin tildes ni espacios, con prefijo numérico)
+
+El archivo debe comenzar con este frontmatter. Solo `titulo` y `resumen` son obligatorios; el `id` y el número de unidad se deducen de la ruta y del prefijo de la carpeta:
 
 ```yaml
 ---
-id: ID_UNIDAD
 asignatura: NOMBRE_ASIGNATURA
-unidad: NUMERO_UNIDAD
 titulo: TITULO_UNIDAD
-orden: NUMERO_UNIDAD
 resumen: RESUMEN_BREVE_DE_LA_UNIDAD
-fuente: NOMBRE_EXACTO_DEL_PDF
+---
+```
+
+Campos opcionales (inclúyelos solo si hacen falta):
+
+- `fuente: NOMBRE_EXACTO_DEL_PDF` para mostrar el botón «PDF original». Debe ser un archivo que esté en la misma carpeta que `unidad.md`. El resto de archivos de la carpeta (PDF, zip...) aparecen solos en «Archivos».
+- `id`, para fijar la URL de la unidad aunque se renombre o mueva la carpeta (minúsculas, números y guiones).
+- `unidad` y `orden` (enteros positivos), para sustituir al prefijo numérico de la carpeta.
+- `parte`, para mostrar numeración tipo 2.1 (unidad 2, parte 1).
+
+Si me indicas también los grupos nuevos que no existan, créame su `_grupo.md`:
+
+```yaml
+---
+titulo: TITULO_DEL_GRUPO
 ---
 ```
 
@@ -140,7 +155,8 @@ FORMATO DE SALIDA
 Devuélveme únicamente:
 
 1. El contenido completo de `unidad.md`.
-2. Una breve lista final indicando:
+2. Los `_grupo.md` necesarios para las carpetas nuevas, si los hay.
+3. Una breve lista final indicando:
    - qué información se ha extraído;
    - qué ejemplos de código se han añadido;
    - qué partes son explicaciones didácticas;
@@ -148,7 +164,8 @@ Devuélveme únicamente:
 
 Antes de terminar, comprueba que:
 
-- el frontmatter es válido;
+- el frontmatter es válido (`titulo` y `resumen` presentes) y, si hay `fuente`, el PDF está en la carpeta de la unidad;
+- la ruta de la carpeta usa minúsculas, sin tildes y con prefijo numérico;
 - todos los títulos están bien jerarquizados;
 - no se ha perdido información del documento;
 - los enlaces al PDF utilizan el nombre correcto;
@@ -160,11 +177,10 @@ Antes de terminar, comprueba que:
 Solo tendrías que cambiar cada vez:
 
 ```text
-ID_UNIDAD
+RUTA_CARPETA_UNIDAD
 NOMBRE_ASIGNATURA
-NUMERO_UNIDAD
 TITULO_UNIDAD
-NOMBRE_EXACTO_DEL_PDF
+NOMBRE_EXACTO_DEL_PDF (solo si usas fuente)
 ```
 
 y adjuntar el PDF o documento teórico correspondiente.

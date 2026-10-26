@@ -1,8 +1,11 @@
+import { fileURLToPath } from 'node:url';
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { resolve, extname, sep } from 'node:path';
+import { watch } from 'node:fs';
+import { spawn } from 'node:child_process';
 
-const dir = resolve(import.meta.dirname, '..', 'dist');
+const dir = resolve(fileURLToPath(new URL('.', import.meta.url)), '..', 'dist');
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.md': 'text/markdown; charset=utf-8', '.pdf': 'application/pdf', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml' };
 const server = createServer(async (req, res) => {
   try {
@@ -19,3 +22,19 @@ const server = createServer(async (req, res) => {
 });
 const port = Number(process.env.PORT || 8000);
 server.listen(port, '127.0.0.1', () => console.log(`http://127.0.0.1:${port}/`));
+
+// Recompila dist/ al cambiar src/ o contenido/ (recarga el navegador con F5).
+const root = resolve(dir, '..');
+const script = resolve(root, 'scripts', 'build.mjs');
+let timer, building = false, pending = false;
+function rebuild() {
+  if (building) { pending = true; return; }
+  building = true;
+  spawn(process.execPath, [script], { stdio: 'inherit' }).on('exit', () => {
+    building = false;
+    if (pending) { pending = false; rebuild(); }
+  });
+}
+for (const folder of ['src', 'contenido']) {
+  watch(resolve(root, folder), { recursive: true }, () => { clearTimeout(timer); timer = setTimeout(rebuild, 300); });
+}

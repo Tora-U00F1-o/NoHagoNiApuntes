@@ -1,8 +1,9 @@
+import { fileURLToPath } from 'node:url';
 import { readFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { makeCatalog } from './catalog.mjs';
 
-const base = resolve(import.meta.dirname, '..');
+const base = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 const catalog = await makeCatalog(join(base, 'contenido'));
 for (const subject of catalog.subjects) {
   for (const unit of subject.units) {

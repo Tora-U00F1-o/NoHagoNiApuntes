@@ -1,8 +1,9 @@
+import { fileURLToPath } from 'node:url';
 import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { makeCatalog } from './catalog.mjs';
 
-const base = resolve(import.meta.dirname, '..');
+const base = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 const content = join(base, 'contenido');
 const output = join(base, 'dist');
 const catalog = await makeCatalog(content);
