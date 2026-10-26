@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Plataforma de estudio y visor de apuntes universitarios - Grado en Ingeniería Informática">
+  <title>Apuntes Web — Entorno de Estudio Universitario</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter (lectura limpia) y JetBrains Mono (código técnico) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Configuración personalizada de Tailwind -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#06b6d4',
+              600: '#0891b2',
+              700: '#0e7490',
+            },
+            sepia: {
+              50: '#faf6ee',
+              100: '#f4ede0',
+              200: '#e7dcce',
+              300: '#d7c7b2',
+              700: '#5c4838',
+              800: '#48382c',
+              900: '#2f231b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Transiciones suaves entre esquemas de color */
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Scrollbars delgados y sutiles */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(156, 163, 175, 0.65);
+    }
+
+    /* ========================================================
+       TEMA SEPIA (Lectura descansada estilo e-Reader / Papel)
+       ======================================================== */
+    body.theme-sepia {
+      background-color: #f7f3eb !important;
+      color: #3f3126 !important;
+    }
+    body.theme-sepia header,
+    body.theme-sepia aside,
+    body.theme-sepia .bg-surface,
+    body.theme-sepia .bg-card-custom {
+      background-color: #eee7d9 !important;
+      border-color: #dfd5c1 !important;
+    }
+    body.theme-sepia .border-custom {
+      border-color: #dfd5c1 !important;
+    }
+    body.theme-sepia .bg-subtle {
+      background-color: #e5dcce !important;
+    }
+    body.theme-sepia .text-muted-custom {
+      color: #7d6856 !important;
+    }
+    body.theme-sepia .text-primary-custom {
+      color: #2b1f17 !important;
+    }
+    body.theme-sepia .code-block {
+      background-color: #2a2018 !important;
+      color: #f1e7d8 !important;
+    }
+    body.theme-sepia .code-header {
+      background-color: #382c23 !important;
+      border-color: #483a30 !important;
+    }
+
+    /* Estilo uniforme para bloques de código */
+    .code-block {
+      background-color: #0f172a;
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    .code-header {
+      background-color: #1e293b;
+      border-bottom: 1px solid #334155;
+    }
+
+    /* Asegurar target táctil de al menos 44px en móviles */
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  </style>
+</head>
+
+<body class="h-full bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased selection:bg-cyan-500 selection:text-white flex flex-col">
+
+  <!-- ================================================================= -->
+  <!-- VISTA 1: DASHBOARD PRINCIPAL DE ASIGNATURAS (HOME)                -->
+  <!-- ================================================================= -->
+  <div id="viewSubjectsDashboard" class="flex-1 flex flex-col overflow-y-auto transition-colors duration-200">
+    
+    <!-- Header del Dashboard -->
+    <header class="bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        
+        <!-- Logo e Identidad Institucional -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-sky-600 to-teal-500 flex items-center justify-center text-white font-bold shadow-md shadow-cyan-500/20">
+            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h1 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+              Mis Asignaturas
+              <span class="hidden sm:inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-300">
+                Curso 2026/27
+              </span>
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Grado en Ingeniería Informática • Campus Central</p>
+          </div>
+        </div>
+
+        <!-- Acciones del Header: Selector de Tema & Info -->
+        <div class="flex items-center gap-2">
+          <!-- Botón de cambio de tema cíclico (Claro -> Oscuro -> Sepia) -->
+          <button onclick="cycleTheme()" title="Cambiar tema de lectura" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 text-xs font-medium">
+            <i data-lucide="sun" id="themeIconDash" class="w-4 h-4 text-amber-500"></i>
+            <span id="themeLabelDash" class="hidden md:inline">Claro</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenedor Principal del Dashboard -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 w-full space-y-8">
+
+      <!-- Banner de bienvenida & Buscador central reactivo -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-sky-600 via-cyan-600 to-teal-600 p-6 sm:p-10 text-white shadow-xl shadow-cyan-900/15">
+        <div class="relative z-10 max-w-2xl">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-semibold uppercase tracking-wider mb-3">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Espacio de estudio activo
+          </span>
+          <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight">¿Qué tema repasamos hoy?</h2>
+          <p class="text-white/90 text-sm sm:text-base mt-2 mb-6">Accede a teoría desglosada, esquemas rápidos, laboratorios y seminarios con lectura optimizada sin distracciones.</p>
+          
+          <!-- Input de búsqueda reactiva con icono -->
+          <div class="relative max-w-lg">
+            <i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input 
+              type="text" 
+              id="dashboardSearch" 
+              oninput="filterSubjects(this.value)" 
+              placeholder="Buscar por nombre, sigla o código (ej. Software, BDA, Redes)..." 
+              class="w-full text-sm pl-11 pr-4 py-3 rounded-2xl bg-white text-slate-900 placeholder-slate-400 shadow-xl focus:outline-none focus:ring-4 focus:ring-cyan-300/40 border border-white/40">
+          </div>
+        </div>
+
+        <!-- Decoración abstracta de fondo -->
+        <div class="absolute -right-10 -bottom-10 w-72 h-72 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
+        <div class="absolute right-40 top-0 w-48 h-48 rounded-full bg-teal-300/20 blur-2xl pointer-events-none"></div>
+      </div>
+
+      <!-- Sección de Asignaturas (Grid responsive) -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+            <i data-lucide="layout-grid" class="w-4 h-4 text-cyan-500"></i>
+            Asignaturas del Semestre
+          </h3>
+          <span class="text-xs text-slate-500 dark:text-slate-400 font-medium" id="subjectCountBadge">4 materias disponibles</span>
+        </div>
+
+        <!-- GRID RESPONSIVE: 1 col móvil (<640px), 2 col tablet (640-1024px), 3-4 col desktop (>1024px) -->
+        <div id="subjectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          <!-- Inyectado por JavaScript -->
+        </div>
+      </div>
+
+      <!-- Sección de Continuar donde lo dejaste (Acceso rápido de 1 clic) -->
+      <div class="pt-6 border-t border-slate-200 dark:border-slate-800">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4 flex items-center gap-2">
+          <i data-lucide="clock" class="w-4 h-4 text-emerald-500"></i>
+          Continuar donde lo dejaste
+        </h3>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          <!-- Card de acceso rápido 1 -->
+          <div onclick="selectSubject('sw-web', '04')" class="cursor-pointer p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-cyan-500 dark:hover:border-cyan-500 shadow-sm hover:shadow-md transition-all group flex items-center justify-between">
+            <div class="flex items-center gap-3.5 overflow-hidden">
+              <span class="w-3 h-3 rounded-full bg-cyan-500 shrink-0"></span>
+              <div class="truncate">
+                <p class="text-xs text-slate-500 dark:text-slate-400 truncate">Software y Estándares Web</p>
+                <p class="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors truncate">
+                  U04: Lenguajes de Marcado - HTML5
+                </p>
+              </div>
+            </div>
+            <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:translate-x-1 group-hover:text-cyan-500 transition-all shrink-0 ml-2"></i>
+          </div>
+
+          <!-- Card de acceso rápido 2 -->
+          <div onclick="selectSubject('bd', '02')" class="cursor-pointer p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-indigo-500 dark:hover:border-indigo-500 shadow-sm hover:shadow-md transition-all group flex items-center justify-between">
+            <div class="flex items-center gap-3.5 overflow-hidden">
+              <span class="w-3 h-3 rounded-full bg-indigo-500 shrink-0"></span>
+              <div class="truncate">
+                <p class="text-xs text-slate-500 dark:text-slate-400 truncate">Bases de Datos Avanzadas</p>
+                <p class="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors truncate">
+                  U02: Índices B-Tree y Optimización
+                </p>
+              </div>
+            </div>
+            <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:translate-x-1 group-hover:text-indigo-500 transition-all shrink-0 ml-2"></i>
+          </div>
+
+          <!-- Card de acceso rápido 3 -->
+          <div onclick="selectSubject('redes', '01')" class="cursor-pointer p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-emerald-500 dark:hover:border-emerald-500 shadow-sm hover:shadow-md transition-all group flex items-center justify-between">
+            <div class="flex items-center gap-3.5 overflow-hidden">
+              <span class="w-3 h-3 rounded-full bg-emerald-500 shrink-0"></span>
+              <div class="truncate">
+                <p class="text-xs text-slate-500 dark:text-slate-400 truncate">Redes y Comunicaciones</p>
+                <p class="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">
+                  U01: Arquitectura TCP/IP y Sockets
+                </p>
+              </div>
+            </div>
+            <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:translate-x-1 group-hover:text-emerald-500 transition-all shrink-0 ml-2"></i>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- VISTA 2: VISOR DE APUNTES INMERSIVO (READER)                      -->
+  <!-- ================================================================= -->
+  <div id="viewStudyViewer" class="flex-1 flex-col overflow-hidden hidden">
+
+    <!-- Barra de progreso superior pegada (0% - 100%) -->
+    <div id="readProgressBar" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-teal-500 via-cyan-500 to-sky-600 w-0 z-50 transition-all duration-150"></div>
+
+    <!-- Header superior ultra-compacto (h-14) -->
+    <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 transition-colors">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-2">
+        
+        <!-- Izquierda: Volver a Materias + Toggle Menú Lateral + Breadcrumbs -->
+        <div class="flex items-center gap-2 sm:gap-3 overflow-hidden">
+          
+          <!-- Botón de regreso al Dashboard -->
+          <button onclick="goToSubjectsDashboard()" title="Volver al catálogo de materias" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors shrink-0 touch-target">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Materias</span>
+          </button>
+
+          <!-- Toggle Sidebar (con soporte para atajo Ctrl/Cmd + B) -->
+          <button id="sidebarToggle" onclick="handleSidebarToggle()" title="Alternar menú lateral (Ctrl+B)" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0">
+            <i data-lucide="panel-left" class="w-5 h-5"></i>
+          </button>
+
+          <!-- Breadcrumbs dinámicos -->
+          <nav aria-label="Breadcrumb" class="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 overflow-hidden text-ellipsis whitespace-nowrap">
+            <span id="breadcrumbSubject" class="font-medium text-slate-800 dark:text-slate-200 flex items-center gap-1.5 shrink-0">
+              <span id="breadcrumbDot" class="w-2 h-2 rounded-full bg-cyan-500 inline-block"></span>
+              SW & Estándares
+            </span>
+            <span>/</span>
+            <span id="breadcrumbModule" class="hidden sm:inline truncate">Teoría</span>
+            <span class="hidden sm:inline">/</span>
+            <span id="breadcrumbUnit" class="font-semibold text-slate-900 dark:text-slate-100 truncate">U04 - HTML5</span>
+          </nav>
+        </div>
+
+        <!-- Derecha: Utilidades y Controles de lectura -->
+        <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+
+          <!-- Selector de tamaño tipográfico (A- / A+) -->
+          <div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl p-0.5 border border-slate-200 dark:border-slate-700">
+            <button onclick="changeFontSize(-1)" title="Reducir tamaño de letra" class="px-2 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg">A-</button>
+            <span class="text-[10px] text-slate-400">|</span>
+            <button onclick="changeFontSize(1)" title="Aumentar tamaño de letra" class="px-2 py-1 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg">A+</button>
+          </div>
+
+          <!-- Botón de Ancho de Lectura (70ch concentrado vs Pantalla Ancha) -->
+          <button onclick="toggleReadingWidth()" id="btnWidthToggle" title="Alternar ancho de lectura (Concentrado / Ancho)" class="hidden md:flex p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <i data-lucide="maximize-2" id="widthIcon" class="w-4 h-4"></i>
+          </button>
+
+          <!-- Selector de Esquema de Color Triple (Claro, Oscuro, Sepia) -->
+          <button onclick="cycleTheme()" id="themeButtonViewer" title="Cambiar tema (Claro / Oscuro / Sepia)" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5">
+            <i data-lucide="sun" id="themeIconViewer" class="w-4 h-4 text-amber-500"></i>
+            <span id="themeLabelViewer" class="text-xs font-medium hidden lg:inline">Claro</span>
+          </button>
+
+          <!-- Botón de Recurso PDF / Diapositivas -->
+          <button onclick="openResourceLink()" title="Descargar o ver PDF de la unidad" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors">
+            <i data-lucide="file-text" class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400"></i>
+            <span class="hidden sm:inline">PDF</span>
+          </button>
+
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenedor del Visor (Sidebar + Scroll de Lectura) -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+      <!-- BACKDROP PARA MÓVILES (Cierra el sidebar al pulsar fuera) -->
+      <div id="sidebarBackdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-30 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"></div>
+
+      <!-- SIDEBAR LATERAL NAVEGABLE Y COMPACTO -->
+      <aside id="sidebar" class="fixed lg:static top-14 bottom-0 left-0 w-80 lg:w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shrink-0">
+        
+        <!-- Materia Activa en Sidebar -->
+        <div class="px-4 py-3 bg-slate-50 dark:bg-slate-850/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2 overflow-hidden">
+            <span id="sidebarMateriaBadge" class="w-2.5 h-2.5 rounded-full bg-cyan-500 shrink-0"></span>
+            <span id="sidebarMateriaName" class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">Software y Estándares Web</span>
+          </div>
+          <button onclick="goToSubjectsDashboard()" title="Cambiar asignatura" class="text-[11px] font-semibold text-cyan-600 dark:text-cyan-400 hover:underline shrink-0">
+            Cambiar
+          </button>
+        </div>
+
+        <!-- Pestañas internas para EVITAR EL SCROLL INFINITO (Temas vs ToC) -->
+        <div class="p-3 border-b border-slate-200 dark:border-slate-800 space-y-2.5">
+          <div class="flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 text-xs font-medium">
+            <button id="tabNavBtn" onclick="switchSidebarTab('nav')" class="flex-1 py-1.5 rounded-lg text-center bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all flex items-center justify-center gap-1.5 font-semibold">
+              <i data-lucide="layers" class="w-3.5 h-3.5"></i> Temas
+            </button>
+            <button id="tabTocBtn" onclick="switchSidebarTab('toc')" class="flex-1 py-1.5 rounded-lg text-center text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all flex items-center justify-center gap-1.5">
+              <i data-lucide="list" class="w-3.5 h-3.5"></i> En esta unidad
+            </button>
+          </div>
+
+          <!-- Buscador interno en sidebar -->
+          <div class="relative">
+            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input 
+              type="text" 
+              id="sidebarFilterInput" 
+              placeholder="Filtrar secciones..." 
+              oninput="filterSidebarItems(this.value)" 
+              class="w-full text-xs pl-8 pr-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-slate-700 dark:text-slate-200">
+          </div>
+        </div>
+
+        <!-- TAB 1: ESTRUCTURA DE LA MATERIA (Teoría, Seminarios, Laboratorios) -->
+        <div id="tabNavContent" class="flex-1 overflow-y-auto px-3 py-2 space-y-4">
+          <!-- Inyectado dinámicamente -->
+        </div>
+
+        <!-- TAB 2: ÍNDICE DE CONTENIDOS DE LA UNIDAD ACTUAL (ToC) -->
+        <div id="tabTocContent" class="hidden flex-1 overflow-y-auto px-3 py-2 space-y-1 text-xs">
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1">Secciones de la unidad</p>
+          <ul id="tocList" class="space-y-1 border-l-2 border-slate-200 dark:border-slate-800 ml-2 pl-2">
+            <!-- Inyectado dinámicamente por la unidad activa -->
+          </ul>
+        </div>
+
+        <!-- Footer del Sidebar: Progreso de lectura del curso -->
+        <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span id="sidebarProgressText" class="text-slate-600 dark:text-slate-400 text-[11px]">Unidad 4 de 12 leída</span>
+          </div>
+          <span id="sidebarProgressPercent" class="text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400">33%</span>
+        </div>
+
+      </aside>
+
+      <!-- ÁREA DE LECTURA PRINCIPAL (MAIN SCROLL AREA) -->
+      <main id="mainScrollArea" class="flex-1 overflow-y-auto px-4 py-8 sm:px-8 lg:px-12 scroll-smooth">
+        <div id="readingContainer" class="max-w-3xl mx-auto transition-all duration-300">
+          
+          <!-- Metadata superior: Píldora de Categoría + Tiempo de Lectura -->
+          <div class="flex items-center justify-between gap-2 mb-4 text-xs">
+            <span id="contentPill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100/80 dark:bg-cyan-950/70 text-cyan-800 dark:text-cyan-300 font-semibold">
+              <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Teoría • Unidad 04
+            </span>
+            <span id="readingTimeBadge" class="text-slate-400 dark:text-slate-500 flex items-center gap-1.5 font-medium">
+              <i data-lucide="clock" class="w-3.5 h-3.5"></i> 12 min de lectura
+            </span>
+          </div>
+
+          <!-- Título Principal de la Lección -->
+          <h1 id="lessonTitle" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-tight">
+            Lenguajes de Marcado — HTML5
+          </h1>
+
+          <!-- CAJA DE RESUMEN EJECUTIVO (Key takeaways estilo Notion / Obsidian) -->
+          <div id="summaryBox" class="mb-10 p-5 rounded-2xl bg-gradient-to-br from-sky-50 to-indigo-50/70 dark:from-slate-800/80 dark:to-slate-850/50 border border-sky-100 dark:border-slate-700/60 shadow-sm">
+            <h2 class="text-xs font-bold text-sky-900 dark:text-sky-300 uppercase tracking-wider mb-2.5 flex items-center gap-2">
+              <i data-lucide="lightbulb" class="w-4 h-4 text-sky-600 dark:text-sky-400"></i>
+              En esta lección aprenderás
+            </h2>
+            <ul id="summaryList" class="text-sm space-y-1.5 text-slate-700 dark:text-slate-300 list-disc list-inside">
+              <li>Diferencias entre marcado semántico y marcado puramente estructural.</li>
+              <li>El árbol de objetos en memoria (<strong class="font-semibold text-slate-900 dark:text-white">DOM</strong>) y su relación con JavaScript.</li>
+              <li>Estructuración de documentos para accesibilidad (WCAG) y motores de búsqueda (SEO).</li>
+            </ul>
+          </div>
+
+          <!-- CUERPO DEL ARTÍCULO (Inyectado reactivamente) -->
+          <article id="articleContent" class="space-y-10 text-base leading-relaxed text-slate-700 dark:text-slate-300">
+            <!-- Contenido dinámico inyectado -->
+          </article>
+
+          <!-- NAVEGACIÓN ANTERIOR / SIGUIENTE AL PIE DEL ARTÍCULO -->
+          <div class="mt-14 pt-8 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4">
+            <button id="btnPrevTopic" onclick="navigateAdjacentTopic(-1)" class="group flex items-center gap-2.5 text-left text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+              <i data-lucide="chevron-left" class="w-5 h-5 transition-transform group-hover:-translate-x-1 text-slate-400 group-hover:text-cyan-500"></i>
+              <div>
+                <span class="text-[10px] block uppercase text-slate-400 font-bold">Tema Anterior</span>
+                <span id="prevTopicTitle" class="font-medium text-slate-700 dark:text-slate-200 truncate max-w-[140px] sm:max-w-xs block">
+                  03. Tecnologías XML
+                </span>
+              </div>
+            </button>
+
+            <button id="btnNextTopic" onclick="navigateAdjacentTopic(1)" class="group flex items-center gap-2.5 text-right text-sm text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+              <div>
+                <span class="text-[10px] block uppercase text-slate-400 font-bold">Tema Siguiente</span>
+                <span id="nextTopicTitle" class="font-medium text-slate-900 dark:text-white truncate max-w-[140px] sm:max-w-xs block">
+                  05. CSS Moderno
+                </span>
+              </div>
+              <i data-lucide="chevron-right" class="w-5 h-5 transition-transform group-hover:translate-x-1 text-slate-400 group-hover:text-cyan-500"></i>
+            </button>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- BOTÓN FLOTANTE (FAB) PARA MÓVIL: Acceso rápido al Índice de Secciones -->
+      <button 
+        onclick="toggleMobileToc()" 
+        class="lg:hidden fixed bottom-6 right-6 z-40 w-13 h-13 p-3.5 rounded-full bg-cyan-600 text-white shadow-xl shadow-cyan-600/30 hover:bg-cyan-500 focus:outline-none transition-transform active:scale-90 flex items-center justify-center"
+        title="Abrir Índice de Secciones" 
+        aria-label="Abrir Índice de Secciones">
+        <i data-lucide="list-ordered" class="w-5 h-5"></i>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- MODAL / DRAWER RÁPIDO DE ÍNDICE EN MÓVIL (BOTTOM SHEET)           -->
+  <!-- ================================================================= -->
+  <div id="mobileTocModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity">
+    <div class="bg-white dark:bg-slate-900 w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl max-h-[80vh] flex flex-col shadow-2xl p-5 border border-slate-200 dark:border-slate-800">
+      
+      <!-- Cabecera del Bottom Sheet -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
+        <h3 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
+          <i data-lucide="bookmark" class="w-4 h-4 text-cyan-500"></i> 
+          Secciones de esta unidad
+        </h3>
+        <button onclick="toggleMobileToc()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Enlaces del índice rápido móvil -->
+      <div id="mobileTocLinks" class="overflow-y-auto space-y-1 text-sm py-1">
+        <!-- Inyectado por JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST FLOTANTE DE NOTIFICACIÓN (FEEDBACK VISUAL AL COPIAR) -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2.5 bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 text-xs font-semibold rounded-full shadow-2xl opacity-0 pointer-events-none transition-all duration-300 z-50 flex items-center gap-2">
+    <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400 dark:text-emerald-600"></i>
+    <span id="toastText">Código copiado al portapapeles</span>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- BASE DE DATOS Y LÓGICA DE LA APLICACIÓN (VANILLA JAVASCRIPT)      -->
+  <!-- ================================================================= -->
+  <script>
+    /**
+     * Catálogo maestro de Asignaturas con módulos, temas y contenidos detallados.
+     */
+    const SUBJECTS = [
+      {
+        id: 'sw-web',
+        name: 'Software y Estándares para la Web',
+        short: 'SW & Estándares',
+        code: 'SEW-2026',
+        color: 'cyan',
+        gradient: 'from-cyan-500 to-sky-600',
+        icon: 'globe',
+        badge: 'Cuatrimestre 1',
+        progress: 35,
+        topicsCount: 8,
+        activeTopic: '04',
+        pdfUrl: '#pdf-sew',
+        categories: [
+          {
+            title: 'Teoría',
+            count: '4 Temas',
+            units: [
+              { id: '01', title: 'Diseño con estándares web' },
+              { id: '02', title: 'Lenguajes de marcado XML' },
+              { id: '03', title: 'Tecnologías XML y Schemas' },
+              { id: '04', title: 'Lenguajes de Marcado - HTML5' },
+            ]
+          },
+          {
+            title: 'Lenguajes de Presentación',
+            count: '2 Temas',
+            units: [
+              { id: '05', title: '01. CSS Moderno & Selectores' },
+              { id: '06', title: '02. CSS Posicionamiento & Flex/Grid' },
+            ]
+          },
+          {
+            title: 'Módulos Prácticos',
+            count: '2 Módulos',
+            units: [
+              { id: 'sem', title: 'Seminarios de Usabilidad', icon: 'flask-conical', countBadge: '3' },
+              { id: 'lab', title: 'Prácticas de laboratorio', icon: 'terminal', countBadge: '6' }
+            ]
+          }
+        ],
+        // Contenidos interactivos para cada unidad
+        contents: {
+          '04': {
+            title: 'Lenguajes de Marcado — HTML5',
+            pill: 'Teoría • Unidad 04',
+            readTime: '12 min de lectura',
+            summary: [
+              'Diferencias entre marcado semántico y marcado puramente estructural.',
+              'El árbol de objetos en memoria (DOM) y su relación con el navegador.',
+              'Cómo estructurar correctamente un documento moderno para accesibilidad (WCAG) y SEO.'
+            ],
+            toc: [
+              { id: 'intro', title: '1. Introducción y Objetivos' },
+              { id: 'estructura', title: '2. Características y Estructura' },
+              { id: 'dom', title: '3. Document Object Model (DOM)' },
+              { id: 'metadatos', title: '4. Metadatos del documento: <head>' }
+            ],
+            html: `
+              <section id="intro" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-cyan-500 font-mono text-lg">01.</span> Introducción y Objetivos
+                </h2>
+                <p class="mb-3">
+                  HTML (<em>HyperText Markup Language</em>) es el componente más básico de la web. Define el significado y la estructura del contenido. A diferencia de las herramientas de maquetación puramente visuales, HTML debe concebirse como un árbol jerárquico de información entendible tanto por personas como por motores de búsqueda e interfaces de accesibilidad.
+                </p>
+                <p>
+                  Históricamente se popularizó bajo la denominación <code class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 font-mono text-sm">HTML5</code>, pero actualmente es mantenido como un <strong>Living Standard</strong> (estándar vivo) regulado por el grupo de trabajo WHATWG.
+                </p>
+              </section>
+
+              <section id="estructura" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-cyan-500 font-mono text-lg">02.</span> Características y estructura básica
+                </h2>
+                <p class="mb-4">
+                  Todo documento HTML bien formado requiere un preámbulo simplificado y un conjunto mínimo de etiquetas fundamentales. La directiva <code class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 font-mono text-sm">&lt;!DOCTYPE html&gt;</code> asegura que el navegador renderice la página en modo estándar estricto en lugar de modo compatibilidad (quirks mode).
+                </p>
+
+                <div class="relative group my-4 rounded-xl overflow-hidden border border-slate-700">
+                  <div class="flex items-center justify-between px-4 py-2 code-header text-slate-300 text-xs font-mono">
+                    <span class="flex items-center gap-1.5"><i data-lucide="file-code" class="w-3.5 h-3.5 text-cyan-400"></i> estructura-base.html</span>
+                    <button onclick="copyCode(this)" class="hover:text-white flex items-center gap-1 transition-colors px-2 py-1 rounded bg-slate-700/60 hover:bg-slate-700">
+                      <i data-lucide="copy" class="w-3 h-3"></i> Copiar
+                    </button>
+                  </div>
+                  <pre class="code-block p-4 overflow-x-auto"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="es"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Mi primer documento accesible&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;header&gt;
+      &lt;h1&gt;Bienvenido al curso&lt;/h1&gt;
+    &lt;/header&gt;
+    &lt;main&gt;
+      &lt;p&gt;Contenido principal de la página.&lt;/p&gt;
+    &lt;/main&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+              </section>
+
+              <section id="dom" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-cyan-500 font-mono text-lg">03.</span> Document Object Model (DOM)
+                </h2>
+                <p class="mb-3">
+                  Cuando el navegador interpreta el código plano HTML, construye en la memoria RAM una estructura arbórea de nodos denominada <strong>DOM</strong>. Cada etiqueta se transforma en un nodo de elemento, cada atributo en un nodo correspondiente y los textos contenidos en nodos de texto hijos.
+                </p>
+
+                <!-- Bloque destacado para examen -->
+                <div class="p-4 rounded-xl border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 text-sm">
+                  <p class="font-bold flex items-center gap-1.5 mb-1">
+                    <i data-lucide="alert-circle" class="w-4 h-4 text-amber-500"></i> Importante para el examen:
+                  </p>
+                  El DOM no es idéntico al código fuente HTML original. Los navegadores corrigen etiquetas no cerradas automáticamente y permiten que JavaScript altere el árbol en tiempo de ejecución.
+                </div>
+              </section>
+
+              <section id="metadatos" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-cyan-500 font-mono text-lg">04.</span> Metadatos del documento: &lt;head&gt;
+                </h2>
+                <p class="mb-3">
+                  La cabecera contiene información sobre el documento que no se muestra directamente en el lienzo de la ventana gráfica. Entre los metadatos más relevantes:
+                </p>
+                <div class="grid sm:grid-cols-2 gap-3 text-sm">
+                  <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850">
+                    <p class="font-bold font-mono text-cyan-600 dark:text-cyan-400 mb-1">&lt;meta charset="UTF-8"&gt;</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Garantiza la visualización correcta de tildes, caracteres especiales y símbolos universales.</p>
+                  </div>
+                  <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-850">
+                    <p class="font-bold font-mono text-cyan-600 dark:text-cyan-400 mb-1">&lt;meta name="viewport" ...&gt;</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Esencial para Responsive Web Design. Establece la escala inicial en smartphones.</p>
+                  </div>
+                </div>
+              </section>
+            `
+          },
+          '05': {
+            title: 'CSS Moderno — Selectores y Cascada',
+            pill: 'Presentación • Unidad 05',
+            readTime: '10 min de lectura',
+            summary: [
+              'Mecanismo de la Cascada y la Especificidad en CSS3.',
+              'Nuevas pseudo-clases funcionales (:is, :where, :has).',
+              'Organización modular de estilos con Custom Properties (variables CSS).'
+            ],
+            toc: [
+              { id: 'cascada', title: '1. Cascada y Especificidad' },
+              { id: 'selectores', title: '2. Selectores Modernos: :has()' },
+              { id: 'variables', title: '3. Variables CSS Nativas' }
+            ],
+            html: `
+              <section id="cascada" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-cyan-500 font-mono text-lg">01.</span> Cascada y Especificidad
+                </h2>
+                <p class="mb-3">
+                  La cascada determina qué regla se aplica cuando múltiples selectores apuntan al mismo elemento. La fórmula de cálculo se resume en: <em>Importancia (!important) &gt; Especificidad &gt; Orden en el código</em>.
+                </p>
+              </section>
+              <section id="selectores" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-cyan-500 font-mono text-lg">02.</span> Selectores Modernos: :has()
+                </h2>
+                <p class="mb-3">
+                  La pseudo-clase <code class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-cyan-600 dark:text-cyan-400 font-mono text-sm">:has()</code> actúa como el esperado "selector de padre" en CSS, permitiendo estilizar un contenedor según los elementos hijos que aloje.
+                </p>
+              </section>
+              <section id="variables" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-cyan-500 font-mono text-lg">03.</span> Variables CSS Nativas
+                </h2>
+                <div class="relative group my-4 rounded-xl overflow-hidden border border-slate-700">
+                  <pre class="code-block p-4 overflow-x-auto"><code>:root {
+  --color-brand: #06b6d4;
+  --spacing-base: 1rem;
+}
+.card {
+  padding: var(--spacing-base);
+  border-left: 4px solid var(--color-brand);
+}</code></pre>
+                </div>
+              </section>
+            `
+          }
+        }
+      },
+      {
+        id: 'bd',
+        name: 'Bases de Datos Avanzadas',
+        short: 'Bases de Datos',
+        code: 'BDA-2026',
+        color: 'indigo',
+        gradient: 'from-indigo-500 to-violet-600',
+        icon: 'database',
+        badge: 'Cuatrimestre 1',
+        progress: 60,
+        topicsCount: 5,
+        activeTopic: '02',
+        pdfUrl: '#pdf-bd',
+        categories: [
+          {
+            title: 'Teoría',
+            count: '4 Temas',
+            units: [
+              { id: '01', title: 'Almacenamiento y Estructuras' },
+              { id: '02', title: 'Índices B-Tree y Optimización' },
+              { id: '03', title: 'Procesamiento de Consultas' },
+              { id: '04', title: 'Transacciones y Concurrencia ACID' },
+            ]
+          },
+          {
+            title: 'Prácticas',
+            count: '4 Sesiones',
+            units: [
+              { id: 'lab-bd', title: 'PostgreSQL: EXPLAIN ANALYZE', icon: 'terminal', countBadge: '4' }
+            ]
+          }
+        ],
+        contents: {
+          '02': {
+            title: 'Índices B-Tree y Optimización de Consultas',
+            pill: 'Teoría • Unidad 02',
+            readTime: '15 min de lectura',
+            summary: [
+              'Estructura interna de árboles B y B+ en motores relacionales.',
+              'Coste de lectura secuencial (Seq Scan) frente a búsqueda por índice (Index Scan).',
+              'Uso e interpretación del comando EXPLAIN en PostgreSQL.'
+            ],
+            toc: [
+              { id: 'btree-concept', title: '1. Fundamentos de Árboles B+' },
+              { id: 'optimizacion', title: '2. Estimación de Costes del Optimizador' },
+              { id: 'explain', title: '3. Análisis Práctico con EXPLAIN' }
+            ],
+            html: `
+              <section id="btree-concept" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-indigo-500 font-mono text-lg">01.</span> Fundamentos de Árboles B+
+                </h2>
+                <p class="mb-3">
+                  Un índice <strong>B+ Tree</strong> mantiene los datos ordenados y permite búsquedas, accesos secuenciales, inserciones y eliminaciones en tiempo logarítmico amortizado <code class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-mono text-sm">O(log N)</code>.
+                </p>
+                <div class="p-4 rounded-xl border-l-4 border-indigo-500 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-900 dark:text-indigo-200 text-sm">
+                  <p class="font-bold flex items-center gap-1.5 mb-1">
+                    <i data-lucide="database" class="w-4 h-4 text-indigo-500"></i> Regla de Oro:
+                  </p>
+                  A diferencia de un árbol B tradicional, en un árbol B+ todos los registros de datos o punteros finales residen exclusivamente en las hojas enlazadas secuencialmente entre sí.
+                </div>
+              </section>
+
+              <section id="optimizacion" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-indigo-500 font-mono text-lg">02.</span> Estimación de Costes del Optimizador
+                </h2>
+                <p class="mb-3">
+                  El optimizador basado en costes (CBO) decide si utilizar un índice en función de la <em>selectividad</em> del predicado. Si la consulta recupera más del 10%-15% de la tabla, suele ser más eficiente un barrido secuencial por bloques.
+                </p>
+              </section>
+
+              <section id="explain" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-indigo-500 font-mono text-lg">03.</span> Análisis Práctico con EXPLAIN
+                </h2>
+                <div class="relative group my-4 rounded-xl overflow-hidden border border-slate-700">
+                  <div class="flex items-center justify-between px-4 py-2 code-header text-slate-300 text-xs font-mono">
+                    <span class="flex items-center gap-1.5"><i data-lucide="terminal" class="w-3.5 h-3.5 text-indigo-400"></i> consulta.sql</span>
+                    <button onclick="copyCode(this)" class="hover:text-white flex items-center gap-1 transition-colors px-2 py-1 rounded bg-slate-700/60 hover:bg-slate-700">
+                      <i data-lucide="copy" class="w-3 h-3"></i> Copiar
+                    </button>
+                  </div>
+                  <pre class="code-block p-4 overflow-x-auto"><code>EXPLAIN ANALYZE
+SELECT id, nombre, email
+FROM estudiantes
+WHERE fecha_matricula >= '2026-09-01'
+ORDER BY id DESC;</code></pre>
+                </div>
+              </section>
+            `
+          }
+        }
+      },
+      {
+        id: 'redes',
+        name: 'Redes y Comunicaciones',
+        short: 'Redes',
+        code: 'RED-2026',
+        color: 'emerald',
+        gradient: 'from-emerald-500 to-teal-600',
+        icon: 'network',
+        badge: 'Cuatrimestre 1',
+        progress: 20,
+        topicsCount: 4,
+        activeTopic: '01',
+        pdfUrl: '#pdf-redes',
+        categories: [
+          {
+            title: 'Teoría',
+            count: '4 Temas',
+            units: [
+              { id: '01', title: 'Arquitectura TCP/IP y sockets' },
+              { id: '02', title: 'Capa de Enlace y Conmutación' },
+              { id: '03', title: 'Enrutamiento BGP y OSPF' },
+              { id: '04', title: 'Seguridad en redes TLS 1.3' },
+            ]
+          }
+        ],
+        contents: {
+          '01': {
+            title: 'Arquitectura TCP/IP y Programación con Sockets',
+            pill: 'Teoría • Unidad 01',
+            readTime: '11 min de lectura',
+            summary: [
+              'Modelo en capas frente al estándar de referencia OSI.',
+              'El proceso Three-Way Handshake en TCP.',
+              'Implementación básica de un socket TCP cliente-servidor.'
+            ],
+            toc: [
+              { id: 'pila', title: '1. La Pila de Protocolos TCP/IP' },
+              { id: 'handshake', title: '2. Establecimiento de Conexión (Handshake)' }
+            ],
+            html: `
+              <section id="pila" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-emerald-500 font-mono text-lg">01.</span> La Pila de Protocolos TCP/IP
+                </h2>
+                <p class="mb-3">
+                  TCP/IP define un modelo pragmático de 4 capas: Aplicación, Transporte (TCP/UDP), Internet (IP) y Acceso a la Red. Permite la interoperabilidad agnóstica al medio físico.
+                </p>
+              </section>
+              <section id="handshake" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-emerald-500 font-mono text-lg">02.</span> Establecimiento de Conexión (Handshake)
+                </h2>
+                <p class="mb-3">
+                  La negociación en 3 pasos consiste en: <strong>SYN</strong> &rarr; <strong>SYN-ACK</strong> &rarr; <strong>ACK</strong>, sincronizando los números de secuencia iniciales (ISN).
+                </p>
+              </section>
+            `
+          }
+        }
+      },
+      {
+        id: 'algoritmos',
+        name: 'Diseño y Análisis de Algoritmos',
+        short: 'Algoritmos',
+        code: 'DAA-2026',
+        color: 'amber',
+        gradient: 'from-amber-500 to-orange-600',
+        icon: 'cpu',
+        badge: 'Cuatrimestre 1',
+        progress: 75,
+        topicsCount: 4,
+        activeTopic: '03',
+        pdfUrl: '#pdf-daa',
+        categories: [
+          {
+            title: 'Teoría',
+            count: '4 Temas',
+            units: [
+              { id: '01', title: 'Complejidad Asintótica O(n)' },
+              { id: '02', title: 'Divide y Vencerás' },
+              { id: '03', title: 'Programación Dinámica' },
+              { id: '04', title: 'Algoritmos Voraces (Greedy)' },
+            ]
+          }
+        ],
+        contents: {
+          '03': {
+            title: 'Programación Dinámica y Subproblemas Superpuestos',
+            pill: 'Teoría • Unidad 03',
+            readTime: '14 min de lectura',
+            summary: [
+              'Condición de subestructura óptima y subproblemas solapados.',
+              'Enfoques Top-Down (Memoización) vs Bottom-Up (Tabulación).',
+              'Resolución clásica del problema de la Mochila 0/1.'
+            ],
+            toc: [
+              { id: 'principios', title: '1. Principio de Bellman' },
+              { id: 'memo-tab', title: '2. Memoización vs Tabulación' }
+            ],
+            html: `
+              <section id="principios" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-amber-500 font-mono text-lg">01.</span> Principio de Optimalidad de Bellman
+                </h2>
+                <p class="mb-3">
+                  Una política óptima tiene la propiedad de que, sean cuales fueren el estado inicial y las decisiones tomadas, las decisiones restantes deben constituir una política óptima respecto al estado resultante.
+                </p>
+              </section>
+              <section id="memo-tab" class="scroll-mt-20">
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <span class="text-amber-500 font-mono text-lg">02.</span> Memoización vs Tabulación
+                </h2>
+                <p class="mb-3">
+                  La memoización utiliza recursión almacenando respuestas intermedias en un mapa o array; la tabulación es iterativa y llena la tabla de abajo a arriba, optimizando a menudo el espacio en memoria.
+                </p>
+              </section>
+            `
+          }
+        }
+      }
+    ];
+
+    // ========================================================
+    // VARIABLES DE ESTADO GLOBAL DE LA APLICACIÓN
+    // ========================================================
+    let currentSubjectId = 'sw-web';
+    let currentUnitId = '04';
+    let sidebarOpen = false;
+    let isFullWidth = false;
+    let currentFontSizeLevel = 0; // -1: sm, 0: base, 1: lg, 2: xl
+    let currentTheme = localStorage.getItem('study_theme') || 'light';
+
+    // ========================================================
+    // GESTIÓN DEL TEMA TRIPLE (Light / Dark / Sepia)
+    // ========================================================
+    function applyTheme(theme) {
+      currentTheme = theme;
+      localStorage.setItem('study_theme', theme);
+      const html = document.documentElement;
+      const body = document.body;
+
+      const themeIconDash = document.getElementById('themeIconDash');
+      const themeLabelDash = document.getElementById('themeLabelDash');
+      const themeIconViewer = document.getElementById('themeIconViewer');
+      const themeLabelViewer = document.getElementById('themeLabelViewer');
+
+      if (theme === 'dark') {
+        html.classList.add('dark');
+        body.classList.remove('theme-sepia');
+        if (themeIconDash) { themeIconDash.setAttribute('data-lucide', 'moon'); themeIconDash.className = "w-4 h-4 text-cyan-400"; }
+        if (themeLabelDash) themeLabelDash.textContent = "Noche";
+        if (themeIconViewer) { themeIconViewer.setAttribute('data-lucide', 'moon'); themeIconViewer.className = "w-4 h-4 text-cyan-400"; }
+        if (themeLabelViewer) themeLabelViewer.textContent = "Noche";
+      } else if (theme === 'sepia') {
+        html.classList.remove('dark');
+        body.classList.add('theme-sepia');
+        if (themeIconDash) { themeIconDash.setAttribute('data-lucide', 'coffee'); themeIconDash.className = "w-4 h-4 text-amber-700"; }
+        if (themeLabelDash) themeLabelDash.textContent = "Sepia";
+        if (themeIconViewer) { themeIconViewer.setAttribute('data-lucide', 'coffee'); themeIconViewer.className = "w-4 h-4 text-amber-700"; }
+        if (themeLabelViewer) themeLabelViewer.textContent = "Sepia";
+      } else {
+        html.classList.remove('dark');
+        body.classList.remove('theme-sepia');
+        if (themeIconDash) { themeIconDash.setAttribute('data-lucide', 'sun'); themeIconDash.className = "w-4 h-4 text-amber-500"; }
+        if (themeLabelDash) themeLabelDash.textContent = "Claro";
+        if (themeIconViewer) { themeIconViewer.setAttribute('data-lucide', 'sun'); themeIconViewer.className = "w-4 h-4 text-amber-500"; }
+        if (themeLabelViewer) themeLabelViewer.textContent = "Claro";
+      }
+
+      lucide.createIcons();
+    }
+
+    function cycleTheme() {
+      if (currentTheme === 'light') applyTheme('dark');
+      else if (currentTheme === 'dark') applyTheme('sepia');
+      else applyTheme('light');
+    }
+
+    // ========================================================
+    // VISTA 1: RENDER DEL DASHBOARD DE ASIGNATURAS
+    // ========================================================
+    function renderSubjectsGrid(filter = '') {
+      const grid = document.getElementById('subjectsGrid');
+      const term = filter.toLowerCase().trim();
+
+      const filtered = SUBJECTS.filter(s => 
+        s.name.toLowerCase().includes(term) || 
+        s.short.toLowerCase().includes(term) ||
+        s.code.toLowerCase().includes(term)
+      );
+
+      document.getElementById('subjectCountBadge').textContent = `${filtered.length} materias encontradas`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-400">
+            <i data-lucide="search-x" class="w-10 h-10 mx-auto mb-2 opacity-50"></i>
+            <p class="font-medium text-sm">No se encontraron asignaturas para "${filter}"</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      grid.innerHTML = filtered.map(sub => `
+        <div onclick="selectSubject('${sub.id}', '${sub.activeTopic}')" 
+             class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-${sub.color}-500/70 dark:hover:border-${sub.color}-500/70 rounded-3xl p-5 sm:p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
+          
+          <div class="space-y-4">
+            <!-- Icono y Badge de Semestre -->
+            <div class="flex items-center justify-between">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${sub.gradient} text-white flex items-center justify-center shadow-lg shadow-${sub.color}-500/20 group-hover:scale-105 transition-transform">
+                <i data-lucide="${sub.icon}" class="w-6 h-6"></i>
+              </div>
+              <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                ${sub.badge}
+              </span>
+            </div>
+
+            <!-- Código y Nombre de la Materia -->
+            <div>
+              <p class="text-xs font-mono text-slate-400 font-semibold tracking-wide">${sub.code}</p>
+              <h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors line-clamp-2 mt-0.5 leading-snug">
+                ${sub.name}
+              </h4>
+            </div>
+          </div>
+
+          <!-- Barra de Progreso y Estadísticas -->
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-2">
+            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span class="font-medium">${sub.topicsCount} Temas</span>
+              <span class="font-semibold text-slate-700 dark:text-slate-200">${sub.progress}% completado</span>
+            </div>
+            
+            <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div class="bg-gradient-to-r ${sub.gradient} h-full rounded-full transition-all duration-500" style="width: ${sub.progress}%"></div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function filterSubjects(val) {
+      renderSubjectsGrid(val);
+    }
+
+    // ========================================================
+    // TRANSICIONES DE PANTALLA (Dashboard <-> Visor)
+    // ========================================================
+    function selectSubject(subjectId, unitId) {
+      currentSubjectId = subjectId;
+      const sub = SUBJECTS.find(s => s.id === subjectId) || SUBJECTS[0];
+      currentUnitId = unitId || sub.activeTopic || '01';
+
+      // Cambiar vistas
+      document.getElementById('viewSubjectsDashboard').classList.add('hidden');
+      const viewer = document.getElementById('viewStudyViewer');
+      viewer.classList.remove('hidden');
+      viewer.classList.add('flex');
+
+      // Actualizar información de cabecera y sidebar
+      document.getElementById('breadcrumbSubject').innerHTML = `
+        <span class="w-2 h-2 rounded-full bg-${sub.color}-500 inline-block"></span>
+        ${sub.short}
+      `;
+      document.getElementById('sidebarMateriaName').textContent = sub.name;
+      document.getElementById('sidebarMateriaBadge').className = `w-2.5 h-2.5 rounded-full bg-${sub.color}-500 shrink-0`;
+
+      // Renderizar navegación lateral y cargar la unidad
+      renderSidebarNav(sub);
+      loadUnitContent(sub, currentUnitId);
+
+      // Reset scroll
+      document.getElementById('mainScrollArea').scrollTop = 0;
+      toggleSidebar(false);
+      lucide.createIcons();
+    }
+
+    function goToSubjectsDashboard() {
+      document.getElementById('viewStudyViewer').classList.remove('flex');
+      document.getElementById('viewStudyViewer').classList.add('hidden');
+      document.getElementById('viewSubjectsDashboard').classList.remove('hidden');
+      toggleSidebar(false);
+      lucide.createIcons();
+    }
+
+    // ========================================================
+    // VISTA 2: NAVEGACIÓN Y CARGA DE CONTENIDOS EN VISOR
+    // ========================================================
+    function renderSidebarNav(sub) {
+      const container = document.getElementById('tabNavContent');
+      
+      container.innerHTML = sub.categories.map(cat => `
+        <div>
+          <div class="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 px-2 mb-1.5">
+            <span>${cat.title}</span>
+            <span class="text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono">${cat.count}</span>
+          </div>
+          <div class="space-y-0.5 text-xs">
+            ${cat.units.map(u => {
+              const isActive = u.id === currentUnitId;
+              if (u.icon) {
+                return `
+                  <button onclick="selectUnit('${u.id}')" class="w-full text-left flex items-center justify-between px-2.5 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                    <span class="flex items-center gap-2 truncate">
+                      <i data-lucide="${u.icon}" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+                      <span class="truncate">${u.title}</span>
+                    </span>
+                    <span class="text-[10px] bg-slate-100 dark:bg-slate-800 px-1 rounded text-slate-500">${u.countBadge}</span>
+                  </button>
+                `;
+              }
+              return `
+                <button onclick="selectUnit('${u.id}')" class="w-full text-left flex items-center gap-2.5 px-2.5 py-2 rounded-xl ${isActive ? 'bg-cyan-50 dark:bg-cyan-950/50 text-cyan-800 dark:text-cyan-300 font-semibold border-l-2 border-cyan-500' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/60 dark:hover:bg-slate-800/60'} transition-all">
+                  <span class="font-mono text-[10px] ${isActive ? 'text-cyan-600 dark:text-cyan-400 font-bold' : 'text-slate-400'}">${u.id}</span>
+                  <span class="truncate">${u.title}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function selectUnit(unitId) {
+      currentUnitId = unitId;
+      const sub = SUBJECTS.find(s => s.id === currentSubjectId);
+      renderSidebarNav(sub);
+      loadUnitContent(sub, unitId);
+      document.getElementById('mainScrollArea').scrollTop = 0;
+      if (window.innerWidth < 1024) toggleSidebar(false);
+    }
+
+    // Carga del artículo, ToC, resumen y navegación adyacente
+    function loadUnitContent(sub, unitId) {
+      // Buscar contenido específico o usar fallback educativo
+      const content = (sub.contents && sub.contents[unitId]) ? sub.contents[unitId] : {
+        title: `Unidad ${unitId} — Contenido de ${sub.short}`,
+        pill: `Teoría • Unidad ${unitId}`,
+        readTime: '10 min de lectura',
+        summary: [
+          'Fundamentos teóricos y objetivos de aprendizaje de esta unidad.',
+          'Modelado formal y casos prácticos de aplicación.',
+          'Cuestiones clave para el examen final.'
+        ],
+        toc: [
+          { id: 'intro', title: '1. Introducción y Fundamentos' },
+          { id: 'desarrollo', title: '2. Desarrollo de Conceptos' },
+          { id: 'conclusiones', title: '3. Resumen y Conclusiones' }
+        ],
+        html: `
+          <section id="intro" class="scroll-mt-20">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+              <span class="text-cyan-500 font-mono text-lg">01.</span> Introducción y Fundamentos
+            </h2>
+            <p class="mb-3">
+              Esta sección corresponde a los conceptos clave de la unidad ${unitId} para la materia <strong>${sub.name}</strong>. Aquí se sintetizan los principios formales del estándar vigente.
+            </p>
+          </section>
+          <section id="desarrollo" class="scroll-mt-20">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+              <span class="text-cyan-500 font-mono text-lg">02.</span> Desarrollo de Conceptos
+            </h2>
+            <p class="mb-3">
+              Los temas abordados profundizan en la arquitectura, el rendimiento y la implementación sistemática de las soluciones correspondientes al programa de la asignatura.
+            </p>
+          </section>
+          <section id="conclusiones" class="scroll-mt-20">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+              <span class="text-cyan-500 font-mono text-lg">03.</span> Resumen y Conclusiones
+            </h2>
+            <p>
+              Revisa los esquemas principales y contrasta tus notas con la documentación de soporte oficial.
+            </p>
+          </section>
+        `
+      };
+
+      // Actualizar Breadcrumb
+      document.getElementById('breadcrumbUnit').textContent = `U${unitId}`;
+
+      // Actualizar Metadata & Título
+      document.getElementById('contentPill').innerHTML = `<i data-lucide="book-open" class="w-3.5 h-3.5"></i> ${content.pill}`;
+      document.getElementById('readingTimeBadge').innerHTML = `<i data-lucide="clock" class="w-3.5 h-3.5"></i> ${content.readTime}`;
+      document.getElementById('lessonTitle').textContent = content.title;
+
+      // Actualizar Resumen Ejecutivo
+      const summaryList = document.getElementById('summaryList');
+      summaryList.innerHTML = content.summary.map(item => `<li>${item}</li>`).join('');
+
+      // Actualizar Contenido HTML
+      document.getElementById('articleContent').innerHTML = content.html;
+
+      // Actualizar Tabla de Contenidos (ToC) en Sidebar y en Modal Móvil
+      const tocList = document.getElementById('tocList');
+      const mobileTocLinks = document.getElementById('mobileTocLinks');
+
+      const tocHtml = content.toc.map(item => `
+        <li>
+          <a href="#${item.id}" class="toc-link block py-1 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors truncate">
+            ${item.title}
+          </a>
+        </li>
+      `).join('');
+
+      const mobileTocHtml = content.toc.map(item => `
+        <a href="#${item.id}" onclick="toggleMobileToc()" class="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium">
+          ${item.title}
+        </a>
+      `).join('');
+
+      tocList.innerHTML = tocHtml;
+      mobileTocLinks.innerHTML = mobileTocHtml;
+
+      // Actualizar enlaces de navegación adyacente (Anterior / Siguiente)
+      updateAdjacentButtons(sub, unitId);
+
+      lucide.createIcons();
+    }
+
+    // Calcula y actualiza los botones de "Tema Anterior" y "Tema Siguiente"
+    function updateAdjacentButtons(sub, currentId) {
+      // Lista plana de unidades de la materia
+      const allUnits = [];
+      sub.categories.forEach(cat => {
+        cat.units.forEach(u => allUnits.push(u));
+      });
+
+      const currentIndex = allUnits.findIndex(u => u.id === currentId);
+      const prevBtn = document.getElementById('btnPrevTopic');
+      const nextBtn = document.getElementById('btnNextTopic');
+      const prevTitle = document.getElementById('prevTopicTitle');
+      const nextTitle = document.getElementById('nextTopicTitle');
+
+      if (currentIndex > 0) {
+        prevBtn.classList.remove('invisible');
+        prevTitle.textContent = allUnits[currentIndex - 1].title;
+      } else {
+        prevBtn.classList.add('invisible');
+      }
+
+      if (currentIndex < allUnits.length - 1 && currentIndex !== -1) {
+        nextBtn.classList.remove('invisible');
+        nextTitle.textContent = allUnits[currentIndex + 1].title;
+      } else {
+        nextBtn.classList.add('invisible');
+      }
+    }
+
+    function navigateAdjacentTopic(direction) {
+      const sub = SUBJECTS.find(s => s.id === currentSubjectId);
+      const allUnits = [];
+      sub.categories.forEach(cat => cat.units.forEach(u => allUnits.push(u)));
+
+      const currentIndex = allUnits.findIndex(u => u.id === currentUnitId);
+      const targetIndex = currentIndex + direction;
+
+      if (targetIndex >= 0 && targetIndex < allUnits.length) {
+        selectUnit(allUnits[targetIndex].id);
+      }
+    }
+
+    // ========================================================
+    // CONTROL DEL SIDEBAR (Drawer en móvil, Anclado en desktop)
+    // ========================================================
+    function toggleSidebar(forceState) {
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebarBackdrop');
+      sidebarOpen = typeof forceState === 'boolean' ? forceState : !sidebarOpen;
+
+      if (sidebarOpen) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('opacity-0', 'pointer-events-none');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('opacity-0', 'pointer-events-none');
+      }
+    }
+
+    function handleSidebarToggle() {
+      const sidebar = document.getElementById('sidebar');
+      if (window.innerWidth >= 1024) {
+        // En escritorio alterna entre visible y oculto
+        sidebar.classList.toggle('lg:hidden');
+      } else {
+        // En móvil/tablet alterna el cajón con backdrop
+        toggleSidebar();
+      }
+    }
+
+    // Pestañas del Sidebar: Temas vs ToC
+    function switchSidebarTab(tab) {
+      const tabNavBtn = document.getElementById('tabNavBtn');
+      const tabTocBtn = document.getElementById('tabTocBtn');
+      const tabNavContent = document.getElementById('tabNavContent');
+      const tabTocContent = document.getElementById('tabTocContent');
+
+      if (tab === 'nav') {
+        tabNavBtn.className = "flex-1 py-1.5 rounded-lg text-center bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all flex items-center justify-center gap-1.5 font-semibold";
+        tabTocBtn.className = "flex-1 py-1.5 rounded-lg text-center text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all flex items-center justify-center gap-1.5";
+        tabNavContent.classList.remove('hidden');
+        tabTocContent.classList.add('hidden');
+      } else {
+        tabTocBtn.className = "flex-1 py-1.5 rounded-lg text-center bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all flex items-center justify-center gap-1.5 font-semibold";
+        tabNavBtn.className = "flex-1 py-1.5 rounded-lg text-center text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all flex items-center justify-center gap-1.5";
+        tabTocContent.classList.remove('hidden');
+        tabNavContent.classList.add('hidden');
+      }
+      lucide.createIcons();
+    }
+
+    // Filtrado en vivo de elementos en el sidebar
+    function filterSidebarItems(query) {
+      const q = query.toLowerCase().trim();
+      const items = document.querySelectorAll('#tabNavContent button, #tabTocContent a');
+      items.forEach(el => {
+        const text = el.textContent.toLowerCase();
+        el.style.display = text.includes(q) ? 'flex' : 'none';
+      });
+    }
+
+    // Modal ToC para pantallas móviles
+    function toggleMobileToc() {
+      const modal = document.getElementById('mobileTocModal');
+      modal.classList.toggle('hidden');
+      modal.classList.toggle('flex');
+    }
+
+    // Barra de progreso de lectura atada al scroll
+    document.getElementById('mainScrollArea').addEventListener('scroll', () => {
+      const main = document.getElementById('mainScrollArea');
+      const scrollTop = main.scrollTop;
+      const scrollHeight = main.scrollHeight - main.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      document.getElementById('readProgressBar').style.width = `${progress}%`;
+    });
+
+    // Ancho de lectura: 70ch (max-w-3xl) vs Pantalla Ancha (max-w-5xl)
+    function toggleReadingWidth() {
+      isFullWidth = !isFullWidth;
+      const icon = document.getElementById('widthIcon');
+      const container = document.getElementById('readingContainer');
+      if (isFullWidth) {
+        container.classList.remove('max-w-3xl');
+        container.classList.add('max-w-5xl');
+        icon.setAttribute('data-lucide', 'minimize-2');
+      } else {
+        container.classList.remove('max-w-5xl');
+        container.classList.add('max-w-3xl');
+        icon.setAttribute('data-lucide', 'maximize-2');
+      }
+      lucide.createIcons();
+    }
+
+    // Tamaño de fuente escalable
+    function changeFontSize(delta) {
+      currentFontSizeLevel = Math.max(-1, Math.min(2, currentFontSizeLevel + delta));
+      const article = document.getElementById('articleContent');
+      article.classList.remove('text-sm', 'text-base', 'text-lg', 'text-xl');
+      if (currentFontSizeLevel === -1) article.classList.add('text-sm');
+      else if (currentFontSizeLevel === 0) article.classList.add('text-base');
+      else if (currentFontSizeLevel === 1) article.classList.add('text-lg');
+      else if (currentFontSizeLevel === 2) article.classList.add('text-xl');
+    }
+
+    // Copiar código con feedback visual
+    function copyCode(btn) {
+      const pre = btn.closest('.group').querySelector('code');
+      const text = pre.innerText;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast("Código copiado al portapapeles");
+        }).catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast("Código copiado al portapapeles");
+      } catch (err) {
+        showToast("No se pudo copiar el texto");
+      }
+      document.body.removeChild(textarea);
+    }
+
+    // Toast flotante
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastText').innerText = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2200);
+    }
+
+    function openResourceLink() {
+      showToast("Descargando PDF oficial de la unidad...");
+    }
+
+    // ========================================================
+    // ATAJOS DE TECLADO Y EVENTOS GLOBALES
+    // ========================================================
+    window.addEventListener('keydown', (e) => {
+      // Ctrl/Cmd + B: Alternar barra lateral
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        handleSidebarToggle();
+      }
+      // Escape: Cerrar modales o sidebar móvil
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('mobileTocModal');
+        if (!modal.classList.contains('hidden')) {
+          toggleMobileToc();
+        } else if (sidebarOpen) {
+          toggleSidebar(false);
+        }
+      }
+    });
+
+    // Inicialización al cargar el DOM
+    window.addEventListener('DOMContentLoaded', () => {
+      applyTheme(currentTheme);
+      renderSubjectsGrid();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

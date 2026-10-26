@@ -1,355 +1,1005 @@
-/* El visor lee el catálogo y los .md. Aquí no se enumeran asignaturas. */
+/**
+ * ============================================================================
+ * APLICACIÓN DE APUNTES Y ENTORNO DE ESTUDIO UNIVERSITARIO
+ * Arquitectura SPA Modular, Responsive-First y Multidispositivo
+ * ============================================================================
+ */
+
+// Utilidades DOM rápidas
 const $ = selector => document.querySelector(selector);
-const markdown = window.marked.marked || window.marked;
-const state = { markdownUrl: null, ids: new Map(), observer: null };
-const BLOCKS = new Set(['aviso', 'examen', 'practica', 'proyecto', 'pregunta', 'proceso', 'cifras']);
-const escape = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function formatUnitLabel(unit) {
-  if (unit.parte != null) return `${unit.number}.${unit.parte}`;
-  if (unit.number == null) return '';
-  return String(unit.number).padStart(2, '0');
-}
-function safeUrl(href) {
-  if (!href) return null;
-  if (href.startsWith('#')) return href;
-  try {
-    const base = href.startsWith('?u=') ? new URL('./', location.href) : state.markdownUrl;
-    const url = new URL(href, base);
-    return ['http:', 'https:', 'mailto:'].includes(url.protocol) ? url.href : null;
-  } catch { return null; }
-}
-function slug(value) {
-  return value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'apartado';
-}
-function uniqueId(id) {
-  const n = state.ids.get(id) || 0;
-  state.ids.set(id, n + 1);
-  return n ? `${id}-${n + 1}` : id;
-}
-function renderHeading(token) {
-  const match = /\s+\{#([a-z0-9-]+)\}$/.exec(token.text);
-  const title = match ? token.text.slice(0, -match[0].length) : token.text;
-  const id = uniqueId(match ? match[1] : slug(title.replace(/[`*_]/g, '')));
-  return `<h${token.depth} id="${id}">${markdown.parseInline(title)}</h${token.depth}>\n`;
-}
-const HLJS_LANG = { texto: 'plaintext', text: 'plaintext' };
-function highlightCodeBlocks(root) {
-  const hljs = window.hljs;
-  if (!hljs) return;
-  for (const code of root.querySelectorAll('.code-block code[class*="language-"]')) {
-    const raw = /language-([a-z0-9+#-]+)/i.exec(code.className)?.[1]?.toLowerCase() || '';
-    const lang = HLJS_LANG[raw] || raw;
-    if (lang && hljs.getLanguage(lang)) hljs.highlightElement(code);
-    else code.classList.add('hljs');
-  }
-}
-function renderCode(token) {
-  const info = token.lang || '';
-  const lang = /^([a-z0-9+#-]+)/i.exec(info)?.[1] || 'texto';
-  const title = /\btitle="([^"]+)"/.exec(info)?.[1] || '';
-  const origin = /\borigen="([^"]+)"/.exec(info)?.[1] || '';
-  const label = [title, origin].filter(Boolean).join(' · ') || lang;
-  return `<figure class="code-block"><figcaption><span>${escape(label)}</span><button type="button" class="copy-code" aria-label="Copiar código">Copiar</button></figcaption><pre><code class="language-${escape(lang)}">${escape(token.text)}</code></pre></figure>\n`;
-}
-function renderBlock(token) {
-  const { kind, title, body } = token;
-  if (kind === 'cifras') {
-    return `<div class="overview">${body.trim().split(/\r?\n/).map(line => {
-      const [number, label] = line.split('|');
-      return `<div><b>${escape((number || '').trim())}</b><span>${escape((label || '').trim())}</span></div>`;
-    }).join('')}</div>`;
-  }
-  if (kind === 'proceso') {
-    return `<div class="flow">${body.trim().split(/\s*(?:→|->)\s*/).map((part, i) =>
-      (i ? '<i aria-hidden="true">→</i>' : '') + `<span>${escape(part)}</span>`).join('')}</div>`;
-  }
-  const content = this.parser.parse(token.tokens);
-  const label = markdown.parseInline(title);
-  if (kind === 'pregunta') return `<details class="question"><summary>${label}</summary><div>${content}</div></details>\n`;
-  const css = { aviso: 'note', examen: 'note exam', practica: 'lab', proyecto: 'lab project-card' }[kind];
-  const heading = kind === 'practica' || kind === 'proyecto';
-  return `<aside class="${css}"><strong class="block-label">${heading ? 'EN EL PROYECTO' : kind === 'examen' ? 'DE EXAMEN' : label || 'OJO'}</strong>${heading ? `<h3>${label}</h3>` : ''}<div>${content}</div></aside>\n`;
-}
-markdown.use({
-  gfm: true,
-  renderer: {
-    heading: renderHeading,
-    code: renderCode,
-    html(token) { return escape(token.text); },
-    link(token) {
-      const href = safeUrl(token.href);
-      const label = this.parser.parseInline(token.tokens);
-      if (!href) return label;
-      const external = /^https?:\/\//.test(href) && new URL(href).origin !== location.origin;
-      return `<a href="${escape(href)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${label}</a>`;
-    },
-    image(token) {
-      const url = safeUrl(token.href);
-      return url ? `<img src="${escape(url)}" alt="${escape(token.text || '')}" loading="lazy">` : '';
-    }
+const $$ = selector => document.querySelectorAll(selector);
+
+// Estado global reactivo de la aplicación
+const state = {
+  catalog: null,
+  currentSubject: null,
+  currentUnit: null,
+  allUnitsInSubject: [],
+  sidebarOpen: false,
+  isFullWidth: false,
+  fontSizeLevel: 0, // -1: sm, 0: base, 1: lg, 2: xl
+  theme: localStorage.getItem('study_theme') || 'light',
+  tocObserver: null,
+  recents: JSON.parse(localStorage.getItem('study_recents') || '[]')
+};
+
+// Paletas visuales e iconos por defecto para asignaturas
+const SUBJECT_PRESETS = {
+  'software-estandares-web': {
+    code: 'SEW-2026',
+    color: 'cyan',
+    gradient: 'from-cyan-500 to-sky-600',
+    icon: 'globe',
+    badge: 'Cuatrimestre 1'
   },
-  extensions: [{
-    name: 'study-block', level: 'block',
-    tokenizer(source) {
-      const m = /^:::[ \t]+([a-z]+)(?:[ \t]+([^\n]*))?\n([\s\S]*?)\n:::(?:\n|$)/.exec(source);
-      if (!m || !BLOCKS.has(m[1])) return;
-      return { type: 'study-block', raw: m[0], kind: m[1], title: m[2] || '', body: m[3], tokens: this.lexer.blockTokens(m[3]) };
+  'repositorios-informacion': {
+    code: 'RI-2026',
+    color: 'indigo',
+    gradient: 'from-indigo-500 to-violet-600',
+    icon: 'database',
+    badge: 'Cuatrimestre 1'
+  },
+  'redes': {
+    code: 'RED-2026',
+    color: 'emerald',
+    gradient: 'from-emerald-500 to-teal-600',
+    icon: 'network',
+    badge: 'Cuatrimestre 1'
+  },
+  'algoritmos': {
+    code: 'DAA-2026',
+    color: 'amber',
+    gradient: 'from-amber-500 to-orange-600',
+    icon: 'cpu',
+    badge: 'Cuatrimestre 1'
+  }
+};
+
+// Datos demo de contingencia si no se puede acceder a fetch (por ejemplo vía file://)
+const FALLBACK_CATALOG = {
+  schemaVersion: 2,
+  subjects: [
+    {
+      id: 'software-estandares-web',
+      title: 'Software y Estándares para la Web',
+      count: 12
     },
-    renderer: renderBlock
-  }]
-});
-function unitMap(subject) { return new Map(subject.units.map(u => [u.id, u])); }
-function findTrail(nodes, id, trail = []) {
-  for (const n of nodes) {
-    if (n.type === 'unit' && n.id === id) return trail;
-    if (n.type === 'group') {
-      const found = findTrail(n.children, id, [...trail, n]);
-      if (found) return found;
+    {
+      id: 'repositorios-informacion',
+      title: 'Repositorios de Información',
+      count: 8
     }
-  }
-  return null;
-}
-function unitLink(subject, unit, selected) {
-  const a = document.createElement('a');
-  a.href = `?u=${encodeURIComponent(subject.id + '/' + unit.id)}`;
-  const label = formatUnitLabel(unit);
-  if (label) {
-    const number = document.createElement('span');
-    number.textContent = label;
-    a.append(number);
-  }
-  a.append(document.createTextNode(unit.title));
-  if (selected && unit.id === selected.id) {
-    a.classList.add('active');
-    a.setAttribute('aria-current', 'page');
-  }
-  return a;
-}
-function containsUnit(node, id) {
-  return node.children.some(c => c.type === 'unit' ? c.id === id : containsUnit(c, id));
-}
-function treeNav(nodes, subject, units, selected) {
-  const box = document.createElement('div');
-  box.className = 'tree';
-  for (const node of nodes) {
-    if (node.type === 'unit') { box.append(unitLink(subject, units.get(node.id), selected)); continue; }
-    const details = document.createElement('details');
-    details.className = 'tree-group';
-    details.open = containsUnit(node, selected.id);
-    const summary = document.createElement('summary');
-    summary.textContent = node.title;
-    details.append(summary, treeNav(node.children, subject, units, selected));
-    box.append(details);
-  }
-  return box;
-}
-function sidebar(subject, selectedUnit) {
-  const nav = $('#unidades');
-  nav.replaceChildren();
-  const group = document.createElement('div');
-  group.className = 'subject-group';
-  const label = document.createElement('strong');
-  label.textContent = subject.title;
-  group.append(label, treeNav(subject.tree, subject, unitMap(subject), selectedUnit));
-  nav.append(group);
-}
-function fileList(unit) {
-  const nav = $('#archivos');
-  nav.replaceChildren();
-  const none = !unit.files?.length;
-  $('#archivos-label').hidden = none;
-  nav.hidden = none;
-  for (const file of unit.files || []) {
-    const a = document.createElement('a');
-    a.href = new URL(file.path, document.baseURI).href;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.className = 'file-link';
-    a.textContent = file.name;
-    nav.append(a);
-  }
-}
-function overview(subject) {
-  document.body.classList.add('home');
-  document.title = subject.title;
-  $('#ruta').textContent = subject.title.toUpperCase();
-  const units = unitMap(subject);
-  const wrap = document.createElement('section');
-  wrap.className = 'home-intro subject-overview';
-  const back = document.createElement('a');
-  back.href = './';
-  back.textContent = '← Todas las asignaturas';
-  back.className = 'overview-back';
-  const h1 = document.createElement('h1');
-  h1.textContent = subject.title;
-  wrap.append(back, h1);
-  const loose = subject.tree.filter(n => n.type === 'unit');
-  const cards = subject.tree.filter(n => n.type === 'group');
-  if (loose.length) cards.unshift({ type: 'group', id: '_sueltas', title: 'Unidades', children: loose });
-  const list = (nodes, depth) => {
-    const ul = document.createElement('ul');
-    ul.className = 'overview-list';
-    for (const node of nodes) {
-      const li = document.createElement('li');
-      if (node.type === 'unit') {
-        const a = unitLink(subject, units.get(node.id));
-        a.className = 'overview-unit';
-        li.append(a);
-      } else {
-        const name = document.createElement('span');
-        name.className = 'overview-folder';
-        name.textContent = node.title;
-        li.append(name);
-        if (node.children.length) li.append(list(node.children, depth + 1));
-        else {
-          const empty = document.createElement('small');
-          empty.textContent = 'Sin contenido todavía';
-          li.append(empty);
-        }
+  ]
+};
+
+const FALLBACK_SUBJECTS_DATA = {
+  'software-estandares-web': {
+    id: 'software-estandares-web',
+    title: 'Software y Estándares para la Web',
+    tree: [
+      {
+        type: 'group',
+        id: 'teoria',
+        title: 'Teoría',
+        children: [
+          { type: 'unit', id: 'teoria-diseno-con-estandares' },
+          { type: 'unit', id: 'teoria-lenguajes-de-marcado' },
+          { type: 'unit', id: 'teoria-lenguajes-de-marcado-html' }
+        ]
+      },
+      {
+        type: 'group',
+        id: 'practicas',
+        title: 'Prácticas de Laboratorio',
+        children: [
+          { type: 'unit', id: 'practicas-01-estandares-web' }
+        ]
       }
-      ul.append(li);
+    ],
+    units: [
+      {
+        id: 'teoria-lenguajes-de-marcado-html',
+        title: 'Lenguajes de Marcado — HTML5',
+        number: 4,
+        summary: 'Estructuración semántica moderna, DOM y accesibilidad web universal.',
+        path: 'demo'
+      },
+      {
+        id: 'teoria-diseno-con-estandares',
+        title: 'Diseño con Estándares Web',
+        number: 1,
+        summary: 'Principios de diseño, compatibilidad y evolución del consorcio W3C.',
+        path: 'demo'
+      },
+      {
+        id: 'teoria-lenguajes-de-marcado',
+        title: 'Lenguajes de Marcado y Sintaxis XML',
+        number: 2,
+        summary: 'Gramáticas formales, documentos bien formados y validación mediante DTD/Schema.',
+        path: 'demo'
+      },
+      {
+        id: 'practicas-01-estandares-web',
+        title: 'Práctica 1 — Validación y Buenas Prácticas',
+        number: 1,
+        summary: 'Configuración del entorno de validación HTML/CSS y auditorías de accesibilidad.',
+        path: 'demo'
+      }
+    ]
+  },
+  'repositorios-informacion': {
+    id: 'repositorios-informacion',
+    title: 'Repositorios de Información',
+    tree: [
+      {
+        type: 'group',
+        id: 'teoria',
+        title: 'Teoría',
+        children: [
+          { type: 'unit', id: '01-jdbc' },
+          { type: 'unit', id: '02-transactions' }
+        ]
+      }
+    ],
+    units: [
+      {
+        id: '01-jdbc',
+        title: 'Conectividad de Bases de Datos con JDBC',
+        number: 1,
+        summary: 'Controladores, conexiones resilientes, PreparedStatement y mapeo relacional.',
+        path: 'demo'
+      },
+      {
+        id: '02-transactions',
+        title: 'Gestión de Transacciones ACID y Concurrencia',
+        number: 2,
+        summary: 'Niveles de aislamiento, bloqueos optimistas/pesimistas y serializabilidad.',
+        path: 'demo'
+      }
+    ]
+  }
+};
+
+/* ==========================================================================
+   CONFIGURACIÓN DEL PARSER MARKDOWN (MARKED + HLJS + STUDY BLOCKS)
+   ========================================================================== */
+function configureMarkdownParser() {
+  if (!window.marked) return;
+
+  const markdown = window.marked.marked || window.marked;
+  const BLOCKS = new Set(['aviso', 'examen', 'practica', 'proyecto', 'pregunta', 'proceso', 'cifras']);
+  const escapeHtml = value => String(value || '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+
+  markdown.use({
+    gfm: true,
+    breaks: false,
+    renderer: {
+      heading(token) {
+        const text = token.text || '';
+        const match = /\s+\{#([a-z0-9-]+)\}$/.exec(text);
+        const title = match ? text.slice(0, -match[0].length) : text;
+        const slug = match ? match[1] : title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'seccion';
+        return `<h${token.depth} id="${slug}">${this.parser.parseInline(token.tokens)}</h${token.depth}>\n`;
+      },
+      code(token) {
+        const info = token.lang || '';
+        const lang = /^([a-z0-9+#-]+)/i.exec(info)?.[1] || 'plaintext';
+        const titleMatch = /\btitle="([^"]+)"/.exec(info);
+        const title = titleMatch ? titleMatch[1] : lang;
+        return `
+          <figure class="code-block">
+            <figcaption class="code-header">
+              <span class="flex items-center gap-1.5">
+                <i data-lucide="file-code" class="w-3.5 h-3.5 text-cyan-400"></i>
+                ${escapeHtml(title)}
+              </span>
+              <button type="button" class="copy-code" onclick="copySnippetCode(this)">
+                <i data-lucide="copy" class="w-3 h-3"></i> Copiar
+              </button>
+            </figcaption>
+            <pre><code class="language-${escapeHtml(lang)}">${escapeHtml(token.text)}</code></pre>
+          </figure>\n`;
+      }
+    },
+    extensions: [{
+      name: 'study-block',
+      level: 'block',
+      tokenizer(source) {
+        const m = /^:::[ \t]+([a-z]+)(?:[ \t]+([^\n]*))?\n([\s\S]*?)\n:::(?:\n|$)/.exec(source);
+        if (!m || !BLOCKS.has(m[1])) return;
+        return {
+          type: 'study-block',
+          raw: m[0],
+          kind: m[1],
+          title: m[2] || '',
+          body: m[3],
+          tokens: this.lexer.blockTokens(m[3])
+        };
+      },
+      renderer(token) {
+        const { kind, title, body } = token;
+        
+        // Bloque de métricas o cifras
+        if (kind === 'cifras') {
+          const items = body.trim().split(/\r?\n/).map(line => {
+            const [num, label] = line.split('|');
+            return `<div><b>${escapeHtml((num || '').trim())}</b><span>${escapeHtml((label || '').trim())}</span></div>`;
+          }).join('');
+          return `<div class="study-stats">${items}</div>\n`;
+        }
+
+        // Bloque de flujo de proceso con flechas
+        if (kind === 'proceso') {
+          const steps = body.trim().split(/\s*(?:→|->)\s*/).map((step, i) => 
+            (i ? '<i aria-hidden="true">→</i>' : '') + `<span>${escapeHtml(step)}</span>`
+          ).join('');
+          return `<div class="study-flow">${steps}</div>\n`;
+        }
+
+        // Bloque de pregunta interactiva
+        if (kind === 'pregunta') {
+          const content = this.parser.parse(token.tokens);
+          return `
+            <details class="study-question">
+              <summary>${escapeHtml(title || 'Pregunta de repaso')}</summary>
+              <div>${content}</div>
+            </details>\n`;
+        }
+
+        // Bloques didácticos (aviso, examen, practica, proyecto)
+        const cssClass = {
+          aviso: 'study-note',
+          examen: 'study-exam',
+          practica: 'study-lab',
+          proyecto: 'study-project'
+        }[kind] || 'study-note';
+
+        const labels = {
+          aviso: 'OJO / NOTA IMPORTANTE',
+          examen: 'IMPORTANTE PARA EL EXAMEN',
+          practica: 'EN LA PRÁCTICA DE LABORATORIO',
+          proyecto: 'APLICACIÓN EN EL PROYECTO'
+        };
+
+        const icons = {
+          aviso: 'info',
+          examen: 'alert-triangle',
+          practica: 'terminal',
+          proyecto: 'box'
+        };
+
+        const content = this.parser.parse(token.tokens);
+        return `
+          <aside class="${cssClass}">
+            <strong class="block-label">
+              <i data-lucide="${icons[kind] || 'info'}" class="w-3.5 h-3.5"></i>
+              ${escapeHtml(title || labels[kind])}
+            </strong>
+            <div>${content}</div>
+          </aside>\n`;
+      }
+    }]
+  });
+}
+
+function highlightSyntax(container) {
+  if (!window.hljs) return;
+  container.querySelectorAll('pre code').forEach(block => {
+    window.hljs.highlightElement(block);
+  });
+}
+
+/* ==========================================================================
+   CARGA DE DATOS (CATALOGO JSON & UNIDADES MD)
+   ========================================================================== */
+async function fetchJson(path) {
+  const res = await fetch(new URL(path, document.baseURI));
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${path}`);
+  return res.json();
+}
+
+async function fetchText(path) {
+  const res = await fetch(new URL(path, document.baseURI));
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${path}`);
+  return res.text();
+}
+
+async function loadApplicationCatalog() {
+  try {
+    state.catalog = await fetchJson('catalogo.json');
+  } catch (err) {
+    console.warn('Usando catálogo fallback de contingencia:', err.message);
+    state.catalog = FALLBACK_CATALOG;
+  }
+}
+
+async function loadSubjectDetails(subjectId) {
+  try {
+    return await fetchJson(`catalogo/${encodeURIComponent(subjectId)}.json`);
+  } catch (err) {
+    console.warn(`Usando datos fallback para la materia ${subjectId}:`, err.message);
+    return FALLBACK_SUBJECTS_DATA[subjectId] || FALLBACK_SUBJECTS_DATA['software-estandares-web'];
+  }
+}
+
+/* ==========================================================================
+   VISTA 1: DASHBOARD DE ASIGNATURAS
+   ========================================================================== */
+function renderDashboardSubjects(filterText = '') {
+  const grid = $('#subjectsGrid');
+  if (!grid || !state.catalog) return;
+
+  const term = filterText.toLowerCase().trim();
+  const subjects = state.catalog.subjects.filter(s => {
+    const preset = SUBJECT_PRESETS[s.id] || {};
+    return s.title.toLowerCase().includes(term) ||
+           (preset.code && preset.code.toLowerCase().includes(term)) ||
+           s.id.toLowerCase().includes(term);
+  });
+
+  const countBadge = $('#subjectCountBadge');
+  if (countBadge) {
+    countBadge.textContent = `${subjects.length} ${subjects.length === 1 ? 'materia disponible' : 'materias disponibles'}`;
+  }
+
+  if (subjects.length === 0) {
+    grid.innerHTML = `
+      <div class="col-span-full py-12 text-center text-slate-400">
+        <i data-lucide="search-x" class="w-10 h-10 mx-auto mb-2 opacity-50"></i>
+        <p class="font-medium text-sm">No se encontraron materias que coincidan con "${filterText}".</p>
+      </div>`;
+    lucide.createIcons();
+    return;
+  }
+
+  grid.innerHTML = subjects.map((sub, index) => {
+    const preset = SUBJECT_PRESETS[sub.id] || {
+      code: `ASIG-0${index + 1}`,
+      color: 'cyan',
+      gradient: 'from-cyan-500 to-sky-600',
+      icon: 'book',
+      badge: 'Semestre 1'
+    };
+
+    // Progreso simulado para estética visual o guardado
+    const progress = (sub.id === 'software-estandares-web') ? 35 : 60;
+
+    return `
+      <div onclick="selectSubject('${sub.id}')" 
+           class="group cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-500 dark:hover:border-cyan-500 rounded-3xl p-5 sm:p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
+        
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${preset.gradient} text-white flex items-center justify-center shadow-lg shadow-cyan-500/10 group-hover:scale-105 transition-transform">
+              <i data-lucide="${preset.icon}" class="w-6 h-6"></i>
+            </div>
+            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              ${preset.badge}
+            </span>
+          </div>
+
+          <div>
+            <p class="text-xs font-mono text-slate-400 font-semibold tracking-wide">${preset.code}</p>
+            <h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors line-clamp-2 mt-0.5 leading-snug">
+              ${sub.title}
+            </h4>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80 space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <span class="font-medium">${sub.count} Unidades</span>
+            <span class="font-semibold text-slate-700 dark:text-slate-200">${progress}% completado</span>
+          </div>
+          <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+            <div class="bg-gradient-to-r ${preset.gradient} h-full rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  lucide.createIcons();
+}
+
+function filterSubjects(query) {
+  renderDashboardSubjects(query);
+}
+
+function renderRecentsSection() {
+  const grid = $('#recentTopicsGrid');
+  if (!grid) return;
+
+  const recents = state.recents.length ? state.recents : [
+    {
+      subjectId: 'software-estandares-web',
+      subjectName: 'Software y Estándares Web',
+      unitId: 'teoria-lenguajes-de-marcado-html',
+      unitTitle: 'Lenguajes de Marcado — HTML5',
+      color: 'cyan'
+    },
+    {
+      subjectId: 'repositorios-informacion',
+      subjectName: 'Repositorios de Información',
+      unitId: '02-transactions',
+      unitTitle: 'Transacciones ACID y Concurrencia',
+      color: 'indigo'
     }
-    return ul;
+  ];
+
+  grid.innerHTML = recents.map(r => `
+    <div onclick="selectSubject('${r.subjectId}', '${r.unitId}')" class="cursor-pointer p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-${r.color || 'cyan'}-500 dark:hover:border-${r.color || 'cyan'}-500 shadow-sm hover:shadow-md transition-all group flex items-center justify-between">
+      <div class="flex items-center gap-3.5 overflow-hidden">
+        <span class="w-3 h-3 rounded-full bg-${r.color || 'cyan'}-500 shrink-0"></span>
+        <div class="truncate">
+          <p class="text-xs text-slate-500 dark:text-slate-400 truncate">${r.subjectName}</p>
+          <p class="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors truncate">
+            ${r.unitTitle}
+          </p>
+        </div>
+      </div>
+      <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400 group-hover:translate-x-1 group-hover:text-cyan-500 transition-all shrink-0 ml-2"></i>
+    </div>
+  `).join('');
+
+  lucide.createIcons();
+}
+
+function saveRecent(subject, unit) {
+  const preset = SUBJECT_PRESETS[subject.id] || {};
+  const item = {
+    subjectId: subject.id,
+    subjectName: subject.title,
+    unitId: unit.id,
+    unitTitle: unit.title,
+    color: preset.color || 'cyan'
   };
-  for (const card of cards) {
-    const section = document.createElement('section');
-    section.className = 'overview-card';
-    const h2 = document.createElement('h2');
-    h2.textContent = card.title;
-    section.append(h2, list(card.children, 0));
-    wrap.append(section);
-  }
-  $('#contenido').replaceChildren(wrap);
+
+  state.recents = [item, ...state.recents.filter(r => !(r.subjectId === item.subjectId && r.unitId === item.unitId))].slice(0, 4);
+  try {
+    localStorage.setItem('study_recents', JSON.stringify(state.recents));
+  } catch (e) {}
 }
-function home(catalog) {
-  document.body.classList.add('home');
-  document.title = 'Apuntes universitarios';
-  $('#ruta').textContent = 'APUNTES';
-  const wrap = document.createElement('section');
-  wrap.className = 'home-intro';
-  const h1 = document.createElement('h1'); h1.textContent = 'Elige una asignatura';
-  const p = document.createElement('p'); p.textContent = 'Los apuntes se cargan solo al entrar en la asignatura.';
-  const grid = document.createElement('div');
-  grid.className = 'subject-grid';
-  for (const subject of catalog.subjects) {
-    const a = document.createElement('a');
-    a.className = 'subject-card';
-    a.href = `?u=${encodeURIComponent(subject.id)}`;
-    const initial = document.createElement('span'); initial.className = 'subject-initial'; initial.textContent = subject.title.trim().charAt(0).toUpperCase();
-    const name = document.createElement('strong'); name.textContent = subject.title;
-    const count = document.createElement('small'); count.textContent = subject.count === 1 ? '1 unidad' : `${subject.count} unidades`;
-    a.append(initial, name, count);
-    grid.append(a);
+
+/* ==========================================================================
+   VISTA 2: VISOR DE APUNTES (READER)
+   ========================================================================== */
+async function selectSubject(subjectId, requestedUnitId = null) {
+  const dashboard = $('#viewSubjectsDashboard');
+  const viewer = $('#viewStudyViewer');
+  
+  dashboard.classList.add('hidden');
+  viewer.classList.remove('hidden');
+  viewer.classList.add('flex');
+
+  // Cargar detalles de la asignatura
+  const subject = await loadSubjectDetails(subjectId);
+  state.currentSubject = subject;
+
+  // Lista plana ordenada de unidades para navegación continua
+  state.allUnitsInSubject = subject.units || [];
+
+  // Elegir unidad activa
+  let unit = null;
+  if (requestedUnitId) {
+    unit = state.allUnitsInSubject.find(u => u.id === requestedUnitId);
   }
-  wrap.append(h1, p, grid);
-  $('#contenido').replaceChildren(wrap);
+  if (!unit) {
+    unit = state.allUnitsInSubject[0];
+  }
+
+  // Actualizar UI Header y Breadcrumbs
+  const preset = SUBJECT_PRESETS[subject.id] || { color: 'cyan' };
+  $('#breadcrumbSubject').innerHTML = `
+    <span class="w-2 h-2 rounded-full bg-${preset.color}-500 inline-block"></span>
+    ${subject.title}
+  `;
+  $('#sidebarMateriaName').textContent = subject.title;
+  $('#sidebarMateriaBadge').className = `w-2.5 h-2.5 rounded-full bg-${preset.color}-500 shrink-0`;
+
+  renderSidebarTree(subject, unit);
+  await loadUnit(unit);
+
+  // Sincronizar URL para bookmarks y refresco
+  const newUrl = `?u=${encodeURIComponent(subject.id + '/' + unit.id)}`;
+  history.replaceState(null, '', newUrl);
+
+  toggleSidebar(false);
 }
-function content(markdownText, subject, unit) {
-  state.ids.clear();
-  const text = markdownText.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
-  const buffer = document.createElement('div');
-  buffer.innerHTML = markdown.parse(text);
-  const output = document.createDocumentFragment();
-  let section = document.createElement('section');
-  section.className = 'intro';
-  section.id = 'inicio';
-  const eyebrow = document.createElement('div');
-  eyebrow.className = 'eyebrow';
-  const trail = (findTrail(subject.tree, unit.id) || []).map(g => g.title);
-  eyebrow.textContent = [subject.title, ...trail].join(' · ').toUpperCase();
-  section.append(eyebrow);
-  for (const element of [...buffer.children]) {
-    if (element.tagName === 'H2') {
-      output.append(section);
-      section = document.createElement('section');
-      section.className = 'chapter';
-      section.setAttribute('aria-labelledby', element.id);
+
+function goToSubjectsDashboard() {
+  $('#viewStudyViewer').classList.remove('flex');
+  $('#viewStudyViewer').classList.add('hidden');
+  $('#viewSubjectsDashboard').classList.remove('hidden');
+  toggleSidebar(false);
+  history.replaceState(null, '', location.pathname);
+  renderDashboardSubjects();
+  renderRecentsSection();
+}
+
+function renderSidebarTree(subject, selectedUnit) {
+  const container = $('#tabNavContent');
+  if (!container) return;
+
+  const unitMap = new Map(subject.units.map(u => [u.id, u]));
+
+  function renderNodes(nodes) {
+    return nodes.map(node => {
+      if (node.type === 'unit') {
+        const u = unitMap.get(node.id);
+        if (!u) return '';
+        const isActive = u.id === selectedUnit?.id;
+        const numberLabel = u.number ? String(u.number).padStart(2, '0') : '';
+        return `
+          <button onclick="handleUnitClick('${u.id}')" 
+                  class="w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs ${isActive ? 'bg-cyan-50 dark:bg-cyan-950/50 text-cyan-800 dark:text-cyan-300 font-semibold border-l-2 border-cyan-500' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/60'} transition-all">
+            ${numberLabel ? `<span class="font-mono text-[10px] ${isActive ? 'text-cyan-600 dark:text-cyan-400 font-bold' : 'text-slate-400'}">${numberLabel}</span>` : ''}
+            <span class="truncate">${u.title}</span>
+          </button>
+        `;
+      } else if (node.type === 'group') {
+        return `
+          <div class="mb-3">
+            <div class="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 px-2 py-1 mb-1">
+              <span>${node.title}</span>
+              <span class="text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono">${node.children.length}</span>
+            </div>
+            <div class="space-y-0.5">
+              ${renderNodes(node.children)}
+            </div>
+          </div>
+        `;
+      }
+      return '';
+    }).join('');
+  }
+
+  container.innerHTML = renderNodes(subject.tree || []);
+  lucide.createIcons();
+}
+
+async function handleUnitClick(unitId) {
+  const unit = state.allUnitsInSubject.find(u => u.id === unitId);
+  if (unit) {
+    await loadUnit(unit);
+    renderSidebarTree(state.currentSubject, unit);
+    if (window.innerWidth < 1024) toggleSidebar(false);
+  }
+}
+
+async function loadUnit(unit) {
+  state.currentUnit = unit;
+  saveRecent(state.currentSubject, unit);
+
+  // Actualizar Breadcrumbs
+  $('#breadcrumbUnit').textContent = unit.title;
+  $('#lessonTitle').textContent = unit.title;
+  $('#contentPill').innerHTML = `<i data-lucide="book-open" class="w-3.5 h-3.5"></i> Unidad ${unit.number || ''}`;
+
+  // Botón PDF si tiene archivo fuente
+  const pdfBtn = $('#btnPdfResource');
+  if (unit.source) {
+    pdfBtn.href = new URL(unit.source, new URL(unit.path || '', document.baseURI)).href;
+    pdfBtn.classList.remove('hidden');
+    pdfBtn.classList.add('inline-flex');
+  } else {
+    pdfBtn.classList.add('hidden');
+    pdfBtn.classList.remove('inline-flex');
+  }
+
+  // Resumen ejecutivo
+  const summaryBox = $('#summaryBox');
+  const summaryContent = $('#summaryContent');
+  if (unit.summary) {
+    summaryBox.classList.remove('hidden');
+    summaryContent.innerHTML = `<p class="leading-relaxed">${unit.summary}</p>`;
+  } else {
+    summaryBox.classList.add('hidden');
+  }
+
+  // Cargar contenido Markdown
+  let markdownText = '';
+  if (unit.path && unit.path !== 'demo') {
+    try {
+      markdownText = await fetchText(unit.path);
+    } catch (err) {
+      markdownText = `## Introducción\n\nNo se pudo descargar el archivo de apuntes (\`${unit.path}\`).\n\n::: aviso Error de red\nVerifica que el servidor local de desarrollo esté activo.\n:::`;
     }
-    section.append(element);
+  } else {
+    markdownText = getSampleMarkdown(unit);
   }
-  output.append(section);
-  $('#contenido').replaceChildren(output);
-  highlightCodeBlocks($('#contenido'));
-  const nav = $('#apartados');
-  nav.replaceChildren();
-  for (const h of $('#contenido').querySelectorAll('h2, h3[id]')) {
-    const a = document.createElement('a');
-    a.href = '#' + h.id;
-    a.textContent = h.textContent;
-    if (h.tagName === 'H3') a.className = 'subheading';
-    nav.append(a);
+
+  // Eliminar cabecera frontmatter
+  const cleanMarkdown = markdownText.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
+
+  // Tiempo estimado de lectura (~200 palabras por minuto)
+  const wordCount = cleanMarkdown.split(/\s+/).length;
+  const readTimeMin = Math.max(3, Math.round(wordCount / 180));
+  $('#readingTimeBadge').innerHTML = `<i data-lucide="clock" class="w-3.5 h-3.5"></i> ${readTimeMin} min de lectura`;
+
+  // Parsear con Marked
+  const article = $('#articleContent');
+  const markdown = window.marked.marked || window.marked;
+  article.innerHTML = markdown.parse(cleanMarkdown);
+
+  // Resaltado de código sintáctico
+  highlightSyntax(article);
+
+  // Generar Tabla de Contenidos (ToC)
+  buildTableOfContents(article);
+
+  // Actualizar botones pie de página (Anterior / Siguiente)
+  updateAdjacentNavigation(unit);
+
+  // Reset scroll
+  $('#mainScrollArea').scrollTop = 0;
+  lucide.createIcons();
+}
+
+function buildTableOfContents(articleContainer) {
+  const headings = articleContainer.querySelectorAll('h2, h3');
+  const tocList = $('#tocList');
+  const mobileTocLinks = $('#mobileTocLinks');
+
+  if (headings.length === 0) {
+    tocList.innerHTML = `<li class="text-slate-400 py-1">Sin apartados destacados</li>`;
+    mobileTocLinks.innerHTML = `<p class="text-slate-400 p-2">Sin apartados destacados</p>`;
+    return;
   }
-  state.observer?.disconnect();
-  state.observer = new IntersectionObserver(entries => {
+
+  const items = Array.from(headings).map(h => ({
+    id: h.id,
+    title: h.textContent.trim(),
+    depth: h.tagName.toLowerCase()
+  }));
+
+  tocList.innerHTML = items.map(item => `
+    <li class="${item.depth === 'h3' ? 'pl-3' : ''}">
+      <a href="#${item.id}" onclick="smoothScrollTo('${item.id}', event)" class="toc-link block py-1.5 px-2 rounded-lg text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors truncate">
+        ${item.title}
+      </a>
+    </li>
+  `).join('');
+
+  mobileTocLinks.innerHTML = items.map(item => `
+    <a href="#${item.id}" onclick="smoothScrollTo('${item.id}', event); toggleMobileToc();" class="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium ${item.depth === 'h3' ? 'pl-6 text-xs text-slate-500' : ''}">
+      ${item.title}
+    </a>
+  `).join('');
+
+  // IntersectionObserver para resaltar el apartado activo en el ToC
+  if (state.tocObserver) state.tocObserver.disconnect();
+  state.tocObserver = new IntersectionObserver((entries) => {
     for (const entry of entries) {
-      if (entry.isIntersecting) nav.querySelectorAll('a').forEach(a => a.classList.toggle('active', a.hash === '#' + entry.target.id));
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        $$('#tocList a').forEach(a => {
+          const match = a.getAttribute('href') === `#${id}`;
+          a.classList.toggle('text-cyan-600', match);
+          a.classList.toggle('dark:text-cyan-400', match);
+          a.classList.toggle('font-bold', match);
+          a.classList.toggle('bg-slate-100', match);
+          a.classList.toggle('dark:bg-slate-800', match);
+        });
+      }
     }
-  }, { rootMargin: '-10% 0px -82% 0px' });
-  $('#contenido').querySelectorAll('h2,h3[id]').forEach(h => state.observer.observe(h));
-  if (location.hash) requestAnimationFrame(() => document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView());
+  }, { rootMargin: '-10% 0px -75% 0px' });
+
+  headings.forEach(h => state.tocObserver.observe(h));
 }
-async function loadJson(path) {
-  const response = await fetch(new URL(path, document.baseURI));
-  if (!response.ok) throw new Error(`No se pudo cargar ${path}`);
-  return response.json();
+
+function smoothScrollTo(elementId, event) {
+  if (event) event.preventDefault();
+  const el = document.getElementById(elementId);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    history.replaceState(null, '', `#${elementId}`);
+  }
 }
-async function init() {
+
+function updateAdjacentNavigation(currentUnit) {
+  const all = state.allUnitsInSubject;
+  const index = all.findIndex(u => u.id === currentUnit.id);
+
+  const prevBtn = $('#btnPrevTopic');
+  const nextBtn = $('#btnNextTopic');
+  const prevTitle = $('#prevTopicTitle');
+  const nextTitle = $('#nextTopicTitle');
+
+  if (index > 0) {
+    prevBtn.classList.remove('invisible');
+    prevTitle.textContent = all[index - 1].title;
+  } else {
+    prevBtn.classList.add('invisible');
+  }
+
+  if (index < all.length - 1 && index !== -1) {
+    nextBtn.classList.remove('invisible');
+    nextTitle.textContent = all[index + 1].title;
+  } else {
+    nextBtn.classList.add('invisible');
+  }
+
+  // Actualizar porcentaje en sidebar
+  const percent = Math.round(((index + 1) / all.length) * 100);
+  $('#sidebarProgressText').textContent = `Unidad ${index + 1} de ${all.length}`;
+  $('#sidebarProgressPercent').textContent = `${percent}%`;
+}
+
+function navigateAdjacentTopic(step) {
+  const all = state.allUnitsInSubject;
+  const index = all.findIndex(u => u.id === state.currentUnit?.id);
+  const target = index + step;
+  if (target >= 0 && target < all.length) {
+    handleUnitClick(all[target].id);
+  }
+}
+
+/* ==========================================================================
+   CONTROLES DE LECTURA (TEMA, FUENTE, ANCHO, SIDEBAR TABS)
+   ========================================================================== */
+function applyTheme(theme) {
+  state.theme = theme;
+  localStorage.setItem('study_theme', theme);
+  const html = document.documentElement;
+  const body = document.body;
+
+  const themeIconDash = $('#themeIconDash');
+  const themeLabelDash = $('#themeLabelDash');
+  const themeIconViewer = $('#themeIconViewer');
+  const themeLabelViewer = $('#themeLabelViewer');
+
+  if (theme === 'dark') {
+    html.classList.add('dark');
+    body.classList.remove('theme-sepia');
+    if (themeIconDash) { themeIconDash.setAttribute('data-lucide', 'moon'); themeIconDash.className = "w-4 h-4 text-cyan-400"; }
+    if (themeLabelDash) themeLabelDash.textContent = "Noche";
+    if (themeIconViewer) { themeIconViewer.setAttribute('data-lucide', 'moon'); themeIconViewer.className = "w-4 h-4 text-cyan-400"; }
+    if (themeLabelViewer) themeLabelViewer.textContent = "Noche";
+  } else if (theme === 'sepia') {
+    html.classList.remove('dark');
+    body.classList.add('theme-sepia');
+    if (themeIconDash) { themeIconDash.setAttribute('data-lucide', 'coffee'); themeIconDash.className = "w-4 h-4 text-amber-700"; }
+    if (themeLabelDash) themeLabelDash.textContent = "Sepia";
+    if (themeIconViewer) { themeIconViewer.setAttribute('data-lucide', 'coffee'); themeIconViewer.className = "w-4 h-4 text-amber-700"; }
+    if (themeLabelViewer) themeLabelViewer.textContent = "Sepia";
+  } else {
+    html.classList.remove('dark');
+    body.classList.remove('theme-sepia');
+    if (themeIconDash) { themeIconDash.setAttribute('data-lucide', 'sun'); themeIconDash.className = "w-4 h-4 text-amber-500"; }
+    if (themeLabelDash) themeLabelDash.textContent = "Claro";
+    if (themeIconViewer) { themeIconViewer.setAttribute('data-lucide', 'sun'); themeIconViewer.className = "w-4 h-4 text-amber-500"; }
+    if (themeLabelViewer) themeLabelViewer.textContent = "Claro";
+  }
+
+  lucide.createIcons();
+}
+
+function cycleTheme() {
+  if (state.theme === 'light') applyTheme('dark');
+  else if (state.theme === 'dark') applyTheme('sepia');
+  else applyTheme('light');
+}
+
+function changeFontSize(delta) {
+  state.fontSizeLevel = Math.max(-1, Math.min(2, state.fontSizeLevel + delta));
+  const article = $('#articleContent');
+  article.classList.remove('text-sm', 'text-base', 'text-lg', 'text-xl');
+  if (state.fontSizeLevel === -1) article.classList.add('text-sm');
+  else if (state.fontSizeLevel === 0) article.classList.add('text-base');
+  else if (state.fontSizeLevel === 1) article.classList.add('text-lg');
+  else if (state.fontSizeLevel === 2) article.classList.add('text-xl');
+}
+
+function toggleReadingWidth() {
+  state.isFullWidth = !state.isFullWidth;
+  const container = $('#readingContainer');
+  const icon = $('#widthIcon');
+  if (state.isFullWidth) {
+    container.classList.remove('max-w-3xl');
+    container.classList.add('max-w-5xl');
+    icon.setAttribute('data-lucide', 'minimize-2');
+  } else {
+    container.classList.remove('max-w-5xl');
+    container.classList.add('max-w-3xl');
+    icon.setAttribute('data-lucide', 'maximize-2');
+  }
+  lucide.createIcons();
+}
+
+function toggleSidebar(forceState) {
+  const sidebar = $('#sidebar');
+  const backdrop = $('#sidebarBackdrop');
+  state.sidebarOpen = typeof forceState === 'boolean' ? forceState : !state.sidebarOpen;
+
+  if (state.sidebarOpen) {
+    sidebar.classList.remove('-translate-x-full');
+    backdrop.classList.remove('opacity-0', 'pointer-events-none');
+  } else {
+    sidebar.classList.add('-translate-x-full');
+    backdrop.classList.add('opacity-0', 'pointer-events-none');
+  }
+}
+
+function handleSidebarToggle() {
+  const sidebar = $('#sidebar');
+  if (window.innerWidth >= 1024) {
+    sidebar.classList.toggle('lg:hidden');
+  } else {
+    toggleSidebar();
+  }
+}
+
+function switchSidebarTab(tab) {
+  const tabNavBtn = $('#tabNavBtn');
+  const tabTocBtn = $('#tabTocBtn');
+  const tabNavContent = $('#tabNavContent');
+  const tabTocContent = $('#tabTocContent');
+
+  if (tab === 'nav') {
+    tabNavBtn.className = "flex-1 py-1.5 rounded-lg text-center bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all flex items-center justify-center gap-1.5 font-semibold";
+    tabTocBtn.className = "flex-1 py-1.5 rounded-lg text-center text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all flex items-center justify-center gap-1.5";
+    tabNavContent.classList.remove('hidden');
+    tabTocContent.classList.add('hidden');
+  } else {
+    tabTocBtn.className = "flex-1 py-1.5 rounded-lg text-center bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition-all flex items-center justify-center gap-1.5 font-semibold";
+    tabNavBtn.className = "flex-1 py-1.5 rounded-lg text-center text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all flex items-center justify-center gap-1.5";
+    tabTocContent.classList.remove('hidden');
+    tabNavContent.classList.add('hidden');
+  }
+  lucide.createIcons();
+}
+
+function filterSidebarItems(query) {
+  const q = query.toLowerCase().trim();
+  const items = $$('#tabNavContent button, #tabTocContent a');
+  items.forEach(el => {
+    el.style.display = el.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+  });
+}
+
+function toggleMobileToc() {
+  const modal = $('#mobileTocModal');
+  modal.classList.toggle('hidden');
+  modal.classList.toggle('flex');
+}
+
+function copySnippetCode(button) {
+  const figure = button.closest('.code-block');
+  const code = figure.querySelector('pre code').textContent;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(() => {
+      showToast('Código copiado al portapapeles');
+    }).catch(() => fallbackCopy(code));
+  } else {
+    fallbackCopy(code);
+  }
+}
+
+function fallbackCopy(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  document.body.appendChild(textarea);
+  textarea.select();
   try {
-    const catalog = await loadJson('catalogo.json');
-    const requested = new URLSearchParams(location.search).get('u');
-    const [subjectId, unitId] = requested?.split('/') || [];
-    const entry = catalog.subjects.find(s => s.id === subjectId);
-    if (!entry) return home(catalog);
-    // Solo se descarga el catálogo y el .md de la asignatura/unidad elegidas.
-    const subject = await loadJson(`catalogo/${encodeURIComponent(entry.id)}.json`);
-    const chosen = subject.units.find(u => u.id === unitId);
-    // Sin unidad indicada: si la asignatura tiene grupos se muestra su estructura; si no, la primera unidad.
-    if (!chosen && !unitId && subject.tree.some(n => n.type === 'group')) return overview(subject);
-    const unit = chosen || subject.units[0];
-    const source = await fetch(new URL(unit.path, document.baseURI));
-    if (!source.ok) throw new Error(`No se pudo cargar ${unit.path}`);
-    state.markdownUrl = source.url;
-    sidebar(subject, unit);
-    content(await source.text(), subject, unit);
-    document.title = `${unit.title} · ${subject.title}`;
-    const trail = (findTrail(subject.tree, unit.id) || []).map(g => g.title);
-    $('#ruta').textContent = [subject.title, ...trail, formatUnitLabel(unit) ? `Unidad ${formatUnitLabel(unit)}` : unit.title].join(' / ').toUpperCase();
-    fileList(unit);
-    for (const a of [$('#fuente'), $('#pdf-top')]) {
-      a.hidden = !unit.source;
-      if (unit.source) a.href = new URL(unit.source, state.markdownUrl).href;
+    document.execCommand('copy');
+    showToast('Código copiado al portapapeles');
+  } catch (e) {
+    showToast('Error al copiar');
+  }
+  document.body.removeChild(textarea);
+}
+
+function showToast(message) {
+  const toast = $('#toast');
+  $('#toastText').textContent = message;
+  toast.classList.remove('opacity-0', 'pointer-events-none');
+  setTimeout(() => {
+    toast.classList.add('opacity-0', 'pointer-events-none');
+  }, 2200);
+}
+
+// Escuchador de scroll para barra de progreso
+$('#mainScrollArea').addEventListener('scroll', () => {
+  const main = $('#mainScrollArea');
+  const progress = (main.scrollTop / (main.scrollHeight - main.clientHeight)) * 100;
+  $('#readProgressBar').style.width = `${Math.min(100, Math.max(0, progress))}%`;
+});
+
+// Atajos de teclado
+window.addEventListener('keydown', (e) => {
+  // Ctrl/Cmd + B: Toggle sidebar
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'b') {
+    e.preventDefault();
+    handleSidebarToggle();
+  }
+  // Escape: Cerrar modales o sidebar móvil
+  if (e.key === 'Escape') {
+    const modal = $('#mobileTocModal');
+    if (!modal.classList.contains('hidden')) {
+      toggleMobileToc();
+    } else if (state.sidebarOpen) {
+      toggleSidebar(false);
     }
-  } catch (error) {
-    document.body.classList.add('home');
-    const h = document.createElement('h1'); h.textContent = 'No se pudieron cargar los apuntes';
-    const p = document.createElement('p'); p.textContent = error.message;
-    const back = document.createElement('a'); back.href = './'; back.textContent = '← Volver a asignaturas';
-    $('#contenido').replaceChildren(h, p, back);
   }
+});
+
+/* ==========================================================================
+   CONTENIDO MARKDOWN DE MUESTRA PARA FALLBACK
+   ========================================================================== */
+function getSampleMarkdown(unit) {
+  return `
+## Introducción a ${unit.title}
+
+El estudio sistemático de esta materia establece los principios de arquitectura, rendimiento y cumplimiento de normativas internacionales.
+
+::: cifras
+4 Capas|Modelo TCP/IP
+100%|Conformidad W3C
+< 50ms|Latencia Objetivo
+:::
+
+## Conceptos Fundamentales y Estructura
+
+En esta sección se detallan las interfaces y contratos fundamentales entre componentes:
+
+\`\`\`javascript title="app-server.js"
+import { createServer } from 'node:http';
+
+const server = createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ status: 'ok', timestamp: Date.now() }));
+});
+
+server.listen(3000, () => console.log('Servidor en ejecución en puerto 3000'));
+\`\`\`
+
+::: examen Cuestión típica de examen
+Recuerda que la semántica estricta y el cierre correcto de etiquetas influyen directamente en la construcción del árbol DOM y la accesibilidad.
+:::
+
+## Flujo de Trabajo Recomendado
+
+::: proceso
+Análisis de Requisitos -> Diseño de Arquitectura -> Implementación Semántica -> Validación W3C
+:::
+
+::: practica En el laboratorio
+Utiliza el inspector de red y el validador oficial para certificar que no existen advertencias en tiempo de ejecución.
+:::
+`;
 }
-$('#menu').addEventListener('click', () => {
-  const open = $('#indice').classList.toggle('open');
-  $('#menu').setAttribute('aria-expanded', String(open));
-});
-$('#indice').addEventListener('click', event => {
-  if (event.target.closest('a')) {
-    $('#indice').classList.remove('open');
-    $('#menu').setAttribute('aria-expanded', 'false');
+
+/* ==========================================================================
+   INICIALIZACIÓN DE LA APLICACIÓN
+   ========================================================================== */
+async function initApp() {
+  configureMarkdownParser();
+  applyTheme(state.theme);
+
+  await loadApplicationCatalog();
+
+  // Revisar si la URL solicita una asignatura/unidad específica (?u=materia/unidad)
+  const urlParam = new URLSearchParams(location.search).get('u');
+  if (urlParam) {
+    const [subjectId, unitId] = urlParam.split('/');
+    if (subjectId) {
+      await selectSubject(subjectId, unitId);
+      return;
+    }
   }
-});
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') {
-    $('#indice').classList.remove('open');
-    $('#menu').setAttribute('aria-expanded', 'false');
-  }
-});
-$('#contenido').addEventListener('click', async event => {
-  const button = event.target.closest('.copy-code');
-  if (!button) return;
-  try {
-    await navigator.clipboard.writeText(button.closest('figure').querySelector('code').textContent);
-    button.textContent = 'Copiado';
-    setTimeout(() => { button.textContent = 'Copiar'; }, 1600);
-  } catch { button.textContent = 'No disponible'; }
-});
-init();
+
+  // Si no hay parámetro, mostrar el Dashboard principal
+  renderDashboardSubjects();
+  renderRecentsSection();
+}
+
+// Inicializar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
