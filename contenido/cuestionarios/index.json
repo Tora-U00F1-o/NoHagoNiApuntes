@@ -1,0 +1,74 @@
+[
+  {
+    "id": "ejemplo-variable-respuestas",
+    "filename": "ejemplo-variable-respuestas.csv",
+    "path": "contenido/cuestionarios/ejemplo-variable-respuestas.csv",
+    "title": "Demo - Cuestionario con Opciones Variables (2 a 6 respuestas)",
+    "subject": "demostración-del-sistema",
+    "subjectTitle": "Demostración del Sistema",
+    "description": "Cuestionario de prueba que demuestra preguntas con 2, 3, 4, 5 y 6 respuestas posibles parseadas dinámicamente.",
+    "questionsCount": 5,
+    "timeMinutes": 10,
+    "optionsRange": "7-7"
+  },
+  {
+    "id": "test_html5_complejo_50",
+    "filename": "test_html5_complejo_50.csv",
+    "path": "contenido/cuestionarios/test_html5_complejo_50.csv",
+    "title": "HTML5 - Test Avanzado y Complejo: DOM, Accesibilidad, Seguridad y Especificación WHATWG",
+    "subject": "software-y-estándares-para-la-web",
+    "subjectTitle": "Software y Estándares para la Web",
+    "description": "Cuestionario avanzado de 50 preguntas con referencias directas a las diapositivas de teoría de HTML5",
+    "questionsCount": 50,
+    "timeMinutes": 50,
+    "optionsRange": "6-6"
+  },
+  {
+    "id": "test_html5_general_50",
+    "filename": "test_html5_general_50.csv",
+    "path": "contenido/cuestionarios/test_html5_general_50.csv",
+    "title": "HTML5 - Test General de Conceptos Fundamentales",
+    "subject": "software-y-estándares-para-la-web",
+    "subjectTitle": "Software y Estándares para la Web",
+    "description": "Cuestionario general de 50 preguntas con referencias directas a las diapositivas de teoría de HTML5",
+    "questionsCount": 50,
+    "timeMinutes": 30,
+    "optionsRange": "6-6"
+  },
+  {
+    "id": "test_html5_intermedio_50",
+    "filename": "test_html5_intermedio_50.csv",
+    "path": "contenido/cuestionarios/test_html5_intermedio_50.csv",
+    "title": "HTML5 - Test Intermedio: Semántica, Multimedia, Formularios y Tablas",
+    "subject": "software-y-estándares-para-la-web",
+    "subjectTitle": "Software y Estándares para la Web",
+    "description": "Cuestionario intermedio de 50 preguntas con referencias directas a las diapositivas de teoría de HTML5",
+    "questionsCount": 50,
+    "timeMinutes": 40,
+    "optionsRange": "6-6"
+  },
+  {
+    "id": "ri-jdbc-transacciones",
+    "filename": "ri-jdbc-transacciones.csv",
+    "path": "contenido/cuestionarios/ri-jdbc-transacciones.csv",
+    "title": "Repositorios de Información - JDBC y Transacciones",
+    "subject": "repositorios-de-información",
+    "subjectTitle": "Repositorios de Información",
+    "description": "Cuestionario sobre acceso a datos mediante JDBC, propiedades ACID y control de concurrencia.",
+    "questionsCount": 7,
+    "timeMinutes": 20,
+    "optionsRange": "3-6"
+  },
+  {
+    "id": "sew-tecnologias-xml",
+    "filename": "sew-tecnologias-xml.csv",
+    "path": "contenido/cuestionarios/sew-tecnologias-xml.csv",
+    "title": "Software y Estándares Web - XML y Tecnologías Web",
+    "subject": "software-y-estándares-para-la-web",
+    "subjectTitle": "Software y Estándares para la Web",
+    "description": "Cuestionario de autoevaluación con número dinámico de opciones sobre XML, DTD, XPath y CSS.",
+    "questionsCount": 8,
+    "timeMinutes": 15,
+    "optionsRange": "3-6"
+  }
+]

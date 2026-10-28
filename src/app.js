@@ -469,6 +469,12 @@ function saveRecent(subject, unit) {
 async function selectSubject(subjectId, requestedUnitId = null) {
   const dashboard = $('#viewSubjectsDashboard');
   const viewer = $('#viewStudyViewer');
+  const quizView = $('#viewQuizPage');
+  if (quizView) {
+    quizView.classList.remove('flex');
+    quizView.classList.add('hidden');
+    if (typeof stopTimer === 'function') stopTimer();
+  }
   
   dashboard.classList.add('hidden');
   viewer.classList.remove('hidden');
@@ -510,6 +516,12 @@ async function selectSubject(subjectId, requestedUnitId = null) {
 }
 
 function goToSubjectsDashboard() {
+  const quizView = $('#viewQuizPage');
+  if (quizView) {
+    quizView.classList.remove('flex');
+    quizView.classList.add('hidden');
+    if (typeof stopTimer === 'function') stopTimer();
+  }
   $('#viewStudyViewer').classList.remove('flex');
   $('#viewStudyViewer').classList.add('hidden');
   $('#viewSubjectsDashboard').classList.remove('hidden');
@@ -826,6 +838,8 @@ function applyTheme(theme) {
     if (themeIconDash) { themeIconDash.setAttribute('data-lucide', 'moon'); themeIconDash.className = "w-4 h-4 text-cyan-400"; }
     if (themeLabelDash) themeLabelDash.textContent = "Noche";
     if (themeIconViewer) { themeIconViewer.setAttribute('data-lucide', 'moon'); themeIconViewer.className = "w-4 h-4 text-cyan-400"; }
+    if (themeIconQuiz) { themeIconQuiz.setAttribute('data-lucide', 'moon'); themeIconQuiz.className = "w-4 h-4 text-cyan-400"; }
+    if (themeIconQuickModal) { themeIconQuickModal.setAttribute('data-lucide', 'moon'); themeIconQuickModal.className = "w-4 h-4 text-cyan-400"; }
     if (themeLabelViewer) themeLabelViewer.textContent = "Noche";
   } else if (theme === 'sepia') {
     html.classList.remove('dark');
@@ -833,6 +847,8 @@ function applyTheme(theme) {
     if (themeIconDash) { themeIconDash.setAttribute('data-lucide', 'coffee'); themeIconDash.className = "w-4 h-4 text-amber-700"; }
     if (themeLabelDash) themeLabelDash.textContent = "Sepia";
     if (themeIconViewer) { themeIconViewer.setAttribute('data-lucide', 'coffee'); themeIconViewer.className = "w-4 h-4 text-amber-700"; }
+    if (themeIconQuiz) { themeIconQuiz.setAttribute('data-lucide', 'coffee'); themeIconQuiz.className = "w-4 h-4 text-amber-700"; }
+    if (themeIconQuickModal) { themeIconQuickModal.setAttribute('data-lucide', 'coffee'); themeIconQuickModal.className = "w-4 h-4 text-amber-700"; }
     if (themeLabelViewer) themeLabelViewer.textContent = "Sepia";
   } else {
     html.classList.remove('dark');
@@ -840,6 +856,8 @@ function applyTheme(theme) {
     if (themeIconDash) { themeIconDash.setAttribute('data-lucide', 'sun'); themeIconDash.className = "w-4 h-4 text-amber-500"; }
     if (themeLabelDash) themeLabelDash.textContent = "Claro";
     if (themeIconViewer) { themeIconViewer.setAttribute('data-lucide', 'sun'); themeIconViewer.className = "w-4 h-4 text-amber-500"; }
+    if (themeIconQuiz) { themeIconQuiz.setAttribute('data-lucide', 'sun'); themeIconQuiz.className = "w-4 h-4 text-amber-500"; }
+    if (themeIconQuickModal) { themeIconQuickModal.setAttribute('data-lucide', 'sun'); themeIconQuickModal.className = "w-4 h-4 text-amber-500"; }
     if (themeLabelViewer) themeLabelViewer.textContent = "Claro";
   }
 
@@ -1068,6 +1086,13 @@ async function initApp() {
   applyTheme(state.theme);
 
   await loadApplicationCatalog();
+
+  const quizParam = new URLSearchParams(location.search).get('cuestionario') || new URLSearchParams(location.search).get('quiz');
+  if (quizParam && typeof startQuizFromCatalog === 'function') {
+    await loadQuestionnairesCatalog();
+    await startQuizFromCatalog(quizParam);
+    return;
+  }
 
   // Revisar si la URL solicita una asignatura/unidad específica (?u=materia/unidad)
   const urlParam = new URLSearchParams(location.search).get('u');

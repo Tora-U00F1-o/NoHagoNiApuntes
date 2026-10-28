@@ -25,6 +25,15 @@ El catálogo y el menú se generan automáticamente. No se toca `app.js` para a�
 
 La cabecera admite pares `campo: valor` en una línea, sin listas ni objetos YAML. Los campos de texto se toman literalmente, sin comillas. El formato de todos los bloques especiales está en [FORMATO.md](FORMATO.md).
 
+## Cuestionarios y Autoevaluación
+
+La plataforma incluye un sistema interactivo de cuestionarios tipo test basado en archivos `.csv` ubicados en `contenido/cuestionarios/`:
+
+- **Opciones variables**: Cada pregunta puede tener un número dinámico de respuestas (desde 2 opciones para V/F hasta 5 o más).
+- **Modos de práctica**: Modo Estudio (retroalimentación inmediata y explicaciones didácticas) y Modo Examen (con temporizador, contador de fallos y calificación final).
+- **Referencias de alta precisión**: Las preguntas pueden enlazar a secciones generales (`##`) o diapositivas concretas (`###`) de los apuntes (ej. `#40-cuando-usar-article-y-cuando-section`). Al pulsar sobre la referencia, se abre un visor emergente (*popup*) que resalta la diapositiva y los conceptos evaluados sin perder el progreso ni las respuestas marcadas.
+- **Formato y generación**: Consulta la [Guía de Formato de Cuestionarios](contenido/cuestionarios/FORMATO_CUESTIONARIOS.md) y la plantilla para IA en [prompts/generarTest.md](prompts/generarTest.md).
+
 ## Publicar en GitHub Pages
 
 1. Crea un repositorio en GitHub y sube **el contenido de esta carpeta** a la rama `main` (incluida `.github/workflows/pages.yml`). No subas solo el `.zip`.

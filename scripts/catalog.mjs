@@ -140,6 +140,7 @@ export async function makeCatalog(root) {
   const subjects = [];
   const dirs = (await readdir(root, { withFileTypes: true })).filter(x => x.isDirectory());
   for (const dir of dirs) {
+    if (dir.name === 'cuestionarios') continue;
     if (!IDENTIFIER.test(dir.name)) throw new Error(`Nombre de asignatura inválido: ${dir.name}`);
     const ctx = { subject: dir.name, seen: new Set(), units: new Map(), title: null };
     const tree = await walk(root, join(root, dir.name), [], ctx);

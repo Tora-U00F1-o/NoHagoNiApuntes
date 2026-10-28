@@ -36,5 +36,9 @@ function rebuild() {
   });
 }
 for (const folder of ['src', 'contenido']) {
-  watch(resolve(root, folder), { recursive: true }, () => { clearTimeout(timer); timer = setTimeout(rebuild, 300); });
+  watch(resolve(root, folder), { recursive: true }, (event, filename) => {
+    if (filename && filename.includes('index.json')) return;
+    clearTimeout(timer);
+    timer = setTimeout(rebuild, 300);
+  });
 }

@@ -1,8 +1,0 @@
-<!ELEMENT biblioteca (libro+)>
-<!ELEMENT libro (titulo, autor, editorial, anio, isbn)>
-<!ATTLIST libro id ID #REQUIRED>
-<!ELEMENT titulo (#PCDATA)>
-<!ELEMENT autor (#PCDATA)>
-<!ELEMENT editorial (#PCDATA)>
-<!ELEMENT anio (#PCDATA)>
-<!ELEMENT isbn (#PCDATA)>

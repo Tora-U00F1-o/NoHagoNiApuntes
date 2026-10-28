@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- rgb.xml Componentes RGB  -->
-<!-- Versión 1.1 18-Octubre-2025 Juan Manuel Cueva Lovelle. Universidad de Oviedo -->
-<prueba xmlns="http://www.uniovi.es"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.uniovi.es ComponentesRGB.xsd">
-  <color>255 255 0</color>
-</prueba>

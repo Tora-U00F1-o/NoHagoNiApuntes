@@ -97,6 +97,7 @@ body.theme-sepia header,
 body.theme-sepia aside,
 body.theme-sepia .sidebar-header,
 body.theme-sepia #viewSubjectsDashboard,
+body.theme-sepia #viewQuizPage,
 body.theme-sepia #mainScrollArea,
 body.theme-sepia .bg-white,
 body.theme-sepia .bg-slate-50,
@@ -165,12 +166,14 @@ body.theme-sepia .relative.overflow-hidden.bg-gradient-to-r {
 }
 
 /* Resumen Ejecutivo en Sepia */
-body.theme-sepia #summaryBox {
+body.theme-sepia #summaryBox,
+body.theme-sepia #quickNotesSummaryBox {
   background: linear-gradient(135deg, #ebd6b7 0%, #dcbe96 100%) !important;
   border-color: #be9d6e !important;
   color: #2c1b10 !important;
 }
-body.theme-sepia #summaryBox h2 {
+body.theme-sepia #summaryBox h2,
+body.theme-sepia #quickNotesSummaryBox h2 {
   color: #7c340a !important;
 }
 
@@ -187,7 +190,8 @@ body.theme-sepia .bg-slate-100\/80 {
   border-color: #c2a477 !important;
   color: #2c1b10 !important;
 }
-body.theme-sepia #contentPill {
+body.theme-sepia #contentPill,
+body.theme-sepia #quickNotesContentPill {
   background-color: #dbc19a !important;
   color: #682e0a !important;
 }
@@ -231,13 +235,15 @@ body.theme-sepia .copy-code {
 }
 
 /* ==========================================================================
-   TIPOGRAFÍA DEL ARTÍCULO (MARKDOWN RENDERER)
+   TIPOGRAFÍA DEL ARTÍCULO (MARKDOWN RENDERER - VISOR Y POPUP)
    ========================================================================== */
-#articleContent {
+#articleContent,
+#quickNotesContent {
   color: inherit;
 }
 
-#articleContent h2 {
+#articleContent h2,
+#quickNotesContent h2 {
   font-size: 1.65rem;
   font-weight: 800;
   letter-spacing: -0.025em;
@@ -252,7 +258,8 @@ body.theme-sepia .copy-code {
   gap: 0.5rem;
 }
 
-#articleContent h3 {
+#articleContent h3,
+#quickNotesContent h3 {
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.015em;
@@ -262,38 +269,46 @@ body.theme-sepia .copy-code {
   scroll-margin-top: 5rem;
 }
 
-#articleContent h4 {
+#articleContent h4,
+#quickNotesContent h4 {
   font-size: 1.05rem;
   font-weight: 600;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
-#articleContent p {
+#articleContent p,
+#quickNotesContent p {
   margin-bottom: 1.25rem;
   line-height: 1.75;
 }
 
 #articleContent ul, 
-#articleContent ol {
+#articleContent ol,
+#quickNotesContent ul,
+#quickNotesContent ol {
   margin-bottom: 1.25rem;
   padding-left: 1.5rem;
 }
 
-#articleContent ul {
+#articleContent ul,
+#quickNotesContent ul {
   list-style-type: disc;
 }
 
-#articleContent ol {
+#articleContent ol,
+#quickNotesContent ol {
   list-style-type: decimal;
 }
 
-#articleContent li {
+#articleContent li,
+#quickNotesContent li {
   margin-bottom: 0.4rem;
   line-height: 1.7;
 }
 
-#articleContent blockquote {
+#articleContent blockquote,
+#quickNotesContent blockquote {
   border-left: 4px solid #06b6d4;
   padding: 0.6rem 1.25rem;
   margin: 1.5rem 0;
@@ -303,7 +318,9 @@ body.theme-sepia .copy-code {
 }
 
 #articleContent p code,
-#articleContent li code {
+#articleContent li code,
+#quickNotesContent p code,
+#quickNotesContent li code {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.85em;
   padding: 0.15rem 0.4rem;
@@ -313,13 +330,16 @@ body.theme-sepia .copy-code {
 }
 
 .dark #articleContent p code,
-.dark #articleContent li code {
+.dark #articleContent li code,
+.dark #quickNotesContent p code,
+.dark #quickNotesContent li code {
   color: #22d3ee;
   background-color: rgba(15, 23, 42, 0.6);
 }
 
 /* Tablas responsivas */
-#articleContent table {
+#articleContent table,
+#quickNotesContent table {
   width: 100%;
   margin: 1.5rem 0;
   border-collapse: collapse;
@@ -329,19 +349,23 @@ body.theme-sepia .copy-code {
 }
 
 #articleContent th,
-#articleContent td {
+#articleContent td,
+#quickNotesContent th,
+#quickNotesContent td {
   padding: 0.75rem 1rem;
   border: 1px solid rgba(148, 163, 184, 0.25);
   text-align: left;
 }
 
-#articleContent th {
+#articleContent th,
+#quickNotesContent th {
   background-color: rgba(148, 163, 184, 0.1);
   font-weight: 700;
 }
 
 /* Imágenes */
-#articleContent img {
+#articleContent img,
+#quickNotesContent img {
   max-width: 100%;
   height: auto;
   border-radius: 1rem;
@@ -350,15 +374,97 @@ body.theme-sepia .copy-code {
 }
 
 /* Enlaces */
-#articleContent a {
+#articleContent a,
+#quickNotesContent a {
   color: #0891b2;
   text-decoration: underline;
   text-underline-offset: 3px;
   transition: color 0.15s;
 }
 
-#articleContent a:hover {
+#articleContent a:hover,
+#quickNotesContent a:hover {
   color: #06b6d4;
+}
+
+/* ==========================================================================
+   RESALTADO Y SUBRAYADO DE REFERENCIA DEL TEST EN APUNTES
+   ========================================================================== */
+@keyframes referencePulseGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.5);
+    background-color: rgba(6, 182, 212, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(6, 182, 212, 0);
+    background-color: rgba(6, 182, 212, 0.35);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(6, 182, 212, 0);
+    background-color: rgba(6, 182, 212, 0.12);
+  }
+}
+
+.quiz-target-reference {
+  position: relative;
+  border-left: 5px solid #0891b2 !important;
+  background: linear-gradient(to right, rgba(6, 182, 212, 0.14), rgba(6, 182, 212, 0.03)) !important;
+  padding: 1.25rem 1.5rem !important;
+  border-radius: 0.5rem 1.25rem 1.25rem 0.5rem !important;
+  animation: referencePulseGlow 2.2s ease-out 1;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.15) !important;
+  transition: all 0.3s ease;
+}
+
+.dark .quiz-target-reference {
+  border-left-color: #22d3ee !important;
+  background: linear-gradient(to right, rgba(6, 182, 212, 0.22), rgba(6, 182, 212, 0.05)) !important;
+  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.25) !important;
+}
+
+body.theme-sepia .quiz-target-reference {
+  border-left-color: #c2410c !important;
+  background: linear-gradient(to right, rgba(234, 88, 12, 0.2), rgba(234, 88, 12, 0.05)) !important;
+  box-shadow: 0 4px 20px rgba(194, 65, 12, 0.15) !important;
+}
+
+/* Distintivo badge encima de la sección referenciada */
+.quiz-reference-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background-color: #0891b2;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.35);
+}
+
+.dark .quiz-reference-badge {
+  background-color: #06b6d4;
+  color: #0f172a;
+}
+
+body.theme-sepia .quiz-reference-badge {
+  background-color: #c2410c;
+  color: #ffffff;
+}
+
+/* Subrayado marcado para términos destacados */
+.quiz-target-underline {
+  text-decoration: underline wavy #0891b2 2.5px !important;
+  text-underline-offset: 4px !important;
+  background-color: rgba(6, 182, 212, 0.2) !important;
+  padding: 0.1rem 0.35rem !important;
+  border-radius: 0.3rem !important;
+  font-weight: 700 !important;
 }
 
 /* ==========================================================================

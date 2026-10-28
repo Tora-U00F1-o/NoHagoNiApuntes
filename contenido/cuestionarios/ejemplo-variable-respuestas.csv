@@ -1,0 +1,10 @@
+# titulo: Demo - Cuestionario con Opciones Variables (2 a 6 respuestas)
+# asignatura: Demostración del Sistema
+# descripcion: Cuestionario de prueba que demuestra preguntas con 2, 3, 4, 5 y 6 respuestas posibles parseadas dinámicamente.
+# tiempo: 10
+pregunta;correcta;explicacion;referencia;opcion_1;opcion_2;opcion_3;opcion_4;opcion_5;opcion_6
+"Pregunta con 5 respuestas: ¿Cuál es el puerto estándar por defecto para el protocolo HTTPS?";B;"El puerto estándar para HTTPS seguro sobre TLS/SSL es el 443. El 80 es HTTP estándar.";"";80;443;21;8080;3306;
+"Pregunta con 3 respuestas: En programación web orientada a cliente, ¿cuál de estos lenguajes se ejecuta nativamente en los navegadores modernos?";A;"JavaScript se ejecuta nativamente en todos los navegadores mediante motores como V8 o SpiderMonkey.";"software-estandares-web/teoria-diseno-con-estandares";JavaScript;C++;Python;;;
+"Pregunta con 2 respuestas (Booleana): En JavaScript, la comparación '5' === 5 evalúa a true.";B;"El operador de igualdad estricta '===' no realiza conversión de tipo. Un string no es idéntico a un number, por lo que evalúa a false.";"";Verdadero;Falso;;;;
+"Pregunta con 4 respuestas: ¿Qué código de estado HTTP representa 'No Autorizado' (Unauthorized)?";C;"El código 401 indica que la petición carece de credenciales de autenticación válidas. 403 es Forbidden y 404 es Not Found.";"software-estandares-web/teoria-diseno-con-estandares";200;400;401;404;;
+"Pregunta con 6 respuestas: ¿Cuál de las siguientes tecnologías NO es un lenguaje de programación, sino un formato de serialización de texto?";F;"JSON (JavaScript Object Notation) es un formato de intercambio y serialización de datos, no un lenguaje de programación ejecutable.";"";Rust;Go;TypeScript;Kotlin;Swift;JSON
