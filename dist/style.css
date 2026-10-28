@@ -1,5 +1,5 @@
-﻿/* ==========================================================================
-   ESTILOS GENERALES, TIPOGRAFIA Y TRANSICIONES DE TEMA
+/* ==========================================================================
+   ESTILOS GENERALES, TIPOGRAFÍA Y TRANSICIONES DE TEMA
    ========================================================================== */
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -23,83 +23,215 @@ body {
   background: rgba(156, 163, 175, 0.65);
 }
 
-/* Objetivos tactiles minimos para moviles */
+/* Objetivos táctiles mínimos para móviles */
 .touch-target {
   min-height: 44px;
   min-width: 44px;
 }
 
 /* ==========================================================================
-   TEMA SEPIA (Descanso visual estilo e-Reader / Papel)
+   ESTILOS DE NIVELES Y JERARQUÍA DEL SIDEBAR (TODOS LOS TEMAS)
+   ========================================================================== */
+/* Nivel 0: Categoría Principal (TEORÍA, SEMINARIOS, PRÁCTICAS) */
+.sidebar-category {
+  margin-bottom: 1.25rem;
+}
+.sidebar-category:first-child {
+  margin-top: 0.25rem;
+}
+
+/* Nivel 1+: Subcarpetas interactivas (TECNOLOGÍAS XML, PRESENTACIÓN...) */
+details.sidebar-subfolder {
+  transition: all 0.2s ease;
+}
+
+details.sidebar-subfolder summary {
+  user-select: none;
+  list-style: none;
+}
+details.sidebar-subfolder summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Línea de guía vertical para las unidades anidadas dentro de una subcarpeta */
+.folder-children {
+  position: relative;
+}
+
+/* Botón de Unidad en el Sidebar */
+.sidebar-unit-btn {
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+/* Elemento Activo en Modo Claro */
+.sidebar-item-active {
+  background-color: rgba(6, 182, 212, 0.12) !important;
+  color: #0e7490 !important;
+  border-left: 3px solid #0891b2 !important;
+  font-weight: 700 !important;
+}
+
+/* Elemento Activo en Modo Oscuro */
+.dark .sidebar-item-active {
+  background-color: rgba(6, 182, 212, 0.18) !important;
+  color: #22d3ee !important;
+  border-left: 3px solid #06b6d4 !important;
+  font-weight: 700 !important;
+}
+
+/* Cabecera del Sidebar */
+.sidebar-header {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* ==========================================================================
+   TEMA SEPIA REFORZADO (MARCADO, CÁLIDO ESTILO PAPEL E-READER / KINDLE)
    ========================================================================== */
 body.theme-sepia {
-  background-color: #f7f3eb !important;
-  color: #3f3126 !important;
+  background-color: #eedcc3 !important;
+  color: #2c1b10 !important;
 }
 
 body.theme-sepia header,
 body.theme-sepia aside,
+body.theme-sepia .sidebar-header,
+body.theme-sepia #viewSubjectsDashboard,
+body.theme-sepia #mainScrollArea,
 body.theme-sepia .bg-white,
 body.theme-sepia .bg-slate-50,
 body.theme-sepia .bg-slate-100,
+body.theme-sepia .bg-slate-800,
 body.theme-sepia .bg-slate-900,
-body.theme-sepia .bg-slate-850 {
-  background-color: #eee7d9 !important;
-  border-color: #dfd5c1 !important;
+body.theme-sepia .bg-slate-950 {
+  background-color: #e4ceab !important;
+  border-color: #c2a477 !important;
 }
 
 body.theme-sepia input {
-  background-color: #faf6ee !important;
-  color: #3f3126 !important;
-  border-color: #dfd5c1 !important;
+  background-color: #f7eee1 !important;
+  color: #28170c !important;
+  border-color: #c2a477 !important;
+}
+body.theme-sepia input::placeholder {
+  color: #846850 !important;
 }
 
 body.theme-sepia .border-slate-100,
 body.theme-sepia .border-slate-200,
 body.theme-sepia .border-slate-700,
 body.theme-sepia .border-slate-800 {
-  border-color: #dfd5c1 !important;
+  border-color: #c2a477 !important;
 }
 
+/* Niveles de carpetas en Tema Sepia */
+body.theme-sepia details.sidebar-subfolder {
+  background-color: #e9d5b7 !important;
+  border-color: #c2a477 !important;
+}
+body.theme-sepia details.sidebar-subfolder summary {
+  background-color: #dbc19a !important;
+  color: #24140a !important;
+}
+body.theme-sepia details.sidebar-subfolder summary:hover {
+  background-color: #d1b48a !important;
+}
+body.theme-sepia details.sidebar-subfolder summary span.font-mono {
+  background-color: #eedcc3 !important;
+  border-color: #c2a477 !important;
+  color: #5c412b !important;
+}
+body.theme-sepia .folder-children {
+  border-left-color: #b08d5b !important;
+}
+
+/* Item activo en Tema Sepia */
+body.theme-sepia .sidebar-item-active {
+  background-color: #d8b789 !important;
+  color: #1a0e05 !important;
+  border-left: 3px solid #92400e !important;
+  font-weight: 800 !important;
+}
+body.theme-sepia .sidebar-unit-btn:hover:not(.sidebar-item-active) {
+  background-color: rgba(206, 176, 137, 0.45) !important;
+  color: #1a0e05 !important;
+}
+
+/* Banner del Dashboard en Sepia */
+body.theme-sepia .relative.overflow-hidden.bg-gradient-to-r {
+  background: linear-gradient(135deg, #7c3a14 0%, #5c2708 100%) !important;
+  color: #fdfaf5 !important;
+  box-shadow: 0 12px 28px rgba(70, 32, 10, 0.25) !important;
+}
+
+/* Resumen Ejecutivo en Sepia */
 body.theme-sepia #summaryBox {
-  background: linear-gradient(to bottom right, #f4eee3, #ece3d2) !important;
-  border-color: #dfd5c1 !important;
+  background: linear-gradient(135deg, #ebd6b7 0%, #dcbe96 100%) !important;
+  border-color: #be9d6e !important;
+  color: #2c1b10 !important;
 }
-
 body.theme-sepia #summaryBox h2 {
-  color: #6d543f !important;
+  color: #7c340a !important;
 }
 
+/* Barra superior de progreso de lectura en Sepia */
+body.theme-sepia #readProgressBar {
+  background: linear-gradient(to right, #92400e, #b45309, #d97706) !important;
+}
+
+/* Botones y Píldoras en Sepia */
+body.theme-sepia button.bg-slate-100,
+body.theme-sepia a.bg-slate-100,
+body.theme-sepia .bg-slate-100\/80 {
+  background-color: #d8bc93 !important;
+  border-color: #c2a477 !important;
+  color: #2c1b10 !important;
+}
+body.theme-sepia #contentPill {
+  background-color: #dbc19a !important;
+  color: #682e0a !important;
+}
+
+/* Tipografía de texto en Sepia */
 body.theme-sepia .text-slate-900,
 body.theme-sepia .text-white {
-  color: #2b1f17 !important;
+  color: #221206 !important;
 }
-
 body.theme-sepia .text-slate-700,
 body.theme-sepia .text-slate-600 {
-  color: #4a3b30 !important;
+  color: #3e2918 !important;
 }
-
 body.theme-sepia .text-slate-500,
 body.theme-sepia .text-slate-400 {
-  color: #7d6856 !important;
+  color: #6e553f !important;
+}
+body.theme-sepia .text-cyan-600,
+body.theme-sepia .text-cyan-500,
+body.theme-sepia .text-cyan-400 {
+  color: #8c3f12 !important;
 }
 
+/* Cajas de código en Tema Sepia */
 body.theme-sepia .code-block,
 body.theme-sepia pre {
-  background-color: #2b2118 !important;
-  color: #f2e7d7 !important;
+  background-color: #241b13 !important;
+  color: #f6ede0 !important;
+  border-color: #443224 !important;
 }
-
 body.theme-sepia .code-header,
 body.theme-sepia figcaption {
-  background-color: #382c21 !important;
-  border-color: #48392c !important;
-  color: #dfd2bf !important;
+  background-color: #34251a !important;
+  border-color: #4a3728 !important;
+  color: #dbc19a !important;
+}
+body.theme-sepia .copy-code {
+  background-color: #443324 !important;
+  border-color: #5c4735 !important;
+  color: #f0e4d0 !important;
 }
 
 /* ==========================================================================
-   TIPOGRAFIA DEL ARTICULO (MARKDOWN RENDERER)
+   TIPOGRAFÍA DEL ARTÍCULO (MARKDOWN RENDERER)
    ========================================================================== */
 #articleContent {
   color: inherit;
@@ -208,7 +340,7 @@ body.theme-sepia figcaption {
   font-weight: 700;
 }
 
-/* Imagenes */
+/* Imágenes */
 #articleContent img {
   max-width: 100%;
   height: auto;
@@ -230,7 +362,7 @@ body.theme-sepia figcaption {
 }
 
 /* ==========================================================================
-   BLOQUES DE CODIGO TECNICO (FIGURE + FIGCAPTION + PRE)
+   BLOQUES DE CÓDIGO TÉCNICO (FIGURE + FIGCAPTION + PRE)
    ========================================================================== */
 .code-block {
   margin: 1.5rem 0;
@@ -289,7 +421,7 @@ body.theme-sepia figcaption {
 }
 
 /* ==========================================================================
-   BLOQUES DIDACTICOS ESPECIALES (CUSTOM STUDY BLOCKS :::)
+   BLOQUES DIDÁCTICOS ESPECIALES (CUSTOM STUDY BLOCKS :::)
    ========================================================================== */
 /* Aviso / Nota General */
 .study-note {
@@ -312,7 +444,7 @@ body.theme-sepia figcaption {
   margin-bottom: 0.5rem;
 }
 
-/* Examen / Alerta Critica */
+/* Examen / Alerta Crítica */
 .study-exam {
   border-left: 4px solid #f59e0b;
   background-color: rgba(245, 158, 11, 0.1);
@@ -333,7 +465,7 @@ body.theme-sepia figcaption {
   margin-bottom: 0.5rem;
 }
 
-/* Practica de Laboratorio */
+/* Práctica de Laboratorio */
 .study-lab {
   border-left: 4px solid #10b981;
   background-color: rgba(16, 185, 129, 0.08);
@@ -421,7 +553,7 @@ details.study-question > div {
   border-top: 1px dashed rgba(148, 163, 184, 0.25);
 }
 
-/* Cifras / Metricas destacadas */
+/* Cifras / Métricas destacadas */
 .study-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));

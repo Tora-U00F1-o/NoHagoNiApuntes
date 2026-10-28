@@ -519,44 +519,113 @@ function goToSubjectsDashboard() {
   renderRecentsSection();
 }
 
+function containsUnit(node, unitId) {
+  if (!node || !unitId) return false;
+  if (node.type === 'unit') return node.id === unitId;
+  if (node.children) {
+    return node.children.some(c => containsUnit(c, unitId));
+  }
+  return false;
+}
+
+function countTotalUnits(node) {
+  if (!node) return 0;
+  if (node.type === 'unit') return 1;
+  if (node.children) {
+    return node.children.reduce((acc, c) => acc + countTotalUnits(c), 0);
+  }
+  return 0;
+}
+
 function renderSidebarTree(subject, selectedUnit) {
   const container = $('#tabNavContent');
   if (!container) return;
 
   const unitMap = new Map(subject.units.map(u => [u.id, u]));
 
-  function renderNodes(nodes) {
+  function renderNodes(nodes, depth = 0) {
     return nodes.map(node => {
       if (node.type === 'unit') {
         const u = unitMap.get(node.id);
         if (!u) return '';
         const isActive = u.id === selectedUnit?.id;
         const numberLabel = u.number ? String(u.number).padStart(2, '0') : '';
-        return `
-          <button onclick="handleUnitClick('${u.id}')" 
-                  class="w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs ${isActive ? 'bg-cyan-50 dark:bg-cyan-950/50 text-cyan-800 dark:text-cyan-300 font-semibold border-l-2 border-cyan-500' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/60'} transition-all">
-            ${numberLabel ? `<span class="font-mono text-[10px] ${isActive ? 'text-cyan-600 dark:text-cyan-400 font-bold' : 'text-slate-400'}">${numberLabel}</span>` : ''}
-            <span class="truncate">${u.title}</span>
-          </button>
-        `;
+        
+        // Estilo adaptado según nivel de anidación
+        if (depth >= 2) {
+          // Unidad dentro de una subcarpeta
+          return `
+            <button onclick="handleUnitClick('${u.id}')" 
+                    title="${u.title}"
+                    class="sidebar-unit-btn w-full text-left flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs transition-all ${
+                      isActive 
+                        ? 'sidebar-item-active bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 font-semibold border-l-2 border-cyan-500 shadow-sm' 
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/60'
+                    }">
+              ${numberLabel ? `<span class="font-mono text-[10px] shrink-0 ${isActive ? 'text-cyan-600 dark:text-cyan-400 font-bold' : 'text-slate-400 dark:text-slate-500'}">${numberLabel}</span>` : '<span class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600 shrink-0"></span>'}
+              <span class="truncate">${u.title}</span>
+            </button>
+          `;
+        } else {
+          // Unidad al nivel raíz de la categoría
+          return `
+            <button onclick="handleUnitClick('${u.id}')" 
+                    title="${u.title}"
+                    class="sidebar-unit-btn w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-all ${
+                      isActive 
+                        ? 'sidebar-item-active bg-cyan-50 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300 font-semibold border-l-2 border-cyan-500 shadow-sm' 
+                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/60'
+                    }">
+              ${numberLabel ? `<span class="font-mono text-[10px] shrink-0 ${isActive ? 'text-cyan-600 dark:text-cyan-400 font-bold' : 'text-slate-400'}">${numberLabel}</span>` : ''}
+              <span class="truncate">${u.title}</span>
+            </button>
+          `;
+        }
       } else if (node.type === 'group') {
-        return `
-          <div class="mb-3">
-            <div class="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 px-2 py-1 mb-1">
-              <span>${node.title}</span>
-              <span class="text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-mono">${node.children.length}</span>
+        if (depth === 0) {
+          // NIVEL 0: CATEGORÍA PRINCIPAL (TEORÍA, SEMINARIOS, PRÁCTICAS)
+          const totalUnits = countTotalUnits(node);
+          return `
+            <div class="sidebar-category mb-4 first:mt-1 mt-5">
+              <div class="flex items-center justify-between text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-2 py-1.5 mb-1.5 border-b border-slate-200/60 dark:border-slate-800/80">
+                <span class="flex items-center gap-1.5">
+                  <i data-lucide="layers" class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400"></i>
+                  ${node.title}
+                </span>
+                <span class="text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded font-mono font-bold">${totalUnits}</span>
+              </div>
+              <div class="space-y-0.5">
+                ${renderNodes(node.children, depth + 1)}
+              </div>
             </div>
-            <div class="space-y-0.5">
-              ${renderNodes(node.children)}
-            </div>
-          </div>
-        `;
+          `;
+        } else {
+          // NIVEL 1+: SUBCARPETAS (TECNOLOGÍAS XML, LENGUAJES DE PRESENTACIÓN, ETC.)
+          const folderUnits = countTotalUnits(node);
+          const hasActive = containsUnit(node, selectedUnit?.id);
+          return `
+            <details class="sidebar-subfolder group/folder my-2 rounded-xl border border-slate-200/90 dark:border-slate-800/90 bg-slate-50/60 dark:bg-slate-900/40 overflow-hidden" open>
+              <summary class="list-none flex items-center justify-between px-2.5 py-2 cursor-pointer select-none bg-slate-100/70 dark:bg-slate-800/50 hover:bg-slate-200/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors">
+                <div class="flex items-center gap-2 overflow-hidden">
+                  <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 group-open/folder:rotate-90 transition-transform shrink-0"></i>
+                  <i data-lucide="folder" class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400 group-open/folder:hidden shrink-0"></i>
+                  <i data-lucide="folder-open" class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400 hidden group-open/folder:inline shrink-0"></i>
+                  <span class="text-xs font-bold truncate">${node.title}</span>
+                </div>
+                <span class="text-[10px] bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-slate-700/60 px-1.5 py-0.2 rounded font-mono font-medium shrink-0">${folderUnits}</span>
+              </summary>
+              <div class="folder-children ml-3.5 pl-2.5 py-1.5 my-1 border-l-2 border-slate-200 dark:border-slate-700/80 space-y-0.5">
+                ${renderNodes(node.children, depth + 1)}
+              </div>
+            </details>
+          `;
+        }
       }
       return '';
     }).join('');
   }
 
-  container.innerHTML = renderNodes(subject.tree || []);
+  container.innerHTML = renderNodes(subject.tree || [], 0);
   lucide.createIcons();
 }
 
@@ -854,9 +923,27 @@ function switchSidebarTab(tab) {
 
 function filterSidebarItems(query) {
   const q = query.toLowerCase().trim();
-  const items = $$('#tabNavContent button, #tabTocContent a');
-  items.forEach(el => {
-    el.style.display = el.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+  const unitButtons = $$('#tabNavContent .sidebar-unit-btn');
+  unitButtons.forEach(btn => {
+    const text = btn.textContent.toLowerCase();
+    btn.style.display = text.includes(q) ? 'flex' : 'none';
+  });
+
+  // Mostrar u ocultar subcarpetas según si tienen elementos coincidentes
+  $$('#tabNavContent details.sidebar-subfolder').forEach(folder => {
+    if (!q) {
+      folder.style.display = 'block';
+      return;
+    }
+    const hasVisibleChild = Array.from(folder.querySelectorAll('.sidebar-unit-btn')).some(b => b.style.display !== 'none');
+    folder.style.display = hasVisibleChild ? 'block' : 'none';
+    if (hasVisibleChild) folder.open = true;
+  });
+
+  // Filtrar enlaces de apartados en el tab ToC
+  $$('#tabTocContent a').forEach(el => {
+    const text = el.textContent.toLowerCase();
+    el.style.display = text.includes(q) ? 'flex' : 'none';
   });
 }
 

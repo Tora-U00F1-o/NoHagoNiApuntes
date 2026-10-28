@@ -75,38 +75,72 @@
     }
 
     /* ========================================================
-       TEMA SEPIA (Lectura descansada estilo e-Reader / Papel)
+       TEMA SEPIA REFORZADO (Papel cálido e-Reader / Kindle)
        ======================================================== */
     body.theme-sepia {
-      background-color: #f7f3eb !important;
-      color: #3f3126 !important;
+      background-color: #eedcc3 !important;
+      color: #2c1b10 !important;
     }
     body.theme-sepia header,
     body.theme-sepia aside,
+    body.theme-sepia .sidebar-header,
+    body.theme-sepia #viewSubjectsDashboard,
+    body.theme-sepia #mainScrollArea,
     body.theme-sepia .bg-surface,
-    body.theme-sepia .bg-card-custom {
-      background-color: #eee7d9 !important;
-      border-color: #dfd5c1 !important;
+    body.theme-sepia .bg-card-custom,
+    body.theme-sepia .bg-white,
+    body.theme-sepia .bg-slate-50,
+    body.theme-sepia .bg-slate-100,
+    body.theme-sepia .bg-slate-800,
+    body.theme-sepia .bg-slate-900 {
+      background-color: #e4ceab !important;
+      border-color: #c2a477 !important;
     }
-    body.theme-sepia .border-custom {
-      border-color: #dfd5c1 !important;
+    body.theme-sepia input {
+      background-color: #f7eee1 !important;
+      color: #28170c !important;
+      border-color: #c2a477 !important;
     }
-    body.theme-sepia .bg-subtle {
-      background-color: #e5dcce !important;
+    body.theme-sepia .border-slate-100,
+    body.theme-sepia .border-slate-200,
+    body.theme-sepia .border-slate-700,
+    body.theme-sepia .border-slate-800 {
+      border-color: #c2a477 !important;
     }
-    body.theme-sepia .text-muted-custom {
-      color: #7d6856 !important;
+    body.theme-sepia details.sidebar-subfolder {
+      background-color: #e9d5b7 !important;
+      border-color: #c2a477 !important;
     }
-    body.theme-sepia .text-primary-custom {
-      color: #2b1f17 !important;
+    body.theme-sepia details.sidebar-subfolder summary {
+      background-color: #dbc19a !important;
+      color: #24140a !important;
+    }
+    body.theme-sepia .folder-children {
+      border-left-color: #b08d5b !important;
+    }
+    body.theme-sepia .sidebar-item-active {
+      background-color: #d8b789 !important;
+      color: #1a0e05 !important;
+      border-left: 3px solid #92400e !important;
+      font-weight: 800 !important;
+    }
+    body.theme-sepia #summaryBox {
+      background: linear-gradient(135deg, #ebd6b7 0%, #dcbe96 100%) !important;
+      border-color: #be9d6e !important;
+      color: #2c1b10 !important;
+    }
+    body.theme-sepia #summaryBox h2 {
+      color: #7c340a !important;
     }
     body.theme-sepia .code-block {
-      background-color: #2a2018 !important;
-      color: #f1e7d8 !important;
+      background-color: #241b13 !important;
+      color: #f6ede0 !important;
+      border-color: #443224 !important;
     }
     body.theme-sepia .code-header {
-      background-color: #382c23 !important;
-      border-color: #483a30 !important;
+      background-color: #34251a !important;
+      border-color: #4a3728 !important;
+      color: #dbc19a !important;
     }
 
     /* Estilo uniforme para bloques de código */
@@ -348,7 +382,7 @@
       <aside id="sidebar" class="fixed lg:static top-14 bottom-0 left-0 w-80 lg:w-72 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out shrink-0">
         
         <!-- Materia Activa en Sidebar -->
-        <div class="px-4 py-3 bg-slate-50 dark:bg-slate-850/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div class="sidebar-header px-4 py-3 bg-slate-100/90 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <div class="flex items-center gap-2 overflow-hidden">
             <span id="sidebarMateriaBadge" class="w-2.5 h-2.5 rounded-full bg-cyan-500 shrink-0"></span>
             <span id="sidebarMateriaName" class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">Software y Estándares Web</span>
