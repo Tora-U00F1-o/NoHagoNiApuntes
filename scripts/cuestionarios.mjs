@@ -116,7 +116,14 @@ export async function scanQuestionnaires(dirPath) {
     });
   }
 
-  // Ordenar por título
-  results.sort((a, b) => a.title.localeCompare(b.title, 'es'));
+  // Orden alfabético estricto (lexicográfico: 1.loquesea, 11.segundo, 2.tercero)
+  function getQuizSortKey(item) {
+    const title = (item.title || '').trim();
+    const filename = (item.filename || item.id || '').trim();
+    if (/^\d/.test(filename) && !/^\d/.test(title)) return filename;
+    return title || filename;
+  }
+
+  results.sort((a, b) => getQuizSortKey(a).localeCompare(getQuizSortKey(b), 'es', { numeric: false }));
   return results;
 }

@@ -305,10 +305,16 @@
         <div id="readingContainer" class="max-w-3xl mx-auto transition-all duration-300">
           
           <!-- Píldora de Categoría & Tiempo Estimado -->
-          <div class="flex items-center justify-between gap-2 mb-4 text-xs">
-            <span id="contentPill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100/80 dark:bg-cyan-950/70 text-cyan-800 dark:text-cyan-300 font-semibold">
-              <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Unidad
-            </span>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4 text-xs">
+            <div class="flex flex-wrap items-center gap-2">
+              <span id="contentPill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-100/80 dark:bg-cyan-950/70 text-cyan-800 dark:text-cyan-300 font-semibold">
+                <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Unidad
+              </span>
+              <button id="btnUnitSummary" type="button" onclick="toggleUnitSummary()" aria-pressed="false" class="hidden items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-cyan-50 dark:bg-cyan-950 text-cyan-800 dark:text-cyan-200 transition-colors">
+                <i data-lucide="list" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                <span id="unitSummaryLabel">Resumen</span>
+              </button>
+            </div>
             <span id="readingTimeBadge" class="text-slate-400 dark:text-slate-500 flex items-center gap-1.5 font-medium">
               <i data-lucide="clock" class="w-3.5 h-3.5"></i> 10 min de lectura
             </span>
@@ -379,54 +385,54 @@
   <!-- ================================================================= -->
   <div id="viewQuizPage" class="flex-1 flex-col overflow-hidden hidden bg-slate-50 dark:bg-slate-950">
 
-    <!-- Header del Cuestionario -->
+    <!-- Header del Cuestionario adaptado a móvil y desktop -->
     <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200 dark:border-slate-800 transition-colors">
-      <div class="max-w-7xl mx-auto px-3 sm:px-6 h-14 flex items-center justify-between gap-2">
+      <div class="max-w-7xl mx-auto px-2.5 sm:px-6 h-14 flex items-center justify-between gap-1.5 sm:gap-3">
         
-        <!-- Izquierda: Volver a Materias + Título -->
-        <div class="flex items-center gap-2 sm:gap-3 overflow-hidden">
-          <button onclick="exitQuizToDashboard()" title="Volver al catálogo principal" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors shrink-0">
+        <!-- Izquierda: Volver a Materias + Selector de Cuestionario + Título -->
+        <div class="flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1 overflow-hidden">
+          <button onclick="exitQuizToDashboard()" title="Volver al catálogo principal" class="flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors shrink-0 touch-manipulation min-h-[38px] sm:min-h-0">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            <span class="hidden sm:inline">Inicio</span>
+            <span class="hidden md:inline">Inicio</span>
           </button>
 
-          <button onclick="openQuizHub()" title="Cambiar archivo cuestionario" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-cyan-700 dark:text-cyan-300 bg-cyan-50 dark:bg-cyan-950/60 hover:bg-cyan-100 dark:hover:bg-cyan-900/60 transition-colors shrink-0">
+          <button onclick="openQuizHub()" title="Cambiar archivo cuestionario" class="flex items-center justify-center gap-1.5 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-medium text-cyan-700 dark:text-[#9cdcfe] bg-cyan-50 dark:bg-slate-800 hover:bg-cyan-100 dark:hover:bg-slate-700 transition-colors shrink-0 touch-manipulation min-h-[38px] sm:min-h-0">
             <i data-lucide="list" class="w-3.5 h-3.5"></i>
-            <span class="hidden md:inline">Elegir Cuestionario</span>
+            <span class="hidden sm:inline">Tests</span>
           </button>
 
-          <!-- Título y Asignatura -->
-          <div class="overflow-hidden">
+          <!-- Título y Asignatura con elipsis limpia para pantallas móviles -->
+          <div class="min-w-0 flex-1 pl-0.5">
             <div class="flex items-center gap-1.5">
-              <span id="quizHeaderSubject" class="text-[10px] uppercase font-bold text-cyan-600 dark:text-cyan-400 tracking-wider truncate"></span>
+              <span id="quizHeaderSubject" class="text-[9px] sm:text-[10px] uppercase font-bold text-cyan-600 dark:text-[#9cdcfe] tracking-wider truncate block max-w-full"></span>
             </div>
-            <h2 id="quizHeaderTitle" class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate"></h2>
+            <h2 id="quizHeaderTitle" class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate block max-w-full leading-tight"></h2>
           </div>
         </div>
 
         <!-- Derecha: Selector Modo Estudio/Examen + Temporizador + Tema -->
-        <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+        <div class="flex items-center gap-1 sm:gap-2 shrink-0">
           
           <!-- Selector de Modo: Estudio / Examen -->
-          <div class="flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200 dark:border-slate-700">
-            <button id="btnQuizModeStudy" onclick="setQuizMode('study')" title="Modo Estudio: Corrección inmediata con explicaciones" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-white dark:bg-slate-700 text-cyan-700 dark:text-cyan-300 shadow-sm transition-all flex items-center gap-1">
+          <div class="flex rounded-xl bg-slate-100 dark:bg-slate-800 p-0.5 sm:p-1 border border-slate-200 dark:border-slate-700">
+            <button id="btnQuizModeStudy" onclick="setQuizMode('study')" title="Modo Estudio: Corrección inmediata con explicaciones" class="px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold bg-white dark:bg-[#007acc] text-cyan-800 dark:text-white shadow-sm transition-all flex items-center gap-1 touch-manipulation">
               <i data-lucide="book-open" class="w-3 h-3"></i>
-              <span class="hidden sm:inline">Estudio</span>
+              <span class="hidden md:inline">Estudio</span>
             </button>
-            <button id="btnQuizModeExam" onclick="setQuizMode('exam')" title="Modo Examen: Sin pistas, nota al final" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all flex items-center gap-1">
+            <button id="btnQuizModeExam" onclick="setQuizMode('exam')" title="Modo Examen: Sin pistas, nota al final" class="px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all flex items-center gap-1 touch-manipulation">
               <i data-lucide="award" class="w-3 h-3"></i>
-              <span class="hidden sm:inline">Examen</span>
+              <span class="hidden md:inline">Examen</span>
             </button>
           </div>
 
           <!-- Temporizador -->
-          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono font-bold text-slate-700 dark:text-slate-300" title="Tiempo transcurrido">
-            <i data-lucide="timer" class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400"></i>
+          <div class="flex items-center gap-1 px-2 py-1 sm:px-2.5 sm:py-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[11px] sm:text-xs font-mono font-bold text-slate-700 dark:text-slate-300 min-h-[34px] sm:min-h-0" title="Tiempo transcurrido">
+            <i data-lucide="timer" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-600 dark:text-[#4fc1ff]"></i>
             <span id="quizTimerDisplay">00:00</span>
           </div>
 
           <!-- Selector de Tema -->
-          <button onclick="cycleTheme()" title="Cambiar tema de lectura" class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <button onclick="cycleTheme()" title="Cambiar tema de lectura" class="p-1.5 sm:p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors touch-manipulation min-h-[34px] min-w-[34px] sm:min-h-0 sm:min-w-0 flex items-center justify-center">
             <i data-lucide="sun" id="themeIconQuiz" class="w-4 h-4 text-amber-500"></i>
           </button>
 
@@ -434,48 +440,48 @@
       </div>
     </header>
 
-    <!-- Contenido del Cuestionario -->
-    <main class="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:px-8">
-      <div class="max-w-4xl mx-auto space-y-6">
+    <!-- Contenido del Cuestionario con espaciado móvil adaptado -->
+    <main class="flex-1 overflow-y-auto px-3 py-4 sm:px-6 sm:py-6 lg:px-8 pb-16 sm:pb-8">
+      <div class="max-w-4xl mx-auto space-y-4 sm:space-y-6">
 
         <!-- ============================================== -->
         <!-- SUB-VISTA A: CUESTIONARIO ACTIVO (PREGUNTAS)   -->
         <!-- ============================================== -->
-        <div id="quizActiveContainer" class="space-y-6">
+        <div id="quizActiveContainer" class="space-y-4 sm:space-y-6">
           
           <!-- Barra de Progreso Superior -->
-          <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2">
+          <div class="p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2">
             <div class="flex items-center justify-between text-xs">
               <span id="quizQuestionCounter" class="font-bold text-slate-700 dark:text-slate-300">Pregunta 1 de 1</span>
               <div class="flex items-center gap-2">
-                <span id="quizOptionsCountBadge" class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-100/70 dark:bg-cyan-950/60 text-cyan-800 dark:text-cyan-300">
+                <span id="quizOptionsCountBadge" class="px-2 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold bg-cyan-100/70 dark:bg-slate-800 text-cyan-800 dark:text-[#9cdcfe] border border-transparent dark:border-slate-700">
                   Variable
                 </span>
-                <span id="quizQuestionPercent" class="font-mono font-bold text-cyan-600 dark:text-cyan-400">0%</span>
+                <span id="quizQuestionPercent" class="font-mono font-bold text-cyan-600 dark:text-[#9cdcfe]">0%</span>
               </div>
             </div>
             <div class="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-              <div id="quizProgressBar" class="h-full bg-gradient-to-r from-teal-500 via-cyan-500 to-sky-600 transition-all duration-300 w-0"></div>
+              <div id="quizProgressBar" class="h-full bg-cyan-600 dark:bg-[#007acc] transition-all duration-300 w-0"></div>
             </div>
           </div>
 
-          <!-- Tarjeta de la Pregunta Actual -->
-          <div id="quizQuestionCardArea" class="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg space-y-6">
+          <!-- Tarjeta de la Pregunta Actual optimizada para móvil -->
+          <div id="quizQuestionCardArea" class="p-4 sm:p-7 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-md sm:shadow-lg space-y-4 sm:space-y-6">
             
-            <div class="space-y-3">
+            <div class="space-y-2.5 sm:space-y-3">
               <div class="flex flex-wrap items-center justify-between gap-2">
-                <span class="inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 px-2.5 py-0.5 rounded-md">
+                <span class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-cyan-700 dark:text-[#9cdcfe] bg-cyan-50 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-cyan-100 dark:border-slate-700">
                   <i data-lucide="help-circle" class="w-3 h-3"></i> Enunciado
                 </span>
                 <div id="quizQuestionRefArea" class="hidden"></div>
               </div>
-              <h3 id="quizQuestionStatement" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-relaxed">
+              <h3 id="quizQuestionStatement" class="text-base sm:text-xl font-bold text-slate-900 dark:text-white leading-snug sm:leading-relaxed">
                 Cargando enunciado...
               </h3>
             </div>
 
-            <!-- Contenedor Dinámico de Respuestas (Adaptable a 2, 3, 4, 5, 6... respuestas) -->
-            <div class="space-y-3" id="quizOptionsContainer">
+            <!-- Contenedor Dinámico de Respuestas (Adaptable a pantallas táctiles y teclado) -->
+            <div class="space-y-2.5 sm:space-y-3" id="quizOptionsContainer">
               <!-- Inyectado dinámicamente según la pregunta -->
             </div>
 
@@ -490,40 +496,40 @@
               </div>
             </div>
 
-            <!-- Botones de Navegación del Test -->
-            <div class="pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
-              <button id="btnQuizPrev" onclick="navigateQuizQuestion(-1)" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs transition-colors flex items-center gap-2 disabled:opacity-40 disabled:pointer-events-none">
+            <!-- Botones de Navegación del Test adaptados a móvil -->
+            <div class="pt-4 sm:pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 sm:gap-3">
+              <button id="btnQuizPrev" onclick="navigateQuizQuestion(-1)" class="min-h-[44px] px-3.5 sm:px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs sm:text-sm transition-colors flex items-center gap-1.5 sm:gap-2 disabled:opacity-40 disabled:pointer-events-none touch-manipulation">
                 <i data-lucide="chevron-left" class="w-4 h-4"></i>
                 <span>Anterior</span>
               </button>
 
               <div class="flex items-center gap-2">
-                <button id="btnQuizCheck" onclick="checkCurrentAnswer()" class="hidden px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-40 disabled:pointer-events-none">
+                <button id="btnQuizCheck" onclick="checkCurrentAnswer()" class="hidden min-h-[44px] px-4 sm:px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-600/20 active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2 disabled:opacity-40 disabled:pointer-events-none touch-manipulation">
                   <i data-lucide="check-circle" class="w-4 h-4"></i>
-                  <span>Comprobar respuesta</span>
+                  <span>Comprobar</span>
                 </button>
 
-                <button id="btnQuizNext" onclick="navigateQuizQuestion(1)" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-sky-600 hover:opacity-95 text-white font-bold text-xs shadow-md shadow-cyan-600/20 active:scale-95 transition-all flex items-center gap-2">
+                <button id="btnQuizNext" onclick="navigateQuizQuestion(1)" class="min-h-[44px] px-4 sm:px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 dark:bg-[#007acc] dark:hover:bg-[#1177bb] text-white font-bold text-xs sm:text-sm shadow-md shadow-cyan-600/20 dark:shadow-none active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2 touch-manipulation">
                   <span>Siguiente</span>
                   <i data-lucide="chevron-right" class="w-4 h-4"></i>
                 </button>
 
-                <button id="btnQuizFinishDirect" onclick="finishQuiz()" class="hidden px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:opacity-95 text-white font-bold text-xs shadow-md shadow-emerald-600/20 active:scale-95 transition-all flex items-center gap-2">
+                <button id="btnQuizFinishDirect" onclick="finishQuiz()" class="hidden min-h-[44px] px-4 sm:px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 hover:opacity-95 text-white font-bold text-xs sm:text-sm shadow-md shadow-emerald-600/20 active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2 touch-manipulation">
                   <i data-lucide="award" class="w-4 h-4"></i>
-                  <span>Finalizar Cuestionario</span>
+                  <span>Finalizar</span>
                 </button>
               </div>
             </div>
 
           </div>
 
-          <!-- Paleta de Navegación Rápida por Preguntas -->
-          <div class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
+          <!-- Paleta de Navegación Rápida por Preguntas táctil para móvil -->
+          <div class="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
             <div class="flex items-center justify-between text-xs">
               <span class="font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <i data-lucide="grid" class="w-3.5 h-3.5 text-cyan-500"></i> Navegación directa
+                <i data-lucide="grid" class="w-3.5 h-3.5 text-cyan-500 dark:text-[#007acc]"></i> Navegación directa
               </span>
-              <button onclick="finishQuiz()" class="text-xs font-semibold text-rose-600 dark:text-rose-400 hover:underline">
+              <button onclick="finishQuiz()" class="text-xs font-semibold text-rose-600 dark:text-rose-400 hover:underline p-1 touch-manipulation">
                 Entregar ahora
               </button>
             </div>
@@ -537,56 +543,56 @@
         <!-- ============================================== -->
         <!-- SUB-VISTA B: RESULTADOS Y EVALUACIÓN FINAL     -->
         <!-- ============================================== -->
-        <div id="quizResultsContainer" class="hidden space-y-6">
+        <div id="quizResultsContainer" class="hidden space-y-4 sm:space-y-6">
           
           <!-- Tarjeta de Calificación Principal -->
-          <div class="p-6 sm:p-10 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl text-center space-y-6">
+          <div class="p-5 sm:p-10 rounded-2xl sm:rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl text-center space-y-5 sm:space-y-6">
             
             <div class="inline-flex flex-col items-center justify-center">
-              <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-tr from-cyan-600 to-teal-500 flex flex-col items-center justify-center text-white shadow-xl shadow-cyan-500/25 mx-auto">
+              <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-cyan-600 dark:bg-[#007acc] flex flex-col items-center justify-center text-white shadow-xl shadow-cyan-500/25 dark:shadow-none mx-auto">
                 <span id="resultGradeNumber" class="text-3xl sm:text-5xl font-black font-mono">0.0</span>
-                <span class="text-[11px] sm:text-xs uppercase font-bold tracking-widest text-white/80">sobre 10</span>
+                <span class="text-[10px] sm:text-xs uppercase font-bold tracking-widest text-white/80">sobre 10</span>
               </div>
-              <div class="mt-4">
-                <span id="resultGradeBadge" class="px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 text-emerald-800">
+              <div class="mt-3 sm:mt-4">
+                <span id="resultGradeBadge" class="px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                   Calificación
                 </span>
               </div>
             </div>
 
-            <!-- Grilla de Estadísticas Clave -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto pt-4 border-t border-slate-100 dark:border-slate-800">
-              <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
-                <span class="text-[11px] text-slate-400 uppercase font-bold block">Aciertos</span>
-                <span id="resultCorrectCount" class="text-xl font-black text-emerald-600 dark:text-emerald-400">0</span>
+            <!-- Grilla de Estadísticas Clave responsive (2 cols móvil, 4 cols desktop) -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 max-w-2xl mx-auto pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div class="p-2.5 sm:p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
+                <span class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-bold block">Aciertos</span>
+                <span id="resultCorrectCount" class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400">0</span>
               </div>
-              <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
-                <span class="text-[11px] text-slate-400 uppercase font-bold block">Errores</span>
-                <span id="resultIncorrectCount" class="text-xl font-black text-rose-600 dark:text-rose-400">0</span>
+              <div class="p-2.5 sm:p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
+                <span class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-bold block">Errores</span>
+                <span id="resultIncorrectCount" class="text-lg sm:text-xl font-black text-rose-600 dark:text-rose-400">0</span>
               </div>
-              <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
-                <span class="text-[11px] text-slate-400 uppercase font-bold block">En Blanco</span>
-                <span id="resultUnansweredCount" class="text-xl font-black text-slate-500">0</span>
+              <div class="p-2.5 sm:p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
+                <span class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-bold block">En Blanco</span>
+                <span id="resultUnansweredCount" class="text-lg sm:text-xl font-black text-slate-500">0</span>
               </div>
-              <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
-                <span class="text-[11px] text-slate-400 uppercase font-bold block">Tiempo</span>
-                <span id="resultTotalTime" class="text-base font-black font-mono text-cyan-600 dark:text-cyan-400">0m</span>
+              <div class="p-2.5 sm:p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
+                <span class="text-[10px] sm:text-[11px] text-slate-400 uppercase font-bold block">Tiempo</span>
+                <span id="resultTotalTime" class="text-sm sm:text-base font-black font-mono text-cyan-600 dark:text-[#9cdcfe]">0m</span>
               </div>
             </div>
 
-            <!-- Acciones de Resultados -->
-            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
-              <button onclick="restartQuizFull()" class="px-5 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-md shadow-cyan-600/20 active:scale-95 transition-all flex items-center gap-2">
+            <!-- Acciones de Resultados en móvil: botones a ancho completo cómodos de pulsar -->
+            <div class="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-2.5 sm:gap-3 pt-2">
+              <button onclick="restartQuizFull()" class="w-full sm:w-auto px-5 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 dark:bg-[#007acc] dark:hover:bg-[#1177bb] text-white font-bold text-xs shadow-md shadow-cyan-600/20 active:scale-95 transition-all flex items-center justify-center gap-2 touch-manipulation">
                 <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                 <span>Reintentar Todo</span>
               </button>
 
-              <button id="btnQuizRetryFailed" class="hidden px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-2">
+              <button id="btnQuizRetryFailed" class="hidden w-full sm:w-auto px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center gap-2 touch-manipulation">
                 <i data-lucide="refresh-cw" class="w-4 h-4"></i>
                 <span>Repasar Solo Falladas</span>
               </button>
 
-              <button onclick="openQuizHub()" class="px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs transition-colors flex items-center gap-2">
+              <button onclick="openQuizHub()" class="w-full sm:w-auto px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs transition-colors flex items-center justify-center gap-2 touch-manipulation">
                 <i data-lucide="list" class="w-4 h-4"></i>
                 <span>Elegir Otro Cuestionario</span>
               </button>
@@ -595,9 +601,9 @@
           </div>
 
           <!-- Desglose Completo Pregunta por Pregunta -->
-          <div class="space-y-4">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
-              <i data-lucide="check-square" class="w-4 h-4 text-cyan-500"></i>
+          <div class="space-y-3 sm:space-y-4">
+            <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+              <i data-lucide="check-square" class="w-4 h-4 text-cyan-500 dark:text-[#007acc]"></i>
               Revisión Detallada de Respuestas
             </h3>
             <div id="quizResultsQuestionsBreakdown" class="space-y-4">
@@ -712,42 +718,42 @@
 
 <!-- MODAL SELECTOR DE CUESTIONARIOS CSV                               -->
   <!-- ================================================================= -->
-  <div id="quizSelectModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity">
-    <div class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-3xl max-h-[85vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+  <div id="quizSelectModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-2 sm:p-4 transition-opacity">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl sm:rounded-3xl max-h-[88vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
       
       <!-- Cabecera del Modal -->
-      <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-md shadow-orange-500/20">
-            <i data-lucide="help-circle" class="w-5 h-5"></i>
+      <div class="px-4 py-3 sm:px-6 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2.5 sm:gap-3">
+          <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-md shadow-orange-500/20 shrink-0">
+            <i data-lucide="help-circle" class="w-4 h-4 sm:w-5 sm:h-5"></i>
           </div>
           <div>
-            <h3 class="font-bold text-slate-900 dark:text-white text-base">Cuestionarios Disponibles</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Archivos CSV detectados en <code>contenido/cuestionarios/</code></p>
+            <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Cuestionarios Disponibles</h3>
+            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Archivos CSV detectados en <code>contenido/cuestionarios/</code></p>
           </div>
         </div>
-        <button onclick="closeQuizModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+        <button onclick="closeQuizModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors touch-manipulation">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <!-- Lista de Cuestionarios -->
-      <div id="quizModalCardsList" class="flex-1 overflow-y-auto p-6 grid grid-cols-1 gap-4">
+      <!-- Lista de Cuestionarios en orden alfabético -->
+      <div id="quizModalCardsList" class="flex-1 overflow-y-auto p-3.5 sm:p-6 grid grid-cols-1 gap-3 sm:gap-4">
         <!-- Inyectado dinámicamente -->
       </div>
 
       <!-- Pie del Modal: Cargar Archivo Propio y Guía -->
-      <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-        <div class="text-slate-500 dark:text-slate-400 flex items-center gap-2">
-          <i data-lucide="sliders" class="w-4 h-4 text-cyan-500"></i>
+      <div class="px-4 py-3 sm:px-6 sm:py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3 text-xs">
+        <div class="text-slate-500 dark:text-slate-400 flex items-center gap-2 text-center sm:text-left">
+          <i data-lucide="sliders" class="w-4 h-4 text-cyan-500 dark:text-[#007acc] shrink-0"></i>
           <span>Soporta preguntas con <strong>número variable de respuestas</strong>.</span>
         </div>
         
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
           <!-- Input oculto para subir CSV -->
           <input type="file" id="customCsvInput" accept=".csv" class="hidden" onchange="handleCustomCsvUpload(event)">
-          <button onclick="$('#customCsvInput').click()" class="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold transition-colors flex items-center gap-1.5">
-            <i data-lucide="upload" class="w-3.5 h-3.5 text-cyan-600"></i>
+          <button onclick="$('#customCsvInput').click()" class="w-full sm:w-auto justify-center px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold transition-colors flex items-center gap-1.5 touch-manipulation">
+            <i data-lucide="upload" class="w-3.5 h-3.5 text-cyan-600 dark:text-[#9cdcfe]"></i>
             <span>Cargar CSV Propio</span>
           </button>
         </div>

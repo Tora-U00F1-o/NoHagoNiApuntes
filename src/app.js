@@ -14,6 +14,9 @@ const state = {
   catalog: null,
   currentSubject: null,
   currentUnit: null,
+  showingSummary: false,
+  currentDocumentPath: null,
+  unitLoadVersion: 0,
   allUnitsInSubject: [],
   sidebarOpen: false,
   isFullWidth: false,
@@ -176,6 +179,14 @@ function configureMarkdownParser() {
     gfm: true,
     breaks: false,
     renderer: {
+      link(token) {
+        const href = resolveStudyResource(token.href);
+        const title = token.title ? ` title="${escapeHtml(token.title)}"` : '';
+        return `<a href="${escapeHtml(href)}"${title}>${this.parser.parseInline(token.tokens)}</a>`;
+      },
+      image(token) {
+        return `<img src="${escapeHtml(resolveStudyResource(token.href))}" alt="${escapeHtml(token.text)}"${token.title ? ` title="${escapeHtml(token.title)}"` : ''}>`;
+      },
       heading(token) {
         const text = token.text || '';
         const match = /\s+\{#([a-z0-9-]+)\}$/.exec(text);
@@ -282,6 +293,13 @@ function configureMarkdownParser() {
       }
     }]
   });
+}
+
+function resolveStudyResource(href) {
+  if (!href || href.startsWith('#') || href.startsWith('?')) return href;
+  if (/^(?:https?:|mailto:|tel:)/i.test(href)) return href;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(href)) return '#';
+  return new URL(href, new URL(state.currentDocumentPath || '.', document.baseURI)).href;
 }
 
 function highlightSyntax(container) {
@@ -466,7 +484,7 @@ function saveRecent(subject, unit) {
 /* ==========================================================================
    VISTA 2: VISOR DE APUNTES (READER)
    ========================================================================== */
-async function selectSubject(subjectId, requestedUnitId = null) {
+async function selectSubject(subjectId, requestedUnitId = null, showSummary = false) {
   const dashboard = $('#viewSubjectsDashboard');
   const viewer = $('#viewStudyViewer');
   const quizView = $('#viewQuizPage');
@@ -506,11 +524,7 @@ async function selectSubject(subjectId, requestedUnitId = null) {
   $('#sidebarMateriaBadge').className = `w-2.5 h-2.5 rounded-full bg-${preset.color}-500 shrink-0`;
 
   renderSidebarTree(subject, unit);
-  await loadUnit(unit);
-
-  // Sincronizar URL para bookmarks y refresco
-  const newUrl = `?u=${encodeURIComponent(subject.id + '/' + unit.id)}`;
-  history.replaceState(null, '', newUrl);
+  await loadUnit(unit, { summary: showSummary });
 
   toggleSidebar(false);
 }
@@ -650,14 +664,34 @@ async function handleUnitClick(unitId) {
   }
 }
 
-async function loadUnit(unit) {
+async function toggleUnitSummary() {
+  if (state.currentUnit?.summaryPath) {
+    await loadUnit(state.currentUnit, { summary: !state.showingSummary });
+  }
+}
+
+async function loadUnit(unit, { summary = false } = {}) {
+  const loadVersion = ++state.unitLoadVersion;
   state.currentUnit = unit;
+  state.showingSummary = Boolean(summary && unit.summaryPath);
+  const documentPath = state.showingSummary ? unit.summaryPath : unit.path;
+  state.currentDocumentPath = documentPath;
   saveRecent(state.currentSubject, unit);
+
+  const summaryBtn = $('#btnUnitSummary');
+  summaryBtn.classList.toggle('hidden', !unit.summaryPath);
+  summaryBtn.classList.toggle('inline-flex', Boolean(unit.summaryPath));
+  summaryBtn.setAttribute('aria-pressed', String(state.showingSummary));
+  $('#unitSummaryLabel').textContent = state.showingSummary ? 'Apuntes completos' : 'Resumen';
+  summaryBtn.title = state.showingSummary ? 'Volver a los apuntes completos' : 'Leer el resumen de esta unidad';
+  const params = new URLSearchParams({ u: state.currentSubject.id + '/' + unit.id });
+  if (state.showingSummary) params.set('vista', 'resumen');
+  history.replaceState(null, '', `?${params}`);
 
   // Actualizar Breadcrumbs
   $('#breadcrumbUnit').textContent = unit.title;
-  $('#lessonTitle').textContent = unit.title;
-  $('#contentPill').innerHTML = `<i data-lucide="book-open" class="w-3.5 h-3.5"></i> Unidad ${unit.number || ''}`;
+  $('#lessonTitle').textContent = state.showingSummary ? `${unit.title} · Resumen` : unit.title;
+  $('#contentPill').innerHTML = `<i data-lucide="book-open" class="w-3.5 h-3.5"></i> ${state.showingSummary ? 'Resumen' : 'Unidad ' + (unit.number || '')}`;
 
   // Botón PDF si tiene archivo fuente
   const pdfBtn = $('#btnPdfResource');
@@ -682,15 +716,17 @@ async function loadUnit(unit) {
 
   // Cargar contenido Markdown
   let markdownText = '';
-  if (unit.path && unit.path !== 'demo') {
+  if (documentPath && documentPath !== 'demo') {
     try {
-      markdownText = await fetchText(unit.path);
+      markdownText = await fetchText(documentPath);
     } catch (err) {
-      markdownText = `## Introducción\n\nNo se pudo descargar el archivo de apuntes (\`${unit.path}\`).\n\n::: aviso Error de red\nVerifica que el servidor local de desarrollo esté activo.\n:::`;
+      markdownText = `## Contenido no disponible\n\nNo se pudo descargar este documento. Vuelve a intentarlo o cambia de vista con el botón junto al título.`;
     }
   } else {
     markdownText = getSampleMarkdown(unit);
   }
+
+  if (loadVersion !== state.unitLoadVersion) return;
 
   // Eliminar cabecera frontmatter
   const cleanMarkdown = markdownText.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
@@ -835,11 +871,11 @@ function applyTheme(theme) {
   if (theme === 'dark') {
     html.classList.add('dark');
     body.classList.remove('theme-sepia');
-    if (themeIconDash) { themeIconDash.setAttribute('data-lucide', 'moon'); themeIconDash.className = "w-4 h-4 text-cyan-400"; }
+    if (themeIconDash) { themeIconDash.setAttribute('data-lucide', 'moon'); themeIconDash.className = "w-4 h-4 text-[#9cdcfe]"; }
     if (themeLabelDash) themeLabelDash.textContent = "Noche";
-    if (themeIconViewer) { themeIconViewer.setAttribute('data-lucide', 'moon'); themeIconViewer.className = "w-4 h-4 text-cyan-400"; }
-    if (themeIconQuiz) { themeIconQuiz.setAttribute('data-lucide', 'moon'); themeIconQuiz.className = "w-4 h-4 text-cyan-400"; }
-    if (themeIconQuickModal) { themeIconQuickModal.setAttribute('data-lucide', 'moon'); themeIconQuickModal.className = "w-4 h-4 text-cyan-400"; }
+    if (themeIconViewer) { themeIconViewer.setAttribute('data-lucide', 'moon'); themeIconViewer.className = "w-4 h-4 text-[#9cdcfe]"; }
+    if (themeIconQuiz) { themeIconQuiz.setAttribute('data-lucide', 'moon'); themeIconQuiz.className = "w-4 h-4 text-[#9cdcfe]"; }
+    if (themeIconQuickModal) { themeIconQuickModal.setAttribute('data-lucide', 'moon'); themeIconQuickModal.className = "w-4 h-4 text-[#9cdcfe]"; }
     if (themeLabelViewer) themeLabelViewer.textContent = "Noche";
   } else if (theme === 'sepia') {
     html.classList.remove('dark');
@@ -1099,7 +1135,7 @@ async function initApp() {
   if (urlParam) {
     const [subjectId, unitId] = urlParam.split('/');
     if (subjectId) {
-      await selectSubject(subjectId, unitId);
+      await selectSubject(subjectId, unitId, new URLSearchParams(location.search).get('vista') === 'resumen');
       return;
     }
   }

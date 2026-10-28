@@ -263,6 +263,24 @@ function parseQuizCSV(text, filename = 'cuestionario.csv') {
    ========================================================================== */
 
 /**
+ * Obtiene la clave de ordenamiento alfabético estricto (1..., 11..., 2...)
+ */
+function getQuizSortKey(item) {
+  const title = (item.title || '').trim();
+  const filename = (item.filename || item.id || '').trim();
+  if (/^\d/.test(filename) && !/^\d/.test(title)) return filename;
+  return title || filename;
+}
+
+/**
+ * Ordena la lista de cuestionarios en orden alfabético/lexicográfico puro
+ */
+function sortQuizCatalog(list) {
+  if (!Array.isArray(list)) return list;
+  return list.sort((a, b) => getQuizSortKey(a).localeCompare(getQuizSortKey(b), 'es', { numeric: false }));
+}
+
+/**
  * Carga el catálogo de cuestionarios desde contenido/cuestionarios/index.json
  */
 async function loadQuestionnairesCatalog() {
@@ -275,6 +293,7 @@ async function loadQuestionnairesCatalog() {
     console.warn('Usando catálogo local de contingencia para cuestionarios:', err);
     quizState.catalog = FALLBACK_QUIZ_CATALOG;
   }
+  sortQuizCatalog(quizState.catalog);
   return quizState.catalog;
 }
 
@@ -321,18 +340,21 @@ function renderQuizModalList() {
     return;
   }
 
+  // Asegurar orden alfabético estricto antes de renderizar
+  sortQuizCatalog(quizState.catalog);
+
   container.innerHTML = quizState.catalog.map(quiz => `
-    <div class="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-cyan-500/50 dark:hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/5 transition-all group flex flex-col justify-between">
+    <div class="p-3.5 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-cyan-500/50 dark:hover:border-[#007acc] hover:shadow-lg transition-all group flex flex-col justify-between">
       <div>
         <div class="flex items-center justify-between gap-2 mb-2">
-          <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-100 dark:bg-cyan-950/70 text-cyan-800 dark:text-cyan-300">
+          <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-cyan-100 dark:bg-slate-800 text-cyan-800 dark:text-[#9cdcfe] border border-transparent dark:border-slate-700">
             ${quiz.subjectTitle || 'Asignatura'}
           </span>
           <span class="text-xs text-slate-400 flex items-center gap-1 font-medium">
             <i data-lucide="clock" class="w-3 h-3"></i> ${quiz.timeMinutes || 15} min
           </span>
         </div>
-        <h4 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors mb-1.5 leading-snug">
+        <h4 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-[#4fc1ff] transition-colors mb-1.5 leading-snug">
           ${quiz.title}
         </h4>
         <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 mb-3">
@@ -341,13 +363,13 @@ function renderQuizModalList() {
       </div>
 
       <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
-        <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-          <i data-lucide="help-circle" class="w-3.5 h-3.5 text-cyan-500"></i>
-          <span><strong>${quiz.questionsCount || '?'}</strong> preguntas</span>
+        <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 truncate">
+          <i data-lucide="help-circle" class="w-3.5 h-3.5 text-cyan-500 dark:text-[#007acc] shrink-0"></i>
+          <span><strong>${quiz.questionsCount || '?'}</strong> preg.</span>
           <span class="text-slate-300 dark:text-slate-700">•</span>
-          <span class="font-mono text-[10px] text-slate-400">${quiz.filename}</span>
+          <span class="font-mono text-[10px] text-slate-400 truncate max-w-[120px] sm:max-w-none">${quiz.filename}</span>
         </div>
-        <button onclick="startQuizFromCatalog('${quiz.id}')" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-sky-600 text-white text-xs font-semibold shadow-md shadow-cyan-600/20 hover:opacity-95 active:scale-95 transition-all flex items-center gap-1">
+        <button onclick="startQuizFromCatalog('${quiz.id}')" class="px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 dark:bg-[#007acc] dark:hover:bg-[#1177bb] text-white text-xs font-semibold shadow-sm active:scale-95 transition-all flex items-center gap-1 shrink-0 touch-manipulation">
           <span>Hacer test</span>
           <i data-lucide="arrow-right" class="w-3 h-3"></i>
         </button>
@@ -522,11 +544,11 @@ function updateQuizModeUI() {
   if (!btnStudy || !btnExam) return;
 
   if (quizState.mode === 'study') {
-    btnStudy.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-white dark:bg-slate-700 text-cyan-700 dark:text-cyan-300 shadow-sm transition-all flex items-center gap-1';
-    btnExam.className = 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all flex items-center gap-1';
+    btnStudy.className = 'px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold bg-white dark:bg-[#007acc] text-cyan-800 dark:text-white shadow-sm transition-all flex items-center gap-1 touch-manipulation';
+    btnExam.className = 'px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all flex items-center gap-1 touch-manipulation';
   } else {
-    btnExam.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-white dark:bg-slate-700 text-cyan-700 dark:text-cyan-300 shadow-sm transition-all flex items-center gap-1';
-    btnStudy.className = 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all flex items-center gap-1';
+    btnExam.className = 'px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-bold bg-white dark:bg-[#007acc] text-cyan-800 dark:text-white shadow-sm transition-all flex items-center gap-1 touch-manipulation';
+    btnStudy.className = 'px-2 sm:px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all flex items-center gap-1 touch-manipulation';
   }
 }
 
@@ -567,8 +589,8 @@ function renderCurrentQuestion() {
   if (refArea) {
     if (current.reference) {
       refArea.innerHTML = `
-        <button type="button" onclick="openQuickNotes('${escapeHtml(current.reference)}')" title="Consultar apuntes de teoría sin perder tu avance ni respuestas" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold bg-cyan-100/90 dark:bg-cyan-950/80 text-cyan-800 dark:text-cyan-300 hover:bg-cyan-200 dark:hover:bg-cyan-900 border border-cyan-300/60 dark:border-cyan-800/60 transition-all shadow-sm active:scale-95">
-          <i data-lucide="book-open" class="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400"></i>
+        <button type="button" onclick="openQuickNotes('${escapeHtml(current.reference)}')" title="Consultar apuntes de teoría sin perder tu avance ni respuestas" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-cyan-100/90 dark:bg-slate-800 text-cyan-800 dark:text-[#9cdcfe] hover:bg-cyan-200 dark:hover:bg-slate-700 border border-cyan-300/60 dark:border-slate-700 transition-all shadow-sm active:scale-95 touch-manipulation">
+          <i data-lucide="book-open" class="w-3.5 h-3.5 text-cyan-600 dark:text-[#4fc1ff]"></i>
           <span>Ver apuntes relacionados</span>
         </button>
       `;
@@ -579,7 +601,7 @@ function renderCurrentQuestion() {
     }
   }
 
-  // RENDERIZADO DINÁMICO DE OPCIONES:
+  // RENDERIZADO DINÁMICO DE OPCIONES (ADAPTADO A MÓVIL Y TEMÁTICA VSCODE):
   const optionsContainer = $('#quizOptionsContainer');
   optionsContainer.innerHTML = '';
 
@@ -587,8 +609,8 @@ function renderCurrentQuestion() {
     const isSelected = selectedOpts.includes(optIdx);
     const letter = LETTERS[optIdx] || String(optIdx + 1);
 
-    let cardClasses = 'group relative flex items-start gap-3.5 p-4 rounded-2xl border transition-all text-left w-full cursor-pointer select-none ';
-    let letterClasses = 'w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 transition-colors ';
+    let cardClasses = 'group relative flex items-start gap-3 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl border transition-all text-left w-full cursor-pointer select-none min-h-[48px] active:scale-[0.99] touch-manipulation ';
+    let letterClasses = 'w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl flex items-center justify-center font-bold text-xs shrink-0 transition-colors mt-0.5 ';
     let statusIconHtml = '';
 
     if (quizState.mode === 'study' && isChecked) {
@@ -607,11 +629,11 @@ function renderCurrentQuestion() {
       }
     } else {
       if (isSelected) {
-        cardClasses += 'bg-cyan-50 dark:bg-cyan-950/40 border-cyan-500 shadow-md shadow-cyan-500/10 text-cyan-950 dark:text-cyan-100 font-medium ';
-        letterClasses += 'bg-cyan-600 text-white shadow-sm ';
+        cardClasses += 'bg-cyan-50 dark:bg-[#094771]/50 border-cyan-500 dark:border-[#007acc] text-cyan-950 dark:text-white font-medium shadow-sm ';
+        letterClasses += 'bg-cyan-600 dark:bg-[#007acc] text-white shadow-sm ';
       } else {
-        cardClasses += 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-cyan-400/60 dark:hover:border-cyan-500/60 hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-200 ';
-        letterClasses += 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 group-hover:bg-cyan-100 dark:group-hover:bg-cyan-950 group-hover:text-cyan-700 ';
+        cardClasses += 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-cyan-400/60 dark:hover:border-[#007acc] hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-200 ';
+        letterClasses += 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 group-hover:bg-cyan-100 dark:group-hover:bg-slate-700 group-hover:text-cyan-700 dark:group-hover:text-white ';
       }
     }
 
@@ -650,27 +672,27 @@ function renderCurrentQuestion() {
 
     explanationBox.classList.remove('hidden');
     if (isCorrect) {
-      explanationBox.className = 'mt-6 p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 transition-all';
+      explanationBox.className = 'mt-5 sm:mt-6 p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 transition-all';
       explanationStatusTitle.textContent = '¡Respuesta correcta!';
       explanationStatusIcon.className = 'w-5 h-5 text-emerald-600 dark:text-emerald-400';
       explanationStatusIcon.setAttribute('data-lucide', 'check-circle');
     } else {
-      explanationBox.className = 'mt-6 p-4 sm:p-5 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200 transition-all';
+      explanationBox.className = 'mt-5 sm:mt-6 p-4 sm:p-5 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200 transition-all';
       explanationStatusTitle.textContent = 'Respuesta incorrecta';
       explanationStatusIcon.className = 'w-5 h-5 text-rose-600 dark:text-rose-400';
       explanationStatusIcon.setAttribute('data-lucide', 'alert-circle');
     }
 
     let explHtml = current.explanation
-      ? `<p class="leading-relaxed">${escapeHtml(current.explanation)}</p>`
-      : '<p class="text-slate-400 italic">No se especificó retroalimentación adicional para esta pregunta.</p>';
+      ? `<p class="leading-relaxed text-xs sm:text-sm">${escapeHtml(current.explanation)}</p>`
+      : '<p class="text-slate-400 italic text-xs">No se especificó retroalimentación adicional para esta pregunta.</p>';
 
     if (current.reference) {
       explHtml += `
-        <div class="mt-3 pt-3 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between gap-2">
+        <div class="mt-3 pt-3 border-t border-slate-200/60 dark:border-slate-700/60 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
           <span class="text-xs text-slate-500 dark:text-slate-400">¿Quieres profundizar en este tema?</span>
-          <button type="button" onclick="openQuickNotes('${escapeHtml(current.reference)}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-cyan-700 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800 hover:bg-cyan-50 dark:hover:bg-cyan-950/80 shadow-sm transition-all shrink-0">
-            <i data-lucide="book-open" class="w-3.5 h-3.5 text-cyan-500"></i>
+          <button type="button" onclick="openQuickNotes('${escapeHtml(current.reference)}')" class="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 text-cyan-700 dark:text-[#9cdcfe] border border-cyan-200 dark:border-slate-700 hover:bg-cyan-50 dark:hover:bg-slate-700 shadow-sm transition-all shrink-0 touch-manipulation">
+            <i data-lucide="book-open" class="w-3.5 h-3.5 text-cyan-500 dark:text-[#007acc]"></i>
             <span>Consultar unidad en apuntes</span>
           </button>
         </div>
@@ -782,10 +804,10 @@ function renderQuestionPalette() {
     const answered = Boolean(quizState.userAnswers[q.id] && quizState.userAnswers[q.id].length > 0);
     const isChecked = Boolean(quizState.checkedQuestions[q.id]);
 
-    let btnClass = 'w-8 h-8 rounded-xl font-bold text-xs flex items-center justify-center transition-all ';
+    let btnClass = 'w-9 h-9 sm:w-8 sm:h-8 rounded-xl font-bold text-xs flex items-center justify-center transition-all touch-manipulation min-w-[36px] sm:min-w-0 ';
 
     if (isCurrent) {
-      btnClass += 'ring-2 ring-cyan-500 ring-offset-2 dark:ring-offset-slate-900 bg-cyan-600 text-white ';
+      btnClass += 'ring-2 ring-cyan-500 dark:ring-[#007acc] ring-offset-2 dark:ring-offset-[#1e1e1e] bg-cyan-600 dark:bg-[#007acc] text-white shadow-sm ';
     } else if (quizState.mode === 'study' && isChecked) {
       const isCorrect = quizState.userAnswers[q.id] &&
         quizState.userAnswers[q.id].length === q.correctIndices.length &&
@@ -796,9 +818,9 @@ function renderQuestionPalette() {
         btnClass += 'bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/40 ';
       }
     } else if (answered) {
-      btnClass += 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-semibold ';
+      btnClass += 'bg-slate-200 dark:bg-[#2d2d2d] text-slate-800 dark:text-[#cccccc] font-semibold border border-slate-300 dark:border-[#3c3c3c] ';
     } else {
-      btnClass += 'bg-slate-100 dark:bg-slate-800/60 text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 ';
+      btnClass += 'bg-slate-100 dark:bg-[#252526] text-slate-400 dark:text-[#858585] hover:bg-slate-200 dark:hover:bg-[#2d2d2d] border border-transparent dark:border-[#2d2d2d] ';
     }
 
     return `

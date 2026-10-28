@@ -74,9 +74,9 @@ details.sidebar-subfolder summary::-webkit-details-marker {
 
 /* Elemento Activo en Modo Oscuro */
 .dark .sidebar-item-active {
-  background-color: rgba(6, 182, 212, 0.18) !important;
-  color: #22d3ee !important;
-  border-left: 3px solid #06b6d4 !important;
+  background-color: #094771 !important;
+  color: #ffffff !important;
+  border-left: 3px solid #007acc !important;
   font-weight: 700 !important;
 }
 
@@ -333,8 +333,9 @@ body.theme-sepia .copy-code {
 .dark #articleContent li code,
 .dark #quickNotesContent p code,
 .dark #quickNotesContent li code {
-  color: #22d3ee;
-  background-color: rgba(15, 23, 42, 0.6);
+  color: #9cdcfe !important;
+  background-color: #2d2d2d !important;
+  border: 1px solid #3c3c3c;
 }
 
 /* Tablas responsivas */
@@ -419,9 +420,9 @@ body.theme-sepia .copy-code {
 }
 
 .dark .quiz-target-reference {
-  border-left-color: #22d3ee !important;
-  background: linear-gradient(to right, rgba(6, 182, 212, 0.22), rgba(6, 182, 212, 0.05)) !important;
-  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.25) !important;
+  border-left-color: #007acc !important;
+  background: linear-gradient(to right, rgba(0, 122, 204, 0.16), rgba(0, 122, 204, 0.04)) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
 }
 
 body.theme-sepia .quiz-target-reference {
@@ -448,8 +449,8 @@ body.theme-sepia .quiz-target-reference {
 }
 
 .dark .quiz-reference-badge {
-  background-color: #06b6d4;
-  color: #0f172a;
+  background-color: #007acc !important;
+  color: #ffffff !important;
 }
 
 body.theme-sepia .quiz-reference-badge {
@@ -624,7 +625,8 @@ details.study-question {
 }
 
 .dark details.study-question {
-  background-color: rgba(15, 23, 42, 0.4);
+  background-color: #252526 !important;
+  border-color: #3c3c3c !important;
 }
 
 details.study-question summary {
@@ -713,13 +715,277 @@ details.study-question > div {
 }
 
 .dark .study-flow span {
-  background: #1e293b;
-  border-color: #334155;
-  color: #f1f5f9;
+  background: #252526 !important;
+  border-color: #3c3c3c !important;
+  color: #cccccc !important;
 }
 
 .study-flow i {
   color: #06b6d4;
   font-weight: bold;
   font-style: normal;
+}
+
+/* ==========================================================================
+   TEMA OSCURO - TEMÁTICA VISUAL STUDIO CODE (DARK MODERN / DARK+)
+   Elimina los azules marinos/cyans fluorescentes en favor de carbón/gris y azul sobrio
+   ========================================================================== */
+html.dark,
+html.dark body {
+  background-color: #1e1e1e !important;
+  color: #cccccc !important;
+}
+
+.dark ::selection {
+  background-color: #264f78 !important;
+  color: #ffffff !important;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(121, 121, 121, 0.4) !important;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 100, 100, 0.7) !important;
+}
+
+/* Encabezados y Shell de la aplicación */
+.dark header,
+.dark aside,
+.dark .sidebar-header {
+  background-color: #181818 !important;
+  border-color: #2d2d2d !important;
+}
+
+/* Vistas Principales */
+.dark #viewSubjectsDashboard,
+.dark #viewQuizPage,
+.dark #viewStudyViewer {
+  background-color: #1e1e1e !important;
+}
+
+/* Contenedores y Tarjetas */
+.dark .bg-slate-950 {
+  background-color: #181818 !important;
+}
+.dark .bg-slate-900 {
+  background-color: #252526 !important;
+}
+.dark .bg-slate-900\/95,
+.dark .bg-slate-900\/90 {
+  background-color: rgba(24, 24, 24, 0.95) !important;
+}
+.dark .bg-slate-900\/40,
+.dark .bg-slate-900\/50,
+.dark .bg-slate-900\/60 {
+  background-color: rgba(37, 37, 38, 0.55) !important;
+}
+.dark .bg-slate-800 {
+  background-color: #2d2d2d !important;
+}
+.dark .bg-slate-800\/80,
+.dark .bg-slate-800\/60,
+.dark .bg-slate-800\/50,
+.dark .bg-slate-800\/40 {
+  background-color: #2a2d2e !important;
+}
+.dark .bg-slate-700 {
+  background-color: #383838 !important;
+}
+
+/* Bordes neutros tipo VS Code */
+.dark .border-slate-800,
+.dark .border-slate-800\/80,
+.dark .border-slate-800\/90 {
+  border-color: #2d2d2d !important;
+}
+.dark .border-slate-700,
+.dark .border-slate-700\/80,
+.dark .border-slate-700\/60 {
+  border-color: #3c3c3c !important;
+}
+
+/* Tipografía de texto en Modo Oscuro */
+.dark .text-slate-900,
+.dark .text-white {
+  color: #ffffff !important;
+}
+.dark .text-slate-100,
+.dark .text-slate-200 {
+  color: #e0e0e0 !important;
+}
+.dark .text-slate-300 {
+  color: #cccccc !important;
+}
+.dark .text-slate-400 {
+  color: #969696 !important;
+}
+.dark .text-slate-500 {
+  color: #858585 !important;
+}
+
+/* Sustitución de cyans y azules fuertes por tonos de sintaxis VS Code */
+.dark .text-cyan-400,
+.dark .text-cyan-300 {
+  color: #9cdcfe !important; /* Azul claro estilo identificador VS Code */
+}
+.dark .text-cyan-500,
+.dark .text-cyan-600 {
+  color: #4fc1ff !important; /* Azul de propiedad VS Code */
+}
+.dark .group:hover .group-hover\:text-cyan-400,
+.dark .group:hover .dark\:group-hover\:text-cyan-400 {
+  color: #4fc1ff !important;
+}
+
+.dark .bg-cyan-950,
+.dark .bg-cyan-950\/60,
+.dark .bg-cyan-950\/70,
+.dark .bg-cyan-950\/80 {
+  background-color: rgba(55, 148, 255, 0.12) !important;
+  color: #9cdcfe !important;
+  border-color: rgba(55, 148, 255, 0.25) !important;
+}
+
+.dark .bg-cyan-50,
+.dark .bg-cyan-100 {
+  background-color: rgba(55, 148, 255, 0.12) !important;
+  color: #9cdcfe !important;
+}
+
+/* Botones de acción primarios en modo oscuro */
+.dark .bg-cyan-600,
+.dark button.bg-cyan-600,
+.dark .bg-gradient-to-r.from-cyan-600 {
+  background: #007acc !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 122, 204, 0.25) !important;
+}
+.dark .bg-cyan-600:hover,
+.dark button.bg-cyan-600:hover,
+.dark .hover\:bg-cyan-500:hover {
+  background: #1177bb !important;
+}
+
+/* Barras de progreso */
+.dark #quizProgressBar,
+.dark #readProgressBar {
+  background: #007acc !important;
+}
+
+/* Banner del Dashboard en modo oscuro (sin azules chillones) */
+.dark #viewSubjectsDashboard .relative.overflow-hidden.bg-gradient-to-r {
+  background: linear-gradient(135deg, #252526 0%, #1e1e1e 50%, #252526 100%) !important;
+  border: 1px solid #3c3c3c !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+  color: #ffffff !important;
+}
+.dark #viewSubjectsDashboard .relative.overflow-hidden.bg-gradient-to-r .blur-3xl,
+.dark #viewSubjectsDashboard .relative.overflow-hidden.bg-gradient-to-r .blur-2xl {
+  opacity: 0.08 !important;
+}
+
+/* Inputs y buscadores en modo oscuro */
+.dark input {
+  background-color: #2d2d2d !important;
+  color: #cccccc !important;
+  border-color: #3c3c3c !important;
+}
+.dark input::placeholder {
+  color: #858585 !important;
+}
+.dark input:focus {
+  border-color: #007acc !important;
+  box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.35) !important;
+}
+
+/* Anillos de enfoque */
+.dark .ring-cyan-500 {
+  --tw-ring-color: #007acc !important;
+}
+
+/* Subcarpetas interactivas en el sidebar */
+.dark details.sidebar-subfolder {
+  border-color: #2d2d2d !important;
+  background-color: rgba(37, 37, 38, 0.4) !important;
+}
+.dark details.sidebar-subfolder summary {
+  background-color: #252526 !important;
+  color: #cccccc !important;
+}
+.dark details.sidebar-subfolder summary:hover {
+  background-color: #2d2d2d !important;
+}
+.dark .folder-children {
+  border-left-color: #3c3c3c !important;
+}
+
+/* ==========================================================================
+   ESTILOS RESPONSIVE PARA MÓVIL EN LA VISTA DE TEST
+   Optimización táctil, legibilidad y distribución ergonómica en pantallas < 640px
+   ========================================================================== */
+@media (max-width: 640px) {
+  #viewQuizPage {
+    min-height: 100vh;
+  }
+
+  #viewQuizPage header {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    height: 3.5rem !important;
+  }
+
+  #quizQuestionCardArea {
+    padding: 1rem 1rem 1.25rem 1rem !important;
+    border-radius: 1rem !important;
+  }
+
+  #quizQuestionStatement {
+    font-size: 1.05rem !important;
+    line-height: 1.5 !important;
+  }
+
+  #quizOptionsContainer button {
+    padding: 0.85rem 0.85rem !important;
+    min-height: 48px !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.75rem !important;
+    gap: 0.75rem !important;
+    touch-action: manipulation;
+  }
+
+  #quizQuestionPalette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem !important;
+  }
+
+  #quizQuestionPalette button {
+    width: 2.35rem !important;
+    height: 2.35rem !important;
+    font-size: 0.75rem !important;
+    border-radius: 0.65rem !important;
+    touch-action: manipulation;
+  }
+
+  #btnQuizPrev, #btnQuizNext, #btnQuizCheck, #btnQuizFinishDirect {
+    min-height: 44px !important;
+    font-size: 0.825rem !important;
+    touch-action: manipulation;
+  }
+
+  #quizSelectModal .bg-white,
+  #quizSelectModal .dark\:bg-slate-900 {
+    max-height: 90vh !important;
+  }
+
+  #quickNotesModal > div {
+    height: 96vh !important;
+    border-radius: 1.25rem !important;
+  }
+
+  #quickNotesScrollArea {
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
+    padding-top: 1rem !important;
+  }
 }

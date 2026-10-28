@@ -25,6 +25,12 @@ El catálogo y el menú se generan automáticamente. No se toca `app.js` para a�
 
 La cabecera admite pares `campo: valor` en una línea, sin listas ni objetos YAML. Los campos de texto se toman literalmente, sin comillas. El formato de todos los bloques especiales está en [FORMATO.md](FORMATO.md).
 
+## Resumen opcional de una unidad
+
+Añade `resumen.md` junto a `unidad.md`, con la misma cabecera y apartados `##`. El catálogo lo detecta automáticamente y muestra el botón **Resumen**. Al abrirlo, el botón pasa a **Apuntes completos** para volver a la unidad. Si no existe ese archivo, el botón no aparece.
+
+El resumen admite las mismas tablas, código, bloques especiales y enlaces relativos a PDF, imágenes o ejemplos. La URL añade `&vista=resumen`, por lo que se puede compartir o recargar esa vista. `npm run check` comprueba también estos archivos. Un resumen es una introducción breve; el desarrollo completo sigue en `unidad.md`.
+
 ## Cuestionarios y Autoevaluación
 
 La plataforma incluye un sistema interactivo de cuestionarios tipo test basado en archivos `.csv` ubicados en `contenido/cuestionarios/`:

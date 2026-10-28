@@ -99,6 +99,7 @@ async function walk(root, abs, slugs, ctx) {
         order: order ?? num,
         summary: meta.resumen,
         source: meta.fuente || null,
+        summaryPath: await exists(join(path, 'resumen.md')) ? `contenido/${dirRel}resumen.md` : null,
         files,
         path: `contenido/${rel}`,
       };
