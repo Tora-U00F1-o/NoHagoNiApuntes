@@ -1,6 +1,14 @@
 # Guía y Formato de Cuestionarios en CSV
 
-Este documento detalla la estructura y especificación para crear nuevos cuestionarios en formato `.csv` dentro de la carpeta `contenido/cuestionarios/`.
+Este documento detalla la estructura de los cuestionarios `.csv`. Guárdalos en `contenido/<asignatura>/<ruta-unidad>/test/`; `contenido/cuestionarios/` queda para ejemplos o cuestionarios generales. El catálogo descubre ambas ubicaciones al compilar.
+
+## Organización por unidad
+
+Utiliza `test/facil.csv`, `test/medio.csv` y `test/dificil.csv`. Incluye `# dificultad: facil`, `medio` o `dificil` para ordenar y filtrar niveles. `# unidad: <id-unidad>` documenta su procedencia; la asociación del catálogo se deduce de la carpeta, sin depender de títulos o tildes.
+
+El identificador de un test de unidad es `<asignatura>--<id-unidad>--<archivo-sin-extension>`. Se abre mediante `?cuestionario=<identificador>`. Los archivos opcionales de `test/anteriores/` conservan como identificador su nombre sin extensión. No repitas esos nombres históricos entre unidades.
+
+El documento `examen.md`, junto a `unidad.md`, añade el botón **Claves de examen**. Puede enlazar test mediante su identificador y apuntes mediante `?u=asignatura%2Funidad#apartado`.
 
 El sistema parsea dinámicamente cada archivo, permitiendo que:
 1. **Cada pregunta tenga un número variable de respuestas posibles** (por ejemplo, 5 respuestas en la pregunta 1, 3 en la pregunta 2, 2 en preguntas tipo Verdadero/Falso, etc.).

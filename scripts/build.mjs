@@ -12,7 +12,7 @@ const output = join(base, 'dist');
 const catalog = await makeCatalog(content);
 
 // Escaneo de cuestionarios
-const questionnaires = await scanQuestionnaires(questionnairesDir);
+const questionnaires = await scanQuestionnaires(content, catalog);
 const newQuizJson = JSON.stringify(questionnaires, null, 2) + '\n';
 let existingQuizJson = '';
 try { existingQuizJson = await readFile(join(questionnairesDir, 'index.json'), 'utf8'); } catch {}
@@ -24,6 +24,10 @@ await rm(output, { recursive: true, force: true, maxRetries: 10, retryDelay: 100
 await mkdir(output, { recursive: true });
 await cp(join(base, 'src'), output, { recursive: true });
 await cp(content, join(output, 'contenido'), { recursive: true });
+// Mantener también las descargas CSV antiguas al reorganizar sus fuentes.
+for (const quiz of questionnaires.filter(q => q.isArchive)) {
+  await cp(join(base, quiz.path), join(output, 'contenido', 'cuestionarios', quiz.filename));
+}
 
 // Índice ligero de asignaturas + un catálogo por asignatura (se descarga solo al elegirla).
 await mkdir(join(output, 'catalogo'), { recursive: true });

@@ -100,6 +100,8 @@ async function walk(root, abs, slugs, ctx) {
         summary: meta.resumen,
         source: meta.fuente || null,
         summaryPath: await exists(join(path, 'resumen.md')) ? `contenido/${dirRel}resumen.md` : null,
+        examPath: await exists(join(path, 'examen.md')) ? `contenido/${dirRel}examen.md` : null,
+        hasTests: await exists(join(path, 'test')),
         files,
         path: `contenido/${rel}`,
       };

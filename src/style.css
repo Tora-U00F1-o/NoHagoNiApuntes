@@ -989,3 +989,44 @@ html.dark body {
     padding-top: 1rem !important;
   }
 }
+/* Biblioteca de test: una tarjeta por unidad, con sus niveles juntos. */
+.quiz-controls { display:grid; grid-template-columns:1fr 1fr; gap:.65rem; padding:1rem 1.5rem; border-bottom:1px solid #cbd5e1; }
+.quiz-controls label { display:flex; flex-direction:column; gap:.25rem; font-size:.75rem; font-weight:600; min-width:0; }
+.quiz-controls input,.quiz-controls select { width:100%; min-height:2.5rem; border:1px solid #94a3b8; border-radius:.65rem; padding:.4rem .6rem; background:transparent; color:inherit; font-size:.8rem; }
+.dark .quiz-controls option { background:#252526; color:#e2e8f0; }
+.quiz-controls p { grid-column:1/-1; font-size:.75rem; color:#64748b; }
+.quiz-subject { min-width:0; }
+.quiz-subject h4 { font-size:.85rem; font-weight:800; margin:0 0 .75rem; }
+.quiz-unit { border:1px solid #cbd5e1; border-radius:1rem; padding:1rem; margin-bottom:.75rem; }
+.quiz-unit h5 { font-size:.85rem; font-weight:700; }
+.quiz-unit-resources { display:flex; gap:1rem; font-size:.75rem; margin:.45rem 0 .75rem; }
+.quiz-unit-resources a { text-decoration:underline; text-underline-offset:3px; }
+.quiz-levels { display:grid; grid-template-columns:repeat(auto-fit,minmax(135px,1fr)); gap:.5rem; }
+.quiz-level { display:flex; flex-direction:column; gap:.3rem; text-align:left; border:1px solid #67b5ca; border-radius:.7rem; padding:.65rem; min-height:3.5rem; background:#ecfeff; color:#155e75; }
+.quiz-level:hover { background:#cffafe; border-color:#0891b2; }
+.quiz-level strong { font-size:.8rem; }
+.quiz-level span { font-size:.7rem; }
+.dark .quiz-level { background:#252526; color:#e2e8f0; border-color:#3c3c3c; }
+.dark .quiz-level:hover { background:#37373d; }
+.dark .quiz-unit,.dark .quiz-controls { border-color:#3c3c3c; }
+.dark .quiz-controls,.dark .quiz-subject { color:#e2e8f0; }
+.dark .quiz-controls p { color:#94a3b8; }
+.quiz-resource-link { border-radius:.7rem; padding:.4rem .7rem; background:#ecfeff; color:#155e75; font-weight:600; }
+.dark .quiz-resource-link { background:#164e63; color:#cffafe; }
+.quiz-empty { padding:2rem; text-align:center; font-size:.85rem; }
+.quiz-inline-reference { text-decoration:underline; text-underline-offset:3px; font-weight:600; padding:.15rem; }
+@media(max-width:480px) { .quiz-controls { padding:.75rem; gap:.4rem; } .quiz-controls label:first-child,.quiz-controls label:nth-child(4) { grid-column:1/-1; } }
+
+/* Las variantes dark: de Tailwind también necesitan los fondos neutros. */
+.dark :is(#viewQuizPage, #quizSelectModal) [class*="dark:bg-slate-9"] {
+  background-color:#252526 !important;
+}
+.dark :is(#viewQuizPage, #quizSelectModal) [class*="dark:bg-slate-8"] {
+  background-color:#2d2d2d !important;
+}
+.dark :is(#viewQuizPage, #quizSelectModal) [class*="dark:border-slate-"] {
+  border-color:#3c3c3c !important;
+}
+.dark #quizOptionsContainer [class~="dark:bg-[#094771]/50"] {
+  background-color:#37373d !important;
+}

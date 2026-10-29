@@ -314,6 +314,8 @@
                 <i data-lucide="list" class="w-3.5 h-3.5" aria-hidden="true"></i>
                 <span id="unitSummaryLabel">Resumen</span>
               </button>
+              <button id="btnUnitExam" type="button" onclick="toggleUnitExam()" aria-pressed="false" class="hidden quiz-resource-link">Claves de examen</button>
+              <button id="btnUnitTests" type="button" onclick="openUnitTests()" class="hidden quiz-resource-link">Test de esta unidad</button>
             </div>
             <span id="readingTimeBadge" class="text-slate-400 dark:text-slate-500 flex items-center gap-1.5 font-medium">
               <i data-lucide="clock" class="w-3.5 h-3.5"></i> 10 min de lectura
@@ -488,7 +490,7 @@
             <!-- Cuadro de Explicación Didáctica (Modo Estudio) -->
             <div id="quizExplanationBox" class="hidden transition-all">
               <div class="flex items-center gap-2 mb-1.5 font-bold text-sm">
-                <i id="explanationStatusIcon" data-lucide="check-circle" class="w-5 h-5 text-emerald-600"></i>
+                <i id="quizExplanationStatusIcon" data-lucide="check-circle" class="w-5 h-5 text-emerald-600"></i>
                 <span id="quizExplanationStatusTitle">Retroalimentación</span>
               </div>
               <div id="quizExplanationText" class="text-xs sm:text-sm leading-relaxed">
@@ -558,6 +560,7 @@
                   Calificación
                 </span>
               </div>
+              <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">Precisión: <strong id="resultAccuracyPercent">0%</strong></p>
             </div>
 
             <!-- Grilla de Estadísticas Clave responsive (2 cols móvil, 4 cols desktop) -->
@@ -718,7 +721,7 @@
 
 <!-- MODAL SELECTOR DE CUESTIONARIOS CSV                               -->
   <!-- ================================================================= -->
-  <div id="quizSelectModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-2 sm:p-4 transition-opacity">
+  <div id="quizSelectModal" role="dialog" aria-modal="true" aria-labelledby="quizHubTitle" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-2 sm:p-4 transition-opacity">
     <div class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl sm:rounded-3xl max-h-[88vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
       
       <!-- Cabecera del Modal -->
@@ -728,16 +731,23 @@
             <i data-lucide="help-circle" class="w-4 h-4 sm:w-5 sm:h-5"></i>
           </div>
           <div>
-            <h3 class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Cuestionarios Disponibles</h3>
-            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Archivos CSV detectados en <code>contenido/cuestionarios/</code></p>
+            <h3 id="quizHubTitle" class="font-bold text-slate-900 dark:text-white text-sm sm:text-base">Cuestionarios Disponibles</h3>
+            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">Elige asignatura, unidad y dificultad</p>
           </div>
         </div>
-        <button onclick="closeQuizModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors touch-manipulation">
+        <button onclick="closeQuizModal()" aria-label="Cerrar cuestionarios" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors touch-manipulation">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
-      <!-- Lista de Cuestionarios en orden alfabético -->
+      <div class="quiz-controls">
+        <label>Buscar<input id="quizSearch" type="search" placeholder="Unidad, tema o test…" oninput="renderQuizModalList()"></label>
+        <label>Asignatura<select id="quizSubjectFilter" onchange="resetQuizUnitFilter(); renderQuizModalList()"></select></label>
+        <label>Unidad<select id="quizUnitFilter" onchange="renderQuizModalList()"></select></label>
+        <label>Dificultad<select id="quizDifficultyFilter" onchange="renderQuizModalList()"><option value="">Todas</option><option value="facil">Fácil</option><option value="medio">Medio</option><option value="dificil">Difícil</option><option value="otros">Otros test</option></select></label>
+        <p id="quizFilterCount" role="status" aria-live="polite"></p>
+      </div>
+      <!-- Asignaturas, bloques y unidades con sus niveles -->
       <div id="quizModalCardsList" class="flex-1 overflow-y-auto p-3.5 sm:p-6 grid grid-cols-1 gap-3 sm:gap-4">
         <!-- Inyectado dinámicamente -->
       </div>

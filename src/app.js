@@ -15,6 +15,7 @@ const state = {
   currentSubject: null,
   currentUnit: null,
   showingSummary: false,
+  showingExam: false,
   currentDocumentPath: null,
   unitLoadVersion: 0,
   allUnitsInSubject: [],
@@ -484,7 +485,7 @@ function saveRecent(subject, unit) {
 /* ==========================================================================
    VISTA 2: VISOR DE APUNTES (READER)
    ========================================================================== */
-async function selectSubject(subjectId, requestedUnitId = null, showSummary = false) {
+async function selectSubject(subjectId, requestedUnitId = null, showSummary = false, showExam = false, anchor = '') {
   const dashboard = $('#viewSubjectsDashboard');
   const viewer = $('#viewStudyViewer');
   const quizView = $('#viewQuizPage');
@@ -524,7 +525,7 @@ async function selectSubject(subjectId, requestedUnitId = null, showSummary = fa
   $('#sidebarMateriaBadge').className = `w-2.5 h-2.5 rounded-full bg-${preset.color}-500 shrink-0`;
 
   renderSidebarTree(subject, unit);
-  await loadUnit(unit, { summary: showSummary });
+  await loadUnit(unit, { summary: showSummary, exam: showExam, anchor });
 
   toggleSidebar(false);
 }
@@ -670,11 +671,20 @@ async function toggleUnitSummary() {
   }
 }
 
-async function loadUnit(unit, { summary = false } = {}) {
+async function toggleUnitExam() {
+  if (state.currentUnit?.examPath) await loadUnit(state.currentUnit, { exam: !state.showingExam });
+}
+
+function openUnitTests() {
+  return openQuizHub(state.currentSubject.id, state.currentUnit.id);
+}
+
+async function loadUnit(unit, { summary = false, exam = false, anchor = '' } = {}) {
   const loadVersion = ++state.unitLoadVersion;
   state.currentUnit = unit;
-  state.showingSummary = Boolean(summary && unit.summaryPath);
-  const documentPath = state.showingSummary ? unit.summaryPath : unit.path;
+  state.showingExam = Boolean(exam && unit.examPath);
+  state.showingSummary = Boolean(!state.showingExam && summary && unit.summaryPath);
+  const documentPath = state.showingExam ? unit.examPath : state.showingSummary ? unit.summaryPath : unit.path;
   state.currentDocumentPath = documentPath;
   saveRecent(state.currentSubject, unit);
 
@@ -684,14 +694,20 @@ async function loadUnit(unit, { summary = false } = {}) {
   summaryBtn.setAttribute('aria-pressed', String(state.showingSummary));
   $('#unitSummaryLabel').textContent = state.showingSummary ? 'Apuntes completos' : 'Resumen';
   summaryBtn.title = state.showingSummary ? 'Volver a los apuntes completos' : 'Leer el resumen de esta unidad';
+  const examBtn = $('#btnUnitExam');
+  examBtn.classList.toggle('hidden', !unit.examPath);
+  examBtn.setAttribute('aria-pressed', String(state.showingExam));
+  examBtn.textContent = state.showingExam ? 'Apuntes completos' : 'Claves de examen';
+  $('#btnUnitTests').classList.toggle('hidden', !unit.hasTests);
   const params = new URLSearchParams({ u: state.currentSubject.id + '/' + unit.id });
   if (state.showingSummary) params.set('vista', 'resumen');
-  history.replaceState(null, '', `?${params}`);
+  if (state.showingExam) params.set('vista', 'examen');
+  history.replaceState(null, '', `?${params}${anchor ? '#' + encodeURIComponent(anchor) : ''}`);
 
   // Actualizar Breadcrumbs
   $('#breadcrumbUnit').textContent = unit.title;
-  $('#lessonTitle').textContent = state.showingSummary ? `${unit.title} · Resumen` : unit.title;
-  $('#contentPill').innerHTML = `<i data-lucide="book-open" class="w-3.5 h-3.5"></i> ${state.showingSummary ? 'Resumen' : 'Unidad ' + (unit.number || '')}`;
+  $('#lessonTitle').textContent = state.showingExam ? `${unit.title} · Claves de examen` : state.showingSummary ? `${unit.title} · Resumen` : unit.title;
+  $('#contentPill').innerHTML = `<i data-lucide="book-open" class="w-3.5 h-3.5"></i> ${state.showingExam ? 'Examen' : state.showingSummary ? 'Resumen' : 'Unidad ' + (unit.number || '')}`;
 
   // Botón PDF si tiene archivo fuente
   const pdfBtn = $('#btnPdfResource');
@@ -752,6 +768,7 @@ async function loadUnit(unit, { summary = false } = {}) {
 
   // Reset scroll
   $('#mainScrollArea').scrollTop = 0;
+  if (anchor) document.getElementById(anchor)?.scrollIntoView({ block: 'start' });
   lucide.createIcons();
 }
 
@@ -1135,7 +1152,7 @@ async function initApp() {
   if (urlParam) {
     const [subjectId, unitId] = urlParam.split('/');
     if (subjectId) {
-      await selectSubject(subjectId, unitId, new URLSearchParams(location.search).get('vista') === 'resumen');
+      await selectSubject(subjectId, unitId, new URLSearchParams(location.search).get('vista') === 'resumen', new URLSearchParams(location.search).get('vista') === 'examen', decodeURIComponent(location.hash.slice(1)));
       return;
     }
   }

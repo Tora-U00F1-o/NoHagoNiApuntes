@@ -44,6 +44,12 @@ Las erratas o diferencias entre diapositiva y archivo se explican expresamente: 
 
 ## Lectura desde la web
 
+Cada una de las **15 unidades de teoría y seminarios** incluye `examen.md` y una carpeta `test/` con `facil.csv`, `medio.csv` y `dificil.csv`: **45 test de 50 preguntas, 2.250 en total**. Las prácticas no se incluyen. Los test tienen una sola respuesta correcta, explicaciones y referencias a apartados exactos. El nivel difícil combina diez casos explícitos con preguntas de conjuntos y cantidades de afirmaciones verdaderas/falsas.
+
+El visor ofrece **Claves de examen** y **Test de esta unidad**. El selector general permite buscar, filtrar por asignatura, unidad o dificultad y ver juntos los niveles en orden. Los tres cuestionarios HTML anteriores se guardan en `test/anteriores/` dentro de HTML y conservan sus identificadores históricos.
+
+Las claves se comparten con `?u=asignatura%2Funidad&vista=examen`. Para regenerar bancos y guías: `npm run generate:sew-tests`; para verificarlos: `npm test`, `npm run check` y `npm run build`.
+
 El catálogo detecta `resumen.md` automáticamente. El botón **Resumen** abre ese documento y cambia a **Apuntes completos** para regresar. Sin archivo, el botón permanece oculto. La dirección `?u=asignatura%2Funidad&vista=resumen` permite compartir o recargar un resumen.
 
 PDF, imágenes y ejemplos se resuelven desde la carpeta de la unidad, también al servir la web bajo una subcarpeta de GitHub Pages.

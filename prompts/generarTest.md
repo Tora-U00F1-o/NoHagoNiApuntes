@@ -8,6 +8,7 @@ Utiliza las siguientes instrucciones para solicitar a un modelo de IA o generar 
 Actúa como un profesor universitario experto en la materia. A partir del temario y las diapositivas proporcionadas en la unidad (archivo `unidad.md`), genera sets de preguntas de test en formato CSV para autoevaluación de los estudiantes.
 
 ### Requisitos de los sets de preguntas:
+0. **Organización**: guarda los tres CSV en la subcarpeta `test/` de la unidad: `facil.csv`, `medio.csv` y `dificil.csv`. Añade los metadatos `# unidad: <id-unidad>` y `# dificultad: facil|medio|dificil` con un único valor de dificultad por archivo. Mantén las referencias al identificador lógico de la unidad, sin añadir `test/` a `referencia`.
 1. Genera los siguientes bloques de preguntas bien diferenciados por dificultad:
    - **Set 1: 50 preguntas generales / fundamentales** (conceptos base, definiciones clave, sintaxis fundamental).
    - **Set 2: 50 preguntas intermedias** (aplicación de reglas, casos de uso prácticos, diferencias entre elementos y buenas prácticas).
@@ -17,8 +18,12 @@ Actúa como un profesor universitario experto en la materia. A partir del temari
    - Cada pregunta debe ofrecer generalmente 5 opciones de respuesta (`opcion_1` a `opcion_5`), salvo preguntas de tipo Verdadero/Falso (2 opciones) o preguntas con opciones naturalmente restringidas (3 o 4 opciones).
    - Solo una respuesta debe ser la correcta.
    - Las opciones incorrectas (distractores) deben ser plausibles, verosímiles y basadas en confusiones o errores comunes de la materia.
+   - Incluye casos de código, cálculos y límites del propio material. En opciones combinadas distingue «todas correctas», «todas falsas», «alguna incorrecta» y «exactamente una incorrecta»: no son equivalentes. Cada conjunto exacto de afirmaciones debe tener una sola opción válida.
+   - Una opción como «todas las afirmaciones anteriores» debe referirse inequívocamente a afirmaciones numeradas del enunciado, para que cambiar el orden de respuestas no altere su significado. Explica cada afirmación y aporta su apartado concreto si se combinan varias secciones.
 
-3. **Referencias de Alta Precisión (`referencia`)**:
+3. **Claves de examen**: añade `examen.md` junto a `unidad.md`, con cabecera `asignatura`, `titulo` y `resumen`, y apartados `##`. Resume qué hay que distinguir, reglas, excepciones, código y casos límite; enlaza los apartados y los tres test. Respeta el alcance de los apuntes y sus advertencias: una captura histórica o errata no es una garantía del comportamiento actual.
+
+4. **Referencias de Alta Precisión (`referencia`)**:
    - **OBLIGATORIO**: Cada pregunta debe incluir la referencia exacta a la lección y a la diapositiva o subapartado donde se explica dicho concepto.
    - Formato general: `<asignatura>/<id-unidad>#<slug-diapositiva>`
    - Para apuntes organizados por diapositivas con encabezados `### <numero>. <titulo>`, el ancla debe ser el slug exacto del encabezado.

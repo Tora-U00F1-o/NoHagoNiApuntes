@@ -8,7 +8,8 @@
     "dev": "node scripts/dev.mjs",
     "start": "node scripts/build.mjs && node scripts/dev.mjs",
     "check": "node scripts/check.mjs",
-    "test": "node --test scripts/summary.test.mjs"
+    "test": "node --test scripts/summary.test.mjs scripts/cuestionarios.test.mjs",
+    "generate:sew-tests": "node scripts/generate-sew-tests.mjs"
   },
   "engines": { "node": ">=20" }
 }

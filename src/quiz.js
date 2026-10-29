@@ -277,7 +277,12 @@ function getQuizSortKey(item) {
  */
 function sortQuizCatalog(list) {
   if (!Array.isArray(list)) return list;
-  return list.sort((a, b) => getQuizSortKey(a).localeCompare(getQuizSortKey(b), 'es', { numeric: false }));
+  const levels = { facil: 0, medio: 1, dificil: 2 };
+  return list.sort((a, b) => (a.subjectTitle || '').localeCompare(b.subjectTitle || '', 'es') ||
+    (a.unitOrder ?? 999) - (b.unitOrder ?? 999) ||
+    Number(Boolean(a.isArchive)) - Number(Boolean(b.isArchive)) ||
+    (levels[a.difficulty] ?? 3) - (levels[b.difficulty] ?? 3) ||
+    getQuizSortKey(a).localeCompare(getQuizSortKey(b), 'es', { numeric: true }));
 }
 
 /**
@@ -300,16 +305,31 @@ async function loadQuestionnairesCatalog() {
 /**
  * Abre el Hub / Modal con la lista de cuestionarios CSV disponibles
  */
-async function openQuizHub() {
+async function openQuizHub(subjectId = '', unitId = '') {
   const modal = $('#quizSelectModal');
   if (!modal) return;
+  quizState.hubOpener = document.activeElement;
 
   await loadQuestionnairesCatalog();
+  $('#quizSearch').value = '';
+  $('#quizDifficultyFilter').value = '';
+  const subjects = [...new Set(quizState.catalog.map(q => q.subjectTitle))];
+  $('#quizSubjectFilter').innerHTML = '<option value="">Todas</option>' + subjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+  $('#quizSubjectFilter').value = quizState.catalog.find(q => q.subject === subjectId)?.subjectTitle || '';
+  resetQuizUnitFilter(unitId);
   renderQuizModalList();
 
   modal.classList.remove('hidden');
   modal.classList.add('flex');
   if (window.lucide) lucide.createIcons();
+  $('#quizSearch').focus();
+}
+
+function resetQuizUnitFilter(selected = '') {
+  const subject = $('#quizSubjectFilter').value;
+  const units = new Map(quizState.catalog.filter(q => q.unitId && (!subject || q.subjectTitle === subject)).map(q => [`${q.subject}/${q.unitId}`, q.unitTitle || q.unitId]));
+  $('#quizUnitFilter').innerHTML = '<option value="">Todas</option>' + [...units].map(([id, title]) => `<option value="${escapeHtml(id)}">${escapeHtml(title)}</option>`).join('');
+  $('#quizUnitFilter').value = [...units.keys()].find(key => key.endsWith('/' + selected)) || '';
 }
 
 /**
@@ -320,6 +340,7 @@ function closeQuizModal() {
   if (modal) {
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+    if (quizState.hubOpener?.isConnected) quizState.hubOpener.focus();
   }
 }
 
@@ -330,52 +351,47 @@ function renderQuizModalList() {
   const container = $('#quizModalCardsList');
   if (!container) return;
 
-  if (!quizState.catalog || quizState.catalog.length === 0) {
-    container.innerHTML = `
-      <div class="text-center py-8 text-slate-500 dark:text-slate-400 text-sm">
-        <i data-lucide="folder-x" class="w-10 h-10 mx-auto mb-2 text-slate-400"></i>
-        No se encontraron archivos .csv en <code>contenido/cuestionarios/</code>.
-      </div>
-    `;
+  const fold = text => String(text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const search = fold($('#quizSearch').value);
+  const subject = $('#quizSubjectFilter').value;
+  const unit = $('#quizUnitFilter').value;
+  const difficulty = $('#quizDifficultyFilter').value;
+  const quizzes = quizState.catalog.filter(q => (!subject || q.subjectTitle === subject) &&
+    (!unit || `${q.subject}/${q.unitId}` === unit) &&
+    (!difficulty || (difficulty === 'otros' ? !q.difficulty : q.difficulty === difficulty)) &&
+    (!search || fold([q.title, q.description, q.unitTitle, q.group, q.subjectTitle].join(' ')).includes(search)));
+  $('#quizFilterCount').textContent = `${quizzes.length} test de ${quizState.catalog.length}`;
+  if (!quizzes.length) {
+    container.innerHTML = '<p class="quiz-empty">No hay test que coincidan con estos filtros.</p>';
     return;
   }
-
-  // Asegurar orden alfabético estricto antes de renderizar
-  sortQuizCatalog(quizState.catalog);
-
-  container.innerHTML = quizState.catalog.map(quiz => `
-    <div class="p-3.5 sm:p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-cyan-500/50 dark:hover:border-[#007acc] hover:shadow-lg transition-all group flex flex-col justify-between">
-      <div>
-        <div class="flex items-center justify-between gap-2 mb-2">
-          <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-cyan-100 dark:bg-slate-800 text-cyan-800 dark:text-[#9cdcfe] border border-transparent dark:border-slate-700">
-            ${quiz.subjectTitle || 'Asignatura'}
-          </span>
-          <span class="text-xs text-slate-400 flex items-center gap-1 font-medium">
-            <i data-lucide="clock" class="w-3 h-3"></i> ${quiz.timeMinutes || 15} min
-          </span>
-        </div>
-        <h4 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-[#4fc1ff] transition-colors mb-1.5 leading-snug">
-          ${quiz.title}
-        </h4>
-        <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 mb-3">
-          ${quiz.description || 'Cuestionario de autoevaluación interactivo.'}
-        </p>
-      </div>
-
-      <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
-        <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 truncate">
-          <i data-lucide="help-circle" class="w-3.5 h-3.5 text-cyan-500 dark:text-[#007acc] shrink-0"></i>
-          <span><strong>${quiz.questionsCount || '?'}</strong> preg.</span>
-          <span class="text-slate-300 dark:text-slate-700">•</span>
-          <span class="font-mono text-[10px] text-slate-400 truncate max-w-[120px] sm:max-w-none">${quiz.filename}</span>
-        </div>
-        <button onclick="startQuizFromCatalog('${quiz.id}')" class="px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 dark:bg-[#007acc] dark:hover:bg-[#1177bb] text-white text-xs font-semibold shadow-sm active:scale-95 transition-all flex items-center gap-1 shrink-0 touch-manipulation">
-          <span>Hacer test</span>
-          <i data-lucide="arrow-right" class="w-3 h-3"></i>
-        </button>
-      </div>
-    </div>
-  `).join('');
+  const subjects = new Map();
+  for (const quiz of quizzes) {
+    if (!subjects.has(quiz.subjectTitle)) subjects.set(quiz.subjectTitle, new Map());
+    const groups = subjects.get(quiz.subjectTitle);
+    const key = quiz.unitId ? `${quiz.group} · ${quiz.unitTitle || quiz.unitId}` : 'Otros cuestionarios';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(quiz);
+  }
+  const labels = { facil: 'Fácil', medio: 'Medio', dificil: 'Difícil' };
+  container.innerHTML = [...subjects].map(([name, groups]) => `
+    <section class="quiz-subject"><h4>${escapeHtml(name)}</h4>
+      ${[...groups].map(([title, list]) => {
+        const first = list[0];
+        const unitLink = first.unitId ? `?u=${encodeURIComponent(first.subject + '/' + first.unitId)}` : '';
+        return `<section class="quiz-unit"><h5>${escapeHtml(title)}</h5>
+          ${unitLink ? `<nav class="quiz-unit-resources" aria-label="Material de ${escapeHtml(first.unitTitle)}"><a href="${unitLink}">Apuntes</a>${first.examPath ? `<a href="${unitLink}&vista=examen">Claves de examen</a>` : ''}</nav>` : ''}
+          <div class="quiz-levels">${list.sort((a,b) => ['facil','medio','dificil'].indexOf(a.difficulty) - ['facil','medio','dificil'].indexOf(b.difficulty)).map(q => `
+            <button type="button" data-quiz-id="${escapeHtml(q.id)}" class="quiz-level" title="${escapeHtml(q.description)}">
+              <strong>${escapeHtml(labels[q.difficulty] || q.title)}</strong>
+              <span>${q.questionsCount} preguntas · ${q.timeMinutes} min</span>
+            </button>`).join('')}</div></section>`;
+      }).join('')}
+    </section>`).join('');
+  container.onclick = event => {
+    const button = event.target.closest('[data-quiz-id]');
+    if (button) startQuizFromCatalog(button.dataset.quizId);
+  };
 }
 
 /* ==========================================================================
@@ -674,17 +690,17 @@ function renderCurrentQuestion() {
     if (isCorrect) {
       explanationBox.className = 'mt-5 sm:mt-6 p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 transition-all';
       explanationStatusTitle.textContent = '¡Respuesta correcta!';
-      explanationStatusIcon.className = 'w-5 h-5 text-emerald-600 dark:text-emerald-400';
+      explanationStatusIcon.setAttribute('class', 'w-5 h-5 text-emerald-600 dark:text-emerald-400');
       explanationStatusIcon.setAttribute('data-lucide', 'check-circle');
     } else {
       explanationBox.className = 'mt-5 sm:mt-6 p-4 sm:p-5 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200 transition-all';
       explanationStatusTitle.textContent = 'Respuesta incorrecta';
-      explanationStatusIcon.className = 'w-5 h-5 text-rose-600 dark:text-rose-400';
+      explanationStatusIcon.setAttribute('class', 'w-5 h-5 text-rose-600 dark:text-rose-400');
       explanationStatusIcon.setAttribute('data-lucide', 'alert-circle');
     }
 
     let explHtml = current.explanation
-      ? `<p class="leading-relaxed text-xs sm:text-sm">${escapeHtml(current.explanation)}</p>`
+      ? `<p class="leading-relaxed text-xs sm:text-sm">${formatQuizExplanation(current.explanation)}</p>`
       : '<p class="text-slate-400 italic text-xs">No se especificó retroalimentación adicional para esta pregunta.</p>';
 
     if (current.reference) {
@@ -992,7 +1008,7 @@ function renderResultsBreakdown(questions) {
             <i data-lucide="info" class="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0 mt-0.5"></i>
             <div class="flex-1">
               <strong class="text-slate-900 dark:text-white">Explicación:</strong>
-              ${escapeHtml(q.explanation)}
+              ${formatQuizExplanation(q.explanation)}
             </div>
           </div>
         ` : ''}
@@ -1356,10 +1372,19 @@ function closeQuickNotes() {
 // Atajo de teclado Esc para cerrar el popup de apuntes
 if (typeof window !== 'undefined') {
   window.addEventListener('keydown', (e) => {
+    const hub = typeof $ === 'function' ? $('#quizSelectModal') : null;
+    if (e.key === 'Tab' && hub && !hub.classList.contains('hidden')) {
+      const controls = [...hub.querySelectorAll('button, a[href], input:not([type="file"]), select')].filter(el => !el.disabled && el.getClientRects().length);
+      const first = controls[0], last = controls[controls.length - 1];
+      if (e.shiftKey && (document.activeElement === first || !hub.contains(document.activeElement))) { e.preventDefault(); last?.focus(); }
+      else if (!e.shiftKey && (document.activeElement === last || !hub.contains(document.activeElement))) { e.preventDefault(); first?.focus(); }
+    }
     if (e.key === 'Escape') {
       const quickModal = typeof $ === 'function' ? $('#quickNotesModal') : null;
       if (quickModal && !quickModal.classList.contains('hidden')) {
         closeQuickNotes();
+      } else if (typeof $ === 'function' && !$('#quizSelectModal')?.classList.contains('hidden')) {
+        closeQuizModal();
       }
     }
   });
@@ -1377,4 +1402,10 @@ function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+// Cada afirmación combinada puede abrir su apartado sin abandonar el test.
+function formatQuizExplanation(value) {
+  return escapeHtml(value).replace(/Referencia: ([a-z0-9-]+\/[a-z0-9-]+#[a-z0-9-]+)\./g,
+    (_, reference) => `<button type="button" class="quiz-inline-reference" onclick="openQuickNotes('${reference}')">Ver apartado</button>.`);
 }
