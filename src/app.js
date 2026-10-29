@@ -485,7 +485,13 @@ function saveRecent(subject, unit) {
 /* ==========================================================================
    VISTA 2: VISOR DE APUNTES (READER)
    ========================================================================== */
-async function selectSubject(subjectId, requestedUnitId = null, showSummary = false, showExam = false, anchor = '') {
+async function selectSubject(subjectId, requestedUnitId = null, showSummary = false, showExam = false, anchor = '', { renderOnly = false, version } = {}) {
+  if (!renderOnly) {
+    const params = new URLSearchParams({ u: subjectId + (requestedUnitId ? '/' + requestedUnitId : '') });
+    if (showExam) params.set('vista', 'examen');
+    else if (showSummary) params.set('vista', 'resumen');
+    return navigateApp(`?${params}${anchor ? '#' + encodeURIComponent(anchor) : ''}`);
+  }
   const dashboard = $('#viewSubjectsDashboard');
   const viewer = $('#viewStudyViewer');
   const quizView = $('#viewQuizPage');
@@ -501,6 +507,7 @@ async function selectSubject(subjectId, requestedUnitId = null, showSummary = fa
 
   // Cargar detalles de la asignatura
   const subject = await loadSubjectDetails(subjectId);
+  if (version !== navigation.version) return;
   state.currentSubject = subject;
 
   // Lista plana ordenada de unidades para navegación continua
@@ -514,6 +521,7 @@ async function selectSubject(subjectId, requestedUnitId = null, showSummary = fa
   if (!unit) {
     unit = state.allUnitsInSubject[0];
   }
+  if (!unit) throw new Error('Esta asignatura no tiene unidades.');
 
   // Actualizar UI Header y Breadcrumbs
   const preset = SUBJECT_PRESETS[subject.id] || { color: 'cyan' };
@@ -530,7 +538,8 @@ async function selectSubject(subjectId, requestedUnitId = null, showSummary = fa
   toggleSidebar(false);
 }
 
-function goToSubjectsDashboard() {
+function goToSubjectsDashboard({ renderOnly = false } = {}) {
+  if (!renderOnly) return navigateApp(location.pathname);
   const quizView = $('#viewQuizPage');
   if (quizView) {
     quizView.classList.remove('flex');
@@ -541,7 +550,6 @@ function goToSubjectsDashboard() {
   $('#viewStudyViewer').classList.add('hidden');
   $('#viewSubjectsDashboard').classList.remove('hidden');
   toggleSidebar(false);
-  history.replaceState(null, '', location.pathname);
   renderDashboardSubjects();
   renderRecentsSection();
 }
@@ -659,20 +667,19 @@ function renderSidebarTree(subject, selectedUnit) {
 async function handleUnitClick(unitId) {
   const unit = state.allUnitsInSubject.find(u => u.id === unitId);
   if (unit) {
-    await loadUnit(unit);
-    renderSidebarTree(state.currentSubject, unit);
+    await selectSubject(state.currentSubject.id, unit.id);
     if (window.innerWidth < 1024) toggleSidebar(false);
   }
 }
 
 async function toggleUnitSummary() {
   if (state.currentUnit?.summaryPath) {
-    await loadUnit(state.currentUnit, { summary: !state.showingSummary });
+    await selectSubject(state.currentSubject.id, state.currentUnit.id, !state.showingSummary);
   }
 }
 
 async function toggleUnitExam() {
-  if (state.currentUnit?.examPath) await loadUnit(state.currentUnit, { exam: !state.showingExam });
+  if (state.currentUnit?.examPath) await selectSubject(state.currentSubject.id, state.currentUnit.id, false, !state.showingExam);
 }
 
 function openUnitTests() {
@@ -699,10 +706,6 @@ async function loadUnit(unit, { summary = false, exam = false, anchor = '' } = {
   examBtn.setAttribute('aria-pressed', String(state.showingExam));
   examBtn.textContent = state.showingExam ? 'Apuntes completos' : 'Claves de examen';
   $('#btnUnitTests').classList.toggle('hidden', !unit.hasTests);
-  const params = new URLSearchParams({ u: state.currentSubject.id + '/' + unit.id });
-  if (state.showingSummary) params.set('vista', 'resumen');
-  if (state.showingExam) params.set('vista', 'examen');
-  history.replaceState(null, '', `?${params}${anchor ? '#' + encodeURIComponent(anchor) : ''}`);
 
   // Actualizar Breadcrumbs
   $('#breadcrumbUnit').textContent = unit.title;
@@ -798,7 +801,7 @@ function buildTableOfContents(articleContainer) {
   `).join('');
 
   mobileTocLinks.innerHTML = items.map(item => `
-    <a href="#${item.id}" onclick="smoothScrollTo('${item.id}', event); toggleMobileToc();" class="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium ${item.depth === 'h3' ? 'pl-6 text-xs text-slate-500' : ''}">
+    <a href="#${item.id}" onclick="smoothScrollTo('${item.id}', event)" class="block p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-medium ${item.depth === 'h3' ? 'pl-6 text-xs text-slate-500' : ''}">
       ${item.title}
     </a>
   `).join('');
@@ -825,11 +828,15 @@ function buildTableOfContents(articleContainer) {
 }
 
 function smoothScrollTo(elementId, event) {
+  if (event && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button > 0)) return;
   if (event) event.preventDefault();
   const el = document.getElementById(elementId);
   if (el) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    history.replaceState(null, '', `#${elementId}`);
+    $('#mobileTocModal').classList.add('hidden');
+    $('#mobileTocModal').classList.remove('flex');
+    const url = new URL(location.href);
+    url.hash = elementId;
+    return navigateApp(url);
   }
 }
 
@@ -1140,26 +1147,7 @@ async function initApp() {
 
   await loadApplicationCatalog();
 
-  const quizParam = new URLSearchParams(location.search).get('cuestionario') || new URLSearchParams(location.search).get('quiz');
-  if (quizParam && typeof startQuizFromCatalog === 'function') {
-    await loadQuestionnairesCatalog();
-    await startQuizFromCatalog(quizParam);
-    return;
-  }
-
-  // Revisar si la URL solicita una asignatura/unidad específica (?u=materia/unidad)
-  const urlParam = new URLSearchParams(location.search).get('u');
-  if (urlParam) {
-    const [subjectId, unitId] = urlParam.split('/');
-    if (subjectId) {
-      await selectSubject(subjectId, unitId, new URLSearchParams(location.search).get('vista') === 'resumen', new URLSearchParams(location.search).get('vista') === 'examen', decodeURIComponent(location.hash.slice(1)));
-      return;
-    }
-  }
-
-  // Si no hay parámetro, mostrar el Dashboard principal
-  renderDashboardSubjects();
-  renderRecentsSection();
+  await initializeNavigation();
 }
 
 // Inicializar cuando el DOM esté listo

@@ -305,18 +305,29 @@ async function loadQuestionnairesCatalog() {
 /**
  * Abre el Hub / Modal con la lista de cuestionarios CSV disponibles
  */
-async function openQuizHub(subjectId = '', unitId = '') {
+async function openQuizHub(subjectId = '', unitId = '', { renderOnly = false, version, filters } = {}) {
+  if (!renderOnly) {
+    const url = new URL(location.href);
+    url.searchParams.set('tests', '1');
+    if (subjectId) url.searchParams.set('materia', subjectId);
+    else url.searchParams.delete('materia');
+    if (unitId) url.searchParams.set('unidad', unitId);
+    else url.searchParams.delete('unidad');
+    return navigateApp(url);
+  }
   const modal = $('#quizSelectModal');
   if (!modal) return;
   quizState.hubOpener = document.activeElement;
 
   await loadQuestionnairesCatalog();
-  $('#quizSearch').value = '';
-  $('#quizDifficultyFilter').value = '';
+  if (version !== navigation.version) return;
+  $('#quizSearch').value = filters?.quizSearch || '';
+  $('#quizDifficultyFilter').value = filters?.quizDifficultyFilter || '';
   const subjects = [...new Set(quizState.catalog.map(q => q.subjectTitle))];
   $('#quizSubjectFilter').innerHTML = '<option value="">Todas</option>' + subjects.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
-  $('#quizSubjectFilter').value = quizState.catalog.find(q => q.subject === subjectId)?.subjectTitle || '';
+  $('#quizSubjectFilter').value = filters?.quizSubjectFilter ?? (quizState.catalog.find(q => q.subject === subjectId)?.subjectTitle || '');
   resetQuizUnitFilter(unitId);
+  if (filters) $('#quizUnitFilter').value = filters.quizUnitFilter;
   renderQuizModalList();
 
   modal.classList.remove('hidden');
@@ -335,12 +346,13 @@ function resetQuizUnitFilter(selected = '') {
 /**
  * Cierra el modal de selección de cuestionarios
  */
-function closeQuizModal() {
+function closeQuizModal({ renderOnly = false } = {}) {
+  if (!renderOnly) return closeNavigationOverlay(['tests', 'materia', 'unidad']);
   const modal = $('#quizSelectModal');
   if (modal) {
     modal.classList.add('hidden');
     modal.classList.remove('flex');
-    if (quizState.hubOpener?.isConnected) quizState.hubOpener.focus();
+    if (quizState.hubOpener?.isConnected && document.activeElement?.closest('#quizSelectModal')) quizState.hubOpener.focus();
   }
 }
 
@@ -401,22 +413,26 @@ function renderQuizModalList() {
 /**
  * Carga un cuestionario desde el catálogo por su id
  */
-async function startQuizFromCatalog(quizId) {
+async function startQuizFromCatalog(quizId, { renderOnly = false, version } = {}) {
+  if (!renderOnly) return navigateApp(`?cuestionario=${encodeURIComponent(quizId)}`);
   const item = quizState.catalog.find(q => q.id === quizId) || FALLBACK_QUIZ_CATALOG.find(q => q.id === quizId);
   if (!item) {
     alert('No se encontró el cuestionario seleccionado.');
     return;
   }
 
-  closeQuizModal();
+  closeQuizModal({ renderOnly: true });
 
   try {
     const res = await fetch(item.path);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const csvText = await res.text();
+    if (version !== navigation.version) return false;
     const parsed = parseQuizCSV(csvText, item.filename);
-    initQuizSession(parsed, item);
+    initQuizSession(parsed, item, { renderOnly: true });
+    return true;
   } catch (err) {
+    if (version !== navigation.version) return false;
     console.error('Error al cargar archivo CSV:', err);
     alert(`No se pudo cargar el archivo ${item.filename}: ${err.message}`);
   }
@@ -434,7 +450,6 @@ function handleCustomCsvUpload(event) {
     try {
       const csvText = e.target.result;
       const parsed = parseQuizCSV(csvText, file.name);
-      closeQuizModal();
       initQuizSession(parsed, {
         id: 'custom-' + Date.now(),
         filename: file.name,
@@ -457,7 +472,16 @@ function handleCustomCsvUpload(event) {
 /**
  * Inicializa la sesión del cuestionario en pantalla
  */
-function initQuizSession(parsedData, meta) {
+function initQuizSession(parsedData, meta, { renderOnly = false } = {}) {
+  if (!renderOnly) {
+    return navigateApp(`?cuestionario=${encodeURIComponent(meta.id)}`, { quiz: {
+      activeQuiz: { metadata: { ...parsedData.metadata, ...meta }, questions: parsedData.questions },
+      activeQuestions: [...parsedData.questions], currentIndex: 0, userAnswers: {}, checkedQuestions: {},
+      mode: quizState.mode, timerSeconds: 0, isFinished: false, isReviewOnlyFailed: false,
+      sessionId: crypto.randomUUID()
+    } });
+  }
+  quizState.sessionId = crypto.randomUUID();
   quizState.activeQuiz = {
     metadata: { ...parsedData.metadata, ...meta },
     questions: parsedData.questions
@@ -466,15 +490,9 @@ function initQuizSession(parsedData, meta) {
   quizState.currentIndex = 0;
   quizState.userAnswers = {};
   quizState.checkedQuestions = {};
+  quizState.timerSeconds = 0;
   quizState.isFinished = false;
   quizState.isReviewOnlyFailed = false;
-
-  showQuizView();
-  startTimer();
-  renderCurrentQuestion();
-
-  const newUrl = `?cuestionario=${encodeURIComponent(meta.id || 'test')}`;
-  history.replaceState(null, '', newUrl);
 }
 
 /**
@@ -505,22 +523,16 @@ function showQuizView() {
  * Salir del cuestionario y volver al Dashboard principal
  */
 function exitQuizToDashboard() {
-  stopTimer();
-  $('#viewQuizPage').classList.remove('flex');
-  $('#viewQuizPage').classList.add('hidden');
-  $('#viewSubjectsDashboard').classList.remove('hidden');
-  history.replaceState(null, '', location.pathname);
-  if (typeof renderDashboardSubjects === 'function') renderDashboardSubjects();
-  if (typeof renderRecentsSection === 'function') renderRecentsSection();
+  return goToSubjectsDashboard();
 }
 
 /* ==========================================================================
    TEMPORIZADOR Y CONTROL DE TIEMPO
    ========================================================================== */
 
-function startTimer() {
+function startTimer({ reset = true } = {}) {
   stopTimer();
-  quizState.timerSeconds = 0;
+  if (reset) quizState.timerSeconds = 0;
   updateTimerDisplay();
   quizState.timerInterval = setInterval(() => {
     quizState.timerSeconds++;
@@ -790,10 +802,7 @@ function checkCurrentAnswer() {
 function navigateQuizQuestion(delta) {
   const target = quizState.currentIndex + delta;
   if (target >= 0 && target < quizState.activeQuestions.length) {
-    quizState.currentIndex = target;
-    renderCurrentQuestion();
-    const container = $('#quizQuestionCardArea');
-    if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return navigateQuizState({ currentIndex: target, isFinished: false });
   }
 }
 
@@ -802,8 +811,7 @@ function navigateQuizQuestion(delta) {
  */
 function jumpToQuestion(index) {
   if (index >= 0 && index < quizState.activeQuestions.length) {
-    quizState.currentIndex = index;
-    renderCurrentQuestion();
+    return navigateQuizState({ currentIndex: index, isFinished: false });
   }
 }
 
@@ -851,7 +859,8 @@ function renderQuestionPalette() {
    FINALIZACIÓN Y EVALUACIÓN DE RESULTADOS
    ========================================================================== */
 
-function finishQuiz() {
+function finishQuiz({ renderOnly = false } = {}) {
+  if (!renderOnly) return navigateQuizState({ isFinished: true });
   stopTimer();
   quizState.isFinished = true;
 
@@ -1019,33 +1028,13 @@ function renderResultsBreakdown(questions) {
 
 function restartQuizFull() {
   if (!quizState.activeQuiz) return;
-  quizState.activeQuestions = [...quizState.activeQuiz.questions];
-  quizState.currentIndex = 0;
-  quizState.userAnswers = {};
-  quizState.checkedQuestions = {};
-  quizState.isFinished = false;
-  quizState.isReviewOnlyFailed = false;
-
-  $('#quizResultsContainer').classList.add('hidden');
-  $('#quizActiveContainer').classList.remove('hidden');
-
-  startTimer();
-  renderCurrentQuestion();
+  return navigateQuizState({ activeQuestions: [...quizState.activeQuiz.questions], currentIndex: 0,
+    userAnswers: {}, checkedQuestions: {}, isFinished: false, isReviewOnlyFailed: false, timerSeconds: 0 }, { newSession: true });
 }
 
 function retryFailedQuestions(failedQuestions) {
-  quizState.activeQuestions = [...failedQuestions];
-  quizState.currentIndex = 0;
-  quizState.userAnswers = {};
-  quizState.checkedQuestions = {};
-  quizState.isFinished = false;
-  quizState.isReviewOnlyFailed = true;
-
-  $('#quizResultsContainer').classList.add('hidden');
-  $('#quizActiveContainer').classList.remove('hidden');
-
-  startTimer();
-  renderCurrentQuestion();
+  return navigateQuizState({ activeQuestions: [...failedQuestions], currentIndex: 0,
+    userAnswers: {}, checkedQuestions: {}, isFinished: false, isReviewOnlyFailed: true, timerSeconds: 0 }, { newSession: true });
 }
 
 /* ==========================================================================
@@ -1271,17 +1260,20 @@ function applyReferenceHighlight(container, anchor, question) {
       breadcrumbSection.classList.remove('hidden');
     }
 
-    setTimeout(() => {
-      sectionBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 150);
+    sectionBox.scrollIntoView({ behavior: 'instant', block: 'center' });
   }
 }
 
 /**
  * Abre la unidad de referencia en un popup modal sin perder el avance ni el cuestionario
  */
-async function openQuickNotes(reference) {
+async function openQuickNotes(reference, { renderOnly = false, version } = {}) {
   if (!reference) return;
+  if (!renderOnly) {
+    const url = new URL(location.href);
+    url.searchParams.set('referencia', reference);
+    return navigateApp(url);
+  }
   const modal = $('#quickNotesModal');
   if (!modal) return;
 
@@ -1298,6 +1290,7 @@ async function openQuickNotes(reference) {
 
   modal.classList.remove('hidden');
   modal.classList.add('flex');
+  $('#quickNotesScrollArea').scrollTo({ top: 0, behavior: 'instant' });
 
   lessonTitle.textContent = 'Cargando lección de teoría...';
   contentEl.innerHTML = `
@@ -1310,6 +1303,7 @@ async function openQuickNotes(reference) {
 
   try {
     const resolved = await resolveUnitReference(refPath);
+    if (version !== navigation.version) return;
     if (!resolved || !resolved.markdown) {
       throw new Error(`No se pudo localizar la unidad de apuntes: "${refPath}"`);
     }
@@ -1348,6 +1342,7 @@ async function openQuickNotes(reference) {
 
     if (window.lucide) lucide.createIcons();
   } catch (err) {
+    if (version !== navigation.version) return;
     console.error('Error al abrir apuntes:', err);
     lessonTitle.textContent = 'Error al cargar lección';
     contentEl.innerHTML = `
@@ -1361,7 +1356,8 @@ async function openQuickNotes(reference) {
   }
 }
 
-function closeQuickNotes() {
+function closeQuickNotes({ renderOnly = false } = {}) {
+  if (!renderOnly) return closeNavigationOverlay(['referencia']);
   const modal = $('#quickNotesModal');
   if (modal) {
     modal.classList.add('hidden');

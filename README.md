@@ -14,6 +14,8 @@ npm run dev
 
 Abre `http://127.0.0.1:8000/`. El servidor sirve `dist/`; después de editar un `.md`, vuelve a ejecutar `npm run build` y recarga la página. Abrir `index.html` con `file://` no funciona porque la web carga archivos mediante `fetch`.
 
+Los botones **Atrás y Adelante** del navegador y del ratón recorren las asignaturas, unidades, apartados, resúmenes, claves de examen, selector de test, preguntas, resultados y apuntes relacionados. Al regresar se recuperan la posición de lectura, los filtros y la sesión del cuestionario (respuestas, correcciones, modo y tiempo). Reiniciar un test o repasar falladas crea una sesión distinta y permite volver al resultado anterior. Los enlaces internos funcionan sin recargar la aplicación y conservan la ruta base de GitHub Pages.
+
 ## Añadir una unidad
 
 1. Crea `contenido/<slug-asignatura>/<numero>-<slug-unidad>/unidad.md`.
