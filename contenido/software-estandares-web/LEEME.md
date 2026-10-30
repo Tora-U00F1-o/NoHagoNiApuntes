@@ -2,11 +2,11 @@
 
 ## Alcance de la entrega
 
-Se han completado **11 unidades que estaban pendientes**: Diseño con estándares, Lenguajes de marcado, las seis unidades de Tecnologías XML y los tres seminarios. Se mantienen los cuatro desarrollos ya existentes de HTML y presentación/CSS.
+Se han completado **12 unidades**: Diseño con estándares, Lenguajes de marcado, las seis unidades de Tecnologías XML y los cuatro seminarios, incluido Accesibilidad Web. Se mantienen los cuatro desarrollos ya existentes de HTML y presentación/CSS.
 
-Las **15 unidades de teoría y seminarios** disponen de `unidad.md`, PDF original y un nuevo `resumen.md`. Las siete carpetas de prácticas quedan fuera por indicación del usuario.
+Las **16 unidades de teoría y seminarios** disponen de `unidad.md`, PDF original, `resumen.md` y `examen.md`. Las siete carpetas de prácticas quedan fuera por indicación del usuario.
 
-Los resúmenes tienen aproximadamente **350–450 palabras de contenido**, tablas, distinciones clave, código y fechas cuando el material las proporciona. Están pensados para una primera lectura de unos tres minutos, antes de estudiar los apuntes completos.
+Los resúmenes ofrecen tablas y distinciones clave, código y fechas cuando el material los proporciona. Están pensados para una primera lectura antes de estudiar los apuntes completos; su extensión se adapta al contenido de cada unidad.
 
 ## Fuentes y cobertura
 
@@ -27,8 +27,9 @@ Los resúmenes tienen aproximadamente **350–450 palabras de contenido**, tabla
 | [Usabilidad, parte 1](02-seminarios/01-usabilidad-web-parte1/unidad.md) | 63 | Desarrollo completo y resumen |
 | [Usabilidad, parte 2](02-seminarios/02-usabilidad-web-parte2/unidad.md) | 67 | Desarrollo completo y resumen |
 | [Adaptabilidad](02-seminarios/03-adaptabilidad-web/unidad.md) | 64 | Desarrollo completo y resumen |
+| [Accesibilidad](02-seminarios/04-accesibilidad-web/unidad.md) | 142 | Desarrollo completo, seis figuras originales, resumen, claves y tres test |
 
-El conjunto de fuentes suma **1.247 páginas**. Los once desarrollos nuevos corresponden a **880 páginas analizadas**, incluidas sus figuras, tablas y capturas. Cada unidad incluye índice, objetivos, teoría, comparaciones, repaso y referencias con páginas. No se han utilizado fuentes externas para ampliar la teoría.
+El conjunto de fuentes suma **1.389 páginas**. Los doce desarrollos completados corresponden a **1.022 páginas analizadas**, incluidas sus figuras, tablas y capturas. Cada unidad incluye índice, objetivos, teoría, comparaciones, repaso y referencias con páginas. No se han utilizado fuentes externas para ampliar la teoría.
 
 ## Ejemplos y límites
 
@@ -44,7 +45,7 @@ Las erratas o diferencias entre diapositiva y archivo se explican expresamente: 
 
 ## Lectura desde la web
 
-Cada una de las **15 unidades de teoría y seminarios** incluye `examen.md` y una carpeta `test/` con `facil.csv`, `medio.csv` y `dificil.csv`: **45 test de 50 preguntas, 2.250 en total**. Las prácticas no se incluyen. Los test tienen una sola respuesta correcta, explicaciones y referencias a apartados exactos. El nivel difícil combina diez casos explícitos con preguntas de conjuntos y cantidades de afirmaciones verdaderas/falsas.
+Cada una de las **16 unidades de teoría y seminarios** incluye `examen.md` y una carpeta `test/` con `facil.csv`, `medio.csv` y `dificil.csv`: **48 test de 50 preguntas, 2.400 en total**. Las prácticas no se incluyen. Los test tienen una sola respuesta correcta, explicaciones y referencias a apartados exactos. El nivel difícil combina diez casos explícitos con preguntas de conjuntos y cantidades de afirmaciones verdaderas/falsas.
 
 El visor ofrece **Claves de examen** y **Test de esta unidad**. El selector general permite buscar, filtrar por asignatura, unidad o dificultad y ver juntos los niveles en orden. Los tres cuestionarios HTML anteriores se guardan en `test/anteriores/` dentro de HTML y conservan sus identificadores históricos.
 
@@ -55,6 +56,10 @@ El catálogo detecta `resumen.md` automáticamente. El botón **Resumen** abre e
 PDF, imágenes y ejemplos se resuelven desde la carpeta de la unidad, también al servir la web bajo una subcarpeta de GitHub Pages.
 
 ## Comprobaciones y paquete
+
+Accesibilidad Web añade un paquete local `apuntes-accesibilidad-web.zip`, con los tres documentos de estudio, el PDF original sin cambios, las seis figuras y los tres CSV. Se han señalado los límites y discrepancias de las diapositivas sobre lenguas de signos, versiones normativas y herramientas. El generador conserva sus fichas y casos en `scripts/sew-banks/seminarios-accesibilidad-web*.txt`.
+
+La revisión inicial de las unidades anteriores incluyó las comprobaciones siguientes:
 
 - Cabeceras originales conservadas; nuevas cabeceras de resumen válidas.
 - 30 documentos comprobados: 15 apuntes y 15 resúmenes.

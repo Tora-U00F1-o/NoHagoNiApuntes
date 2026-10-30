@@ -13,7 +13,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 
 test('todos los niveles SEW tienen 50 preguntas válidas y referencias exactas, sin prácticas', async () => {
   const catalog = await makeCatalog(join(root, 'contenido'));
-  assert.deepEqual(await validateUnitQuizzes(root, catalog), { units: 15, tests: 45, questions: 2250 });
+  assert.deepEqual(await validateUnitQuizzes(root, catalog), { units: 16, tests: 48, questions: 2400 });
 });
 
 test('el escáner distingue comas en metadatos, ; en texto, comillas y saltos en celdas', async () => {
@@ -49,7 +49,7 @@ test('catálogo anidado: ID distinto por unidad y compatibilidad de identificado
   }
 });
 
-test('el parser del navegador lee las 2250 preguntas sin omitir filas ni alterar respuestas', async () => {
+test('el parser del navegador lee las 2400 preguntas sin omitir filas ni alterar respuestas', async () => {
   const context = vm.createContext({ console, window: { addEventListener() {} } });
   const source = await readFile(join(root, 'src', 'quiz.js'), 'utf8');
   vm.runInContext(source + '\nglobalThis.parse = parseQuizCSV; globalThis.sortCatalog = sortQuizCatalog;', context);

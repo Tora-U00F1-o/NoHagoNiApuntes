@@ -37,7 +37,7 @@ El resumen admite las mismas tablas, código, bloques especiales y enlaces relat
 
 La plataforma detecta los `.csv` de `test/` dentro de cada unidad. El selector agrupa por asignatura y unidad, ordena los niveles **fácil → medio → difícil** y permite buscar y filtrar. El botón **Test de esta unidad** abre directamente sus cuestionarios.
 
-Software y Estándares para la Web incluye **45 test y 2.250 preguntas**: tres niveles de 50 preguntas en cada una de sus 15 unidades de teoría y seminarios. Cada unidad tiene también **Claves de examen**, con conceptos, casos límite y criterios para opciones combinadas. Las prácticas quedan fuera.
+Software y Estándares para la Web incluye **48 test y 2.400 preguntas**: tres niveles de 50 preguntas en cada una de sus 16 unidades de teoría y seminarios. Cada unidad tiene también **Claves de examen**, con conceptos, casos límite y criterios para opciones combinadas. Las prácticas quedan fuera.
 
 ```text
 contenido/software-estandares-web/01-teoria/03-tecnologias-xml/04-xpath/
@@ -55,11 +55,13 @@ Los cuestionarios generales sin unidad siguen en `contenido/cuestionarios/`. Los
 - **Opciones variables**: Cada pregunta puede tener un número dinámico de respuestas (desde 2 opciones para V/F hasta 5 o más).
 - **Modos de práctica**: Modo Estudio (retroalimentación inmediata y explicaciones didácticas) y Modo Examen (con temporizador, contador de fallos y calificación final).
 - **Referencias de alta precisión**: Las preguntas pueden enlazar a secciones generales (`##`) o diapositivas concretas (`###`) de los apuntes (ej. `#40-cuando-usar-article-y-cuando-section`). Al pulsar sobre la referencia, se abre un visor emergente (*popup*) que resalta la diapositiva y los conceptos evaluados sin perder el progreso ni las respuestas marcadas.
-- **Formato y generación**: Consulta la [Guía de Formato de Cuestionarios](contenido/cuestionarios/FORMATO_CUESTIONARIOS.md) y la plantilla para IA en [prompts/generarTest.md](prompts/generarTest.md).
+- **Formato y generación**: Consulta la [Guía de Formato de Cuestionarios](contenido/cuestionarios/FORMATO_CUESTIONARIOS.md) y el [prompt para generar test](prompts/prompt_generarTest.md).
 
 `examen.md` usa la misma cabecera y Markdown que `unidad.md`. Se abre con **Claves de examen**, se comparte con `&vista=examen` y se comprueba con `npm run check`. Resumen y claves son documentos distintos.
 
 Para mantener los bancos de SEW, edita las fichas y casos explícitos de `scripts/sew-banks/` y ejecuta `npm run generate:sew-tests`. El generador escribe CSV UTF-8 y las guías, con orden de respuestas estable. Después ejecuta `npm test`, `npm run check` y `npm run build`. La comprobación valida recuentos, opciones, una respuesta correcta, ausencia de enunciados repetidos y referencias exactas. Las preguntas combinadas explican y enlazan cada afirmación por separado.
+
+La [guía de prompts](prompts/prompt_guiaDeUso.md) permite generar por separado la unidad desde un PDF, el resumen y los aspectos clave, o los test. El [prompt global](prompts/prompt_generarTodoDesdePdf.md) prepara todo desde el PDF original, incluidas las figuras útiles extraídas y un ZIP completo. Los prompts separados limitan las escrituras a sus documentos; antes de usar el generador SEW, revisa que también reescribe las guías `examen.md`.
 
 ## Publicar en GitHub Pages
 
