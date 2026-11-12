@@ -1,0 +1,135 @@
+[
+  {
+    "start": 24.0,
+    "end": 25.38,
+    "text": " ¿Qué hombre?",
+    "words": [
+      {
+        "word": " ¿Qué",
+        "start": 24.0,
+        "end": 25.24,
+        "probability": 0.14429868757724762
+      },
+      {
+        "word": " hombre?",
+        "start": 25.24,
+        "end": 25.38,
+        "probability": 0.8653549551963806
+      }
+    ]
+  },
+  {
+    "start": 26.52,
+    "end": 27.04,
+    "text": " Guárdamelo.",
+    "words": [
+      {
+        "word": " Guárdamelo.",
+        "start": 26.52,
+        "end": 27.04,
+        "probability": 0.7225350916385651
+      }
+    ]
+  },
+  {
+    "start": 27.240000000000002,
+    "end": 28.08,
+    "text": " Guárdamelo aquí.",
+    "words": [
+      {
+        "word": " Guárdamelo",
+        "start": 27.240000000000002,
+        "end": 27.66,
+        "probability": 0.7698066651821136
+      },
+      {
+        "word": " aquí.",
+        "start": 27.66,
+        "end": 28.08,
+        "probability": 0.1618872880935669
+      }
+    ]
+  },
+  {
+    "start": 28.38,
+    "end": 28.8,
+    "text": " Guárdamelo.",
+    "words": [
+      {
+        "word": " Guárdamelo.",
+        "start": 28.38,
+        "end": 28.8,
+        "probability": 0.8268262147903442
+      }
+    ]
+  },
+  {
+    "start": 29.08,
+    "end": 29.2,
+    "text": " ¡Laope!",
+    "words": [
+      {
+        "word": " ¡Laope!",
+        "start": 29.08,
+        "end": 29.2,
+        "probability": 0.2597360263268153
+      }
+    ]
+  },
+  {
+    "start": 31.060000000000002,
+    "end": 33.9,
+    "text": " Ahí, por mí no me gusta.",
+    "words": [
+      {
+        "word": " Ahí,",
+        "start": 31.060000000000002,
+        "end": 31.86,
+        "probability": 0.004766144789755344
+      },
+      {
+        "word": " por",
+        "start": 32.8,
+        "end": 33.12,
+        "probability": 0.8393839001655579
+      },
+      {
+        "word": " mí",
+        "start": 33.12,
+        "end": 33.3,
+        "probability": 0.42017844319343567
+      },
+      {
+        "word": " no",
+        "start": 33.3,
+        "end": 33.4,
+        "probability": 0.7849735617637634
+      },
+      {
+        "word": " me",
+        "start": 33.4,
+        "end": 33.54,
+        "probability": 0.9966806769371033
+      },
+      {
+        "word": " gusta.",
+        "start": 33.54,
+        "end": 33.9,
+        "probability": 0.9910810589790344
+      }
+    ]
+  },
+  {
+    "start": 34.6,
+    "end": 35.14,
+    "text": " Guárdala.",
+    "words": [
+      {
+        "word": " Guárdala.",
+        "start": 34.6,
+        "end": 35.14,
+        "probability": 0.6887229830026627
+      }
+    ]
+  }
+]

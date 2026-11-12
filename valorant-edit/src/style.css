@@ -1,0 +1,8 @@
+* {box-sizing:border-box;}
+.shade {position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,12,15,.75),rgba(6,12,15,.15) 42%,rgba(6,12,15,.78));}
+.headline {position:absolute;left:60px;top:225px;width:880px;color:#fff;font:900 83px/1.08 Arial, sans-serif;letter-spacing:-3px;}
+.headline span {color:#7ef8d0;}
+.eyebrow {font:700 28px/1.2 Arial,sans-serif;letter-spacing:5px;margin-bottom:20px;color:#c8d2d3;}
+.full-game {position:absolute;left:32px;top:420px;width:960px;height:540px;overflow:hidden;border-radius:10px;box-shadow:0 18px 50px #0008;}
+.detail-game {position:absolute;left:32px;top:1012px;width:960px;height:500px;overflow:hidden;border-radius:10px;box-shadow:0 18px 50px #0008;}
+.captions {position:absolute;left:64px;top:1545px;width:864px;text-align:center;color:white;font:900 52px/1.16 Arial,sans-serif;white-space:pre-line;paint-order:stroke fill;-webkit-text-stroke:6px #090e11;text-shadow:0 4px 8px #000;}

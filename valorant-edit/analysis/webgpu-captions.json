@@ -1,0 +1,795 @@
+{
+  "captions": [
+    {
+      "text": "¡Venga!",
+      "startMs": 420,
+      "endMs": 1800,
+      "timestampMs": 1110,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 3080,
+      "endMs": 3720,
+      "timestampMs": 3400,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 4000,
+      "endMs": 4020,
+      "timestampMs": 4010,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 4120,
+      "endMs": 4140,
+      "timestampMs": 4130,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 4220,
+      "endMs": 4220,
+      "timestampMs": 4220,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 4220,
+      "endMs": 4220,
+      "timestampMs": 4220,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 4220,
+      "endMs": 4220,
+      "timestampMs": 4220,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 4220,
+      "endMs": 4240,
+      "timestampMs": 4230,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 4400,
+      "endMs": 4560,
+      "timestampMs": 4480,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8140,
+      "endMs": 8140,
+      "timestampMs": 8140,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8140,
+      "endMs": 8140,
+      "timestampMs": 8140,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8140,
+      "endMs": 8140,
+      "timestampMs": 8140,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8140,
+      "endMs": 8140,
+      "timestampMs": 8140,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8140,
+      "endMs": 8140,
+      "timestampMs": 8140,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8140,
+      "endMs": 8140,
+      "timestampMs": 8140,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8140,
+      "endMs": 8140,
+      "timestampMs": 8140,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8140,
+      "endMs": 8140,
+      "timestampMs": 8140,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8140,
+      "endMs": 8140,
+      "timestampMs": 8140,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8140,
+      "endMs": 8160,
+      "timestampMs": 8150,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8880,
+      "timestampMs": 8880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 8880,
+      "endMs": 8900,
+      "timestampMs": 8890,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 9280,
+      "endMs": 9280,
+      "timestampMs": 9280,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 9280,
+      "endMs": 9280,
+      "timestampMs": 9280,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 9280,
+      "endMs": 9280,
+      "timestampMs": 9280,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 9280,
+      "endMs": 9280,
+      "timestampMs": 9280,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 9280,
+      "endMs": 9280,
+      "timestampMs": 9280,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 9280,
+      "endMs": 9300,
+      "timestampMs": 9290,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 10440,
+      "endMs": 10460,
+      "timestampMs": 10450,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 11680,
+      "endMs": 11680,
+      "timestampMs": 11680,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 11680,
+      "endMs": 11680,
+      "timestampMs": 11680,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 11680,
+      "endMs": 11700,
+      "timestampMs": 11690,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12380,
+      "endMs": 12380,
+      "timestampMs": 12380,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12380,
+      "endMs": 12380,
+      "timestampMs": 12380,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12380,
+      "endMs": 12380,
+      "timestampMs": 12380,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12380,
+      "endMs": 12400,
+      "timestampMs": 12390,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12400,
+      "endMs": 12400,
+      "timestampMs": 12400,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12400,
+      "endMs": 12400,
+      "timestampMs": 12400,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12400,
+      "endMs": 12400,
+      "timestampMs": 12400,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12400,
+      "endMs": 12400,
+      "timestampMs": 12400,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12400,
+      "endMs": 12400,
+      "timestampMs": 12400,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12400,
+      "endMs": 12400,
+      "timestampMs": 12400,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12400,
+      "endMs": 12400,
+      "timestampMs": 12400,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12400,
+      "endMs": 12400,
+      "timestampMs": 12400,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12400,
+      "endMs": 12400,
+      "timestampMs": 12400,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12400,
+      "endMs": 12420,
+      "timestampMs": 12410,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12740,
+      "endMs": 12880,
+      "timestampMs": 12810,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 12940,
+      "endMs": 13340,
+      "timestampMs": 13140,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14060,
+      "endMs": 14180,
+      "timestampMs": 14120,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14280,
+      "endMs": 14280,
+      "timestampMs": 14280,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14280,
+      "endMs": 14280,
+      "timestampMs": 14280,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14280,
+      "endMs": 14280,
+      "timestampMs": 14280,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14280,
+      "endMs": 14280,
+      "timestampMs": 14280,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14280,
+      "endMs": 14280,
+      "timestampMs": 14280,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14280,
+      "endMs": 14280,
+      "timestampMs": 14280,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14280,
+      "endMs": 14300,
+      "timestampMs": 14290,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14380,
+      "endMs": 14640,
+      "timestampMs": 14510,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14640,
+      "endMs": 14880,
+      "timestampMs": 14760,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14880,
+      "endMs": 14880,
+      "timestampMs": 14880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14880,
+      "endMs": 14880,
+      "timestampMs": 14880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14880,
+      "endMs": 14880,
+      "timestampMs": 14880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14880,
+      "endMs": 14880,
+      "timestampMs": 14880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14880,
+      "endMs": 14880,
+      "timestampMs": 14880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14880,
+      "endMs": 14880,
+      "timestampMs": 14880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14880,
+      "endMs": 14880,
+      "timestampMs": 14880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14880,
+      "endMs": 14880,
+      "timestampMs": 14880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 14880,
+      "endMs": 15020,
+      "timestampMs": 14950,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 17900,
+      "endMs": 17920,
+      "timestampMs": 17910,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18320,
+      "endMs": 18500,
+      "timestampMs": 18410,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18500,
+      "timestampMs": 18500,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 18500,
+      "endMs": 18740,
+      "timestampMs": 18620,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 19540,
+      "endMs": 19540,
+      "timestampMs": 19540,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 19540,
+      "endMs": 19560,
+      "timestampMs": 19550,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 19780,
+      "endMs": 19920,
+      "timestampMs": 19850,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 23880,
+      "endMs": 23880,
+      "timestampMs": 23880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 23880,
+      "endMs": 23880,
+      "timestampMs": 23880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 23880,
+      "endMs": 23880,
+      "timestampMs": 23880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 23880,
+      "endMs": 23880,
+      "timestampMs": 23880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 23880,
+      "endMs": 23880,
+      "timestampMs": 23880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 23880,
+      "endMs": 23880,
+      "timestampMs": 23880,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 23880,
+      "endMs": 23900,
+      "timestampMs": 23890,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 24320,
+      "endMs": 24320,
+      "timestampMs": 24320,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 24320,
+      "endMs": 24340,
+      "timestampMs": 24330,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 28640,
+      "endMs": 29860,
+      "timestampMs": 29250,
+      "confidence": null
+    },
+    {
+      "text": " ¡Venga!",
+      "startMs": 29860,
+      "endMs": 41963,
+      "timestampMs": 35911,
+      "confidence": null
+    },
+    {
+      "text": " que",
+      "startMs": 41963,
+      "endMs": 41963,
+      "timestampMs": 41963,
+      "confidence": null
+    },
+    {
+      "text": " hombre",
+      "startMs": 41963,
+      "endMs": 41963,
+      "timestampMs": 41963,
+      "confidence": null
+    }
+  ]
+}

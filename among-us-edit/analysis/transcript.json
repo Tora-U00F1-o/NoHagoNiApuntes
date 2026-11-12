@@ -1,0 +1,1866 @@
+[
+  {
+    "start": 61.47,
+    "end": 64.85,
+    "text": " Un minuto entero pa' votar porque Fernando en un filo",
+    "words": [
+      {
+        "word": " Un",
+        "start": 61.47,
+        "end": 61.81,
+        "probability": 0.13475652039051056
+      },
+      {
+        "word": " minuto",
+        "start": 61.81,
+        "end": 62.13,
+        "probability": 0.9733250737190247
+      },
+      {
+        "word": " entero",
+        "start": 62.13,
+        "end": 62.39,
+        "probability": 0.5997888818383217
+      },
+      {
+        "word": " pa'",
+        "start": 62.39,
+        "end": 62.57,
+        "probability": 0.3459855020046234
+      },
+      {
+        "word": " votar",
+        "start": 62.63,
+        "end": 62.87,
+        "probability": 0.9296116828918457
+      },
+      {
+        "word": " porque",
+        "start": 62.87,
+        "end": 63.17,
+        "probability": 0.5314539670944214
+      },
+      {
+        "word": " Fernando",
+        "start": 63.17,
+        "end": 63.51,
+        "probability": 0.828705370426178
+      },
+      {
+        "word": " en",
+        "start": 63.51,
+        "end": 63.73,
+        "probability": 0.0337657555937767
+      },
+      {
+        "word": " un",
+        "start": 63.73,
+        "end": 63.73,
+        "probability": 0.41402578353881836
+      },
+      {
+        "word": " filo",
+        "start": 63.73,
+        "end": 64.85,
+        "probability": 0.5963445231318474
+      }
+    ]
+  },
+  {
+    "start": 67.65,
+    "end": 69.63,
+    "text": " De hecho yo un minuto y medio",
+    "words": [
+      {
+        "word": " De",
+        "start": 67.65,
+        "end": 68.17,
+        "probability": 0.2643856108188629
+      },
+      {
+        "word": " hecho",
+        "start": 68.17,
+        "end": 68.69,
+        "probability": 0.996911346912384
+      },
+      {
+        "word": " yo",
+        "start": 68.69,
+        "end": 68.77,
+        "probability": 0.5940761566162109
+      },
+      {
+        "word": " un",
+        "start": 68.77,
+        "end": 68.95,
+        "probability": 0.3374682068824768
+      },
+      {
+        "word": " minuto",
+        "start": 68.95,
+        "end": 69.19,
+        "probability": 0.992787092924118
+      },
+      {
+        "word": " y",
+        "start": 69.19,
+        "end": 69.31,
+        "probability": 0.8820142149925232
+      },
+      {
+        "word": " medio",
+        "start": 69.31,
+        "end": 69.63,
+        "probability": 0.9741074442863464
+      }
+    ]
+  },
+  {
+    "start": 72.35,
+    "end": 73.37,
+    "text": " ¿Dónde estaba el cuerpo?",
+    "words": [
+      {
+        "word": " ¿Dónde",
+        "start": 72.35,
+        "end": 72.87,
+        "probability": 0.6409737057983875
+      },
+      {
+        "word": " estaba",
+        "start": 72.87,
+        "end": 73.11,
+        "probability": 0.9363722801208496
+      },
+      {
+        "word": " el",
+        "start": 73.11,
+        "end": 73.23,
+        "probability": 0.975148618221283
+      },
+      {
+        "word": " cuerpo?",
+        "start": 73.23,
+        "end": 73.37,
+        "probability": 0.9981412887573242
+      }
+    ]
+  },
+  {
+    "start": 86.89,
+    "end": 89.51,
+    "text": " Yo estaba en la letecidad, osea que...",
+    "words": [
+      {
+        "word": " Yo",
+        "start": 86.89,
+        "end": 87.41,
+        "probability": 0.011073698289692402
+      },
+      {
+        "word": " estaba",
+        "start": 87.41,
+        "end": 87.93,
+        "probability": 0.958965003490448
+      },
+      {
+        "word": " en",
+        "start": 87.93,
+        "end": 88.09,
+        "probability": 0.8573330640792847
+      },
+      {
+        "word": " la",
+        "start": 88.09,
+        "end": 88.09,
+        "probability": 0.22755984961986542
+      },
+      {
+        "word": " letecidad,",
+        "start": 88.09,
+        "end": 88.53,
+        "probability": 0.646929644048214
+      },
+      {
+        "word": " osea",
+        "start": 88.65,
+        "end": 88.75,
+        "probability": 0.7163475751876831
+      },
+      {
+        "word": " que...",
+        "start": 88.75,
+        "end": 89.51,
+        "probability": 0.7447494566440582
+      }
+    ]
+  },
+  {
+    "start": 90.21,
+    "end": 92.19,
+    "text": " Que lo vi por cámaras, coño",
+    "words": [
+      {
+        "word": " Que",
+        "start": 90.21,
+        "end": 90.65,
+        "probability": 0.025578869506716728
+      },
+      {
+        "word": " lo",
+        "start": 90.65,
+        "end": 90.93,
+        "probability": 0.9286386370658875
+      },
+      {
+        "word": " vi",
+        "start": 90.93,
+        "end": 91.19,
+        "probability": 0.30402857065200806
+      },
+      {
+        "word": " por",
+        "start": 91.19,
+        "end": 91.21,
+        "probability": 0.8905937671661377
+      },
+      {
+        "word": " cámaras,",
+        "start": 91.21,
+        "end": 91.79,
+        "probability": 0.735358938574791
+      },
+      {
+        "word": " coño",
+        "start": 91.89,
+        "end": 92.19,
+        "probability": 0.8558015823364258
+      }
+    ]
+  },
+  {
+    "start": 94.76,
+    "end": 96.02,
+    "text": " Pero lo viste de matálu",
+    "words": [
+      {
+        "word": " Pero",
+        "start": 94.76,
+        "end": 95.2,
+        "probability": 0.3891638219356537
+      },
+      {
+        "word": " lo",
+        "start": 95.2,
+        "end": 95.34,
+        "probability": 0.9375184774398804
+      },
+      {
+        "word": " viste",
+        "start": 95.34,
+        "end": 95.5,
+        "probability": 0.8751053214073181
+      },
+      {
+        "word": " de",
+        "start": 95.5,
+        "end": 95.64,
+        "probability": 0.8308035135269165
+      },
+      {
+        "word": " matálu",
+        "start": 95.64,
+        "end": 96.02,
+        "probability": 0.5212442576885223
+      }
+    ]
+  },
+  {
+    "start": 99.4,
+    "end": 100.98,
+    "text": " No lo viste de matáluo",
+    "words": [
+      {
+        "word": " No",
+        "start": 99.4,
+        "end": 99.84,
+        "probability": 0.17203038930892944
+      },
+      {
+        "word": " lo",
+        "start": 99.84,
+        "end": 100.28,
+        "probability": 0.8416281342506409
+      },
+      {
+        "word": " viste",
+        "start": 100.28,
+        "end": 100.38,
+        "probability": 0.9320039749145508
+      },
+      {
+        "word": " de",
+        "start": 100.38,
+        "end": 100.58,
+        "probability": 0.8810585737228394
+      },
+      {
+        "word": " matáluo",
+        "start": 100.58,
+        "end": 100.98,
+        "probability": 0.7217319943010807
+      }
+    ]
+  },
+  {
+    "start": 100.98,
+    "end": 102.08,
+    "text": " Que sí, que sí",
+    "words": [
+      {
+        "word": " Que",
+        "start": 100.98,
+        "end": 101.54,
+        "probability": 0.20087803900241852
+      },
+      {
+        "word": " sí,",
+        "start": 101.54,
+        "end": 101.74,
+        "probability": 0.74830561876297
+      },
+      {
+        "word": " que",
+        "start": 101.84,
+        "end": 101.9,
+        "probability": 0.9412751197814941
+      },
+      {
+        "word": " sí",
+        "start": 101.9,
+        "end": 102.08,
+        "probability": 0.98597252368927
+      }
+    ]
+  },
+  {
+    "start": 102.08,
+    "end": 102.74,
+    "text": " ¿Dónde está la Jorge?",
+    "words": [
+      {
+        "word": " ¿Dónde",
+        "start": 102.08,
+        "end": 102.3,
+        "probability": 0.6057660467922688
+      },
+      {
+        "word": " está",
+        "start": 102.3,
+        "end": 102.44,
+        "probability": 0.3425740599632263
+      },
+      {
+        "word": " la",
+        "start": 102.44,
+        "end": 102.52,
+        "probability": 0.2873986065387726
+      },
+      {
+        "word": " Jorge?",
+        "start": 102.52,
+        "end": 102.74,
+        "probability": 0.9774895310401917
+      }
+    ]
+  },
+  {
+    "start": 103.5,
+    "end": 104.04,
+    "text": " Toda está",
+    "words": [
+      {
+        "word": " Toda",
+        "start": 103.5,
+        "end": 103.94,
+        "probability": 0.43157103285193443
+      },
+      {
+        "word": " está",
+        "start": 103.94,
+        "end": 104.04,
+        "probability": 0.39577895402908325
+      }
+    ]
+  },
+  {
+    "start": 104.04,
+    "end": 106.66,
+    "text": " Cada uno está en vuestra puta madre",
+    "words": [
+      {
+        "word": " Cada",
+        "start": 104.04,
+        "end": 104.26,
+        "probability": 3.0049493943806738e-05
+      },
+      {
+        "word": " uno",
+        "start": 104.26,
+        "end": 105.52,
+        "probability": 0.2818586528301239
+      },
+      {
+        "word": " está",
+        "start": 105.52,
+        "end": 105.72,
+        "probability": 0.8569750189781189
+      },
+      {
+        "word": " en",
+        "start": 105.72,
+        "end": 105.82,
+        "probability": 0.938042163848877
+      },
+      {
+        "word": " vuestra",
+        "start": 105.82,
+        "end": 106.1,
+        "probability": 0.9784108996391296
+      },
+      {
+        "word": " puta",
+        "start": 106.1,
+        "end": 106.32,
+        "probability": 0.9409074783325195
+      },
+      {
+        "word": " madre",
+        "start": 106.32,
+        "end": 106.66,
+        "probability": 0.9975505471229553
+      }
+    ]
+  },
+  {
+    "start": 106.66,
+    "end": 107.78,
+    "text": " Escuchadme por Dios, ¿eh?",
+    "words": [
+      {
+        "word": " Escuchadme",
+        "start": 106.66,
+        "end": 107.2,
+        "probability": 0.5547643676400185
+      },
+      {
+        "word": " por",
+        "start": 107.2,
+        "end": 107.38,
+        "probability": 0.7968893647193909
+      },
+      {
+        "word": " Dios,",
+        "start": 107.38,
+        "end": 107.56,
+        "probability": 0.5299748778343201
+      },
+      {
+        "word": " ¿eh?",
+        "start": 107.56,
+        "end": 107.78,
+        "probability": 0.7995660603046417
+      }
+    ]
+  },
+  {
+    "start": 109.6,
+    "end": 111.68,
+    "text": " Estaban a la médica y venía uno haciendo majestuos",
+    "words": [
+      {
+        "word": " Estaban",
+        "start": 109.6,
+        "end": 109.86,
+        "probability": 0.5367360599339008
+      },
+      {
+        "word": " a",
+        "start": 109.86,
+        "end": 110.0,
+        "probability": 0.9791298508644104
+      },
+      {
+        "word": " la",
+        "start": 110.0,
+        "end": 110.06,
+        "probability": 0.9530259966850281
+      },
+      {
+        "word": " médica",
+        "start": 110.06,
+        "end": 110.42,
+        "probability": 0.9065399765968323
+      },
+      {
+        "word": " y",
+        "start": 110.42,
+        "end": 110.66,
+        "probability": 0.4648057520389557
+      },
+      {
+        "word": " venía",
+        "start": 110.66,
+        "end": 110.9,
+        "probability": 0.7046034187078476
+      },
+      {
+        "word": " uno",
+        "start": 110.9,
+        "end": 111.0,
+        "probability": 0.6431888341903687
+      },
+      {
+        "word": " haciendo",
+        "start": 111.0,
+        "end": 111.22,
+        "probability": 0.3463960886001587
+      },
+      {
+        "word": " majestuos",
+        "start": 111.22,
+        "end": 111.68,
+        "probability": 0.8079297691583633
+      }
+    ]
+  },
+  {
+    "start": 111.68,
+    "end": 112.42,
+    "text": " como que lo seguía, ¿vale?",
+    "words": [
+      {
+        "word": " como",
+        "start": 111.68,
+        "end": 111.78,
+        "probability": 0.7257410287857056
+      },
+      {
+        "word": " que",
+        "start": 111.78,
+        "end": 111.88,
+        "probability": 0.8877472877502441
+      },
+      {
+        "word": " lo",
+        "start": 111.88,
+        "end": 111.96,
+        "probability": 0.4658479690551758
+      },
+      {
+        "word": " seguía,",
+        "start": 111.96,
+        "end": 112.22,
+        "probability": 0.565277636051178
+      },
+      {
+        "word": " ¿vale?",
+        "start": 112.26,
+        "end": 112.42,
+        "probability": 0.9327791929244995
+      }
+    ]
+  },
+  {
+    "start": 113.16,
+    "end": 114.16,
+    "text": " Yolú iba a seguir",
+    "words": [
+      {
+        "word": " Yolú",
+        "start": 113.16,
+        "end": 113.6,
+        "probability": 0.3662778188784917
+      },
+      {
+        "word": " iba",
+        "start": 113.6,
+        "end": 113.84,
+        "probability": 0.9568740725517273
+      },
+      {
+        "word": " a",
+        "start": 113.84,
+        "end": 114.02,
+        "probability": 0.9696987867355347
+      },
+      {
+        "word": " seguir",
+        "start": 114.02,
+        "end": 114.16,
+        "probability": 0.9954219460487366
+      }
+    ]
+  },
+  {
+    "start": 114.16,
+    "end": 115.64,
+    "text": " Pero hice una filiana como que no era para tu madre",
+    "words": [
+      {
+        "word": " Pero",
+        "start": 114.16,
+        "end": 114.4,
+        "probability": 0.5158502459526062
+      },
+      {
+        "word": " hice",
+        "start": 114.4,
+        "end": 114.56,
+        "probability": 0.42888715863227844
+      },
+      {
+        "word": " una",
+        "start": 114.56,
+        "end": 114.68,
+        "probability": 0.9877356886863708
+      },
+      {
+        "word": " filiana",
+        "start": 114.68,
+        "end": 114.92,
+        "probability": 0.6397795975208282
+      },
+      {
+        "word": " como",
+        "start": 114.92,
+        "end": 115.16,
+        "probability": 0.8957682251930237
+      },
+      {
+        "word": " que",
+        "start": 115.16,
+        "end": 115.3,
+        "probability": 0.15371255576610565
+      },
+      {
+        "word": " no",
+        "start": 115.3,
+        "end": 115.4,
+        "probability": 0.3204241394996643
+      },
+      {
+        "word": " era",
+        "start": 115.4,
+        "end": 115.48,
+        "probability": 0.23880040645599365
+      },
+      {
+        "word": " para",
+        "start": 115.48,
+        "end": 115.6,
+        "probability": 0.5695849657058716
+      },
+      {
+        "word": " tu",
+        "start": 115.6,
+        "end": 115.64,
+        "probability": 0.08064080774784088
+      },
+      {
+        "word": " madre",
+        "start": 115.64,
+        "end": 115.64,
+        "probability": 0.9877740740776062
+      }
+    ]
+  },
+  {
+    "start": 116.32,
+    "end": 117.6,
+    "text": " Yolú volví para izquierda",
+    "words": [
+      {
+        "word": " Yolú",
+        "start": 116.32,
+        "end": 116.76,
+        "probability": 0.793174664179484
+      },
+      {
+        "word": " volví",
+        "start": 116.76,
+        "end": 117.2,
+        "probability": 0.7319681545098623
+      },
+      {
+        "word": " para",
+        "start": 117.2,
+        "end": 117.34,
+        "probability": 0.9602881669998169
+      },
+      {
+        "word": " izquierda",
+        "start": 117.34,
+        "end": 117.6,
+        "probability": 0.5098291859030724
+      }
+    ]
+  },
+  {
+    "start": 117.6,
+    "end": 118.22,
+    "text": " Yolú iba al lado",
+    "words": [
+      {
+        "word": " Yolú",
+        "start": 117.6,
+        "end": 117.6,
+        "probability": 0.0017785082697325076
+      },
+      {
+        "word": " iba",
+        "start": 117.6,
+        "end": 117.6,
+        "probability": 5.806734043289907e-05
+      },
+      {
+        "word": " al",
+        "start": 117.6,
+        "end": 117.94,
+        "probability": 0.37068215012550354
+      },
+      {
+        "word": " lado",
+        "start": 117.94,
+        "end": 118.22,
+        "probability": 0.9247512221336365
+      }
+    ]
+  },
+  {
+    "start": 118.22,
+    "end": 121.84,
+    "text": " Que salió la muerte y de pronto pasaste tú",
+    "words": [
+      {
+        "word": " Que",
+        "start": 118.22,
+        "end": 118.68,
+        "probability": 0.008474919945001602
+      },
+      {
+        "word": " salió",
+        "start": 118.68,
+        "end": 119.02,
+        "probability": 0.9375739097595215
+      },
+      {
+        "word": " la",
+        "start": 119.02,
+        "end": 119.22,
+        "probability": 0.8610154390335083
+      },
+      {
+        "word": " muerte",
+        "start": 119.22,
+        "end": 120.7,
+        "probability": 0.9474000930786133
+      },
+      {
+        "word": " y",
+        "start": 120.7,
+        "end": 120.86,
+        "probability": 0.7987180352210999
+      },
+      {
+        "word": " de",
+        "start": 120.86,
+        "end": 120.94,
+        "probability": 0.8767672181129456
+      },
+      {
+        "word": " pronto",
+        "start": 120.94,
+        "end": 121.14,
+        "probability": 0.9758205413818359
+      },
+      {
+        "word": " pasaste",
+        "start": 121.14,
+        "end": 121.52,
+        "probability": 0.9441069960594177
+      },
+      {
+        "word": " tú",
+        "start": 121.52,
+        "end": 121.84,
+        "probability": 0.6352506875991821
+      }
+    ]
+  },
+  {
+    "start": 121.84,
+    "end": 122.8,
+    "text": " por el mismo hueco",
+    "words": [
+      {
+        "word": " por",
+        "start": 121.84,
+        "end": 122.16,
+        "probability": 0.6686227321624756
+      },
+      {
+        "word": " el",
+        "start": 122.16,
+        "end": 122.26,
+        "probability": 0.9887710213661194
+      },
+      {
+        "word": " mismo",
+        "start": 122.26,
+        "end": 122.42,
+        "probability": 0.9785539507865906
+      },
+      {
+        "word": " hueco",
+        "start": 122.42,
+        "end": 122.8,
+        "probability": 0.9627594351768494
+      }
+    ]
+  },
+  {
+    "start": 122.8,
+    "end": 124.54,
+    "text": " y no lo reportaste, coño",
+    "words": [
+      {
+        "word": " y",
+        "start": 122.8,
+        "end": 123.22,
+        "probability": 0.5022726058959961
+      },
+      {
+        "word": " no",
+        "start": 123.22,
+        "end": 123.34,
+        "probability": 0.942405641078949
+      },
+      {
+        "word": " lo",
+        "start": 123.34,
+        "end": 123.44,
+        "probability": 0.7267810106277466
+      },
+      {
+        "word": " reportaste,",
+        "start": 123.44,
+        "end": 123.96,
+        "probability": 0.9822593927383423
+      },
+      {
+        "word": " coño",
+        "start": 124.12,
+        "end": 124.54,
+        "probability": 0.9533959031105042
+      }
+    ]
+  },
+  {
+    "start": 125.22,
+    "end": 126.84,
+    "text": " que estaba justo en la esquina del pasillo",
+    "words": [
+      {
+        "word": " que",
+        "start": 125.22,
+        "end": 125.58,
+        "probability": 0.13552148640155792
+      },
+      {
+        "word": " estaba",
+        "start": 125.58,
+        "end": 125.72,
+        "probability": 0.6185799241065979
+      },
+      {
+        "word": " justo",
+        "start": 125.72,
+        "end": 125.92,
+        "probability": 0.7862229347229004
+      },
+      {
+        "word": " en",
+        "start": 125.92,
+        "end": 126.06,
+        "probability": 0.9867897629737854
+      },
+      {
+        "word": " la",
+        "start": 126.06,
+        "end": 126.16,
+        "probability": 0.9915609955787659
+      },
+      {
+        "word": " esquina",
+        "start": 126.16,
+        "end": 126.38,
+        "probability": 0.9974471032619476
+      },
+      {
+        "word": " del",
+        "start": 126.38,
+        "end": 126.54,
+        "probability": 0.6355471611022949
+      },
+      {
+        "word": " pasillo",
+        "start": 126.54,
+        "end": 126.84,
+        "probability": 0.969820499420166
+      }
+    ]
+  },
+  {
+    "start": 126.84,
+    "end": 128.58,
+    "text": " Es que no fue así, a mí no veo tiempo ni acercarme",
+    "words": [
+      {
+        "word": " Es",
+        "start": 126.84,
+        "end": 126.96,
+        "probability": 0.3430321216583252
+      },
+      {
+        "word": " que",
+        "start": 126.96,
+        "end": 127.04,
+        "probability": 0.982694685459137
+      },
+      {
+        "word": " no",
+        "start": 127.04,
+        "end": 127.16,
+        "probability": 0.9849554896354675
+      },
+      {
+        "word": " fue",
+        "start": 127.16,
+        "end": 127.3,
+        "probability": 0.9109033346176147
+      },
+      {
+        "word": " así,",
+        "start": 127.3,
+        "end": 127.48,
+        "probability": 0.9398158192634583
+      },
+      {
+        "word": " a",
+        "start": 127.56,
+        "end": 127.56,
+        "probability": 0.9692941308021545
+      },
+      {
+        "word": " mí",
+        "start": 127.56,
+        "end": 127.68,
+        "probability": 0.4730234742164612
+      },
+      {
+        "word": " no",
+        "start": 127.68,
+        "end": 127.74,
+        "probability": 0.9789814352989197
+      },
+      {
+        "word": " veo",
+        "start": 127.74,
+        "end": 127.84,
+        "probability": 0.24560925364494324
+      },
+      {
+        "word": " tiempo",
+        "start": 127.84,
+        "end": 128.04,
+        "probability": 0.8009372353553772
+      },
+      {
+        "word": " ni",
+        "start": 128.04,
+        "end": 128.22,
+        "probability": 0.9867955446243286
+      },
+      {
+        "word": " acercarme",
+        "start": 128.22,
+        "end": 128.58,
+        "probability": 0.8191070159276327
+      }
+    ]
+  },
+  {
+    "start": 128.58,
+    "end": 129.82,
+    "text": " Lo vi en el rango de vista",
+    "words": [
+      {
+        "word": " Lo",
+        "start": 128.58,
+        "end": 128.86,
+        "probability": 0.09511381387710571
+      },
+      {
+        "word": " vi",
+        "start": 128.86,
+        "end": 129.0,
+        "probability": 0.3900803327560425
+      },
+      {
+        "word": " en",
+        "start": 129.0,
+        "end": 129.14,
+        "probability": 0.492923766374588
+      },
+      {
+        "word": " el",
+        "start": 129.14,
+        "end": 129.32,
+        "probability": 0.8595530986785889
+      },
+      {
+        "word": " rango",
+        "start": 129.32,
+        "end": 129.54,
+        "probability": 0.8940345346927643
+      },
+      {
+        "word": " de",
+        "start": 129.54,
+        "end": 129.7,
+        "probability": 0.9805735945701599
+      },
+      {
+        "word": " vista",
+        "start": 129.7,
+        "end": 129.82,
+        "probability": 0.9792242646217346
+      }
+    ]
+  },
+  {
+    "start": 136.44,
+    "end": 137.82,
+    "text": " ¿Qué haces? ¿Aquí votasteis?",
+    "words": [
+      {
+        "word": " ¿Qué",
+        "start": 136.44,
+        "end": 136.8,
+        "probability": 0.5034571513533592
+      },
+      {
+        "word": " haces?",
+        "start": 136.8,
+        "end": 136.94,
+        "probability": 0.6863336563110352
+      },
+      {
+        "word": " ¿Aquí",
+        "start": 137.06,
+        "end": 137.22,
+        "probability": 0.6814929768443108
+      },
+      {
+        "word": " votasteis?",
+        "start": 137.22,
+        "end": 137.82,
+        "probability": 0.7488783001899719
+      }
+    ]
+  },
+  {
+    "start": 138.3,
+    "end": 139.2,
+    "text": " Yo voté a Lui",
+    "words": [
+      {
+        "word": " Yo",
+        "start": 138.3,
+        "end": 138.66,
+        "probability": 0.2054602950811386
+      },
+      {
+        "word": " voté",
+        "start": 138.66,
+        "end": 138.92,
+        "probability": 0.7980725169181824
+      },
+      {
+        "word": " a",
+        "start": 138.92,
+        "end": 139.0,
+        "probability": 0.7931562662124634
+      },
+      {
+        "word": " Lui",
+        "start": 139.0,
+        "end": 139.2,
+        "probability": 0.24958835542201996
+      }
+    ]
+  },
+  {
+    "start": 140.0,
+    "end": 140.9,
+    "text": " ¿Qué es Jorge?",
+    "words": [
+      {
+        "word": " ¿Qué",
+        "start": 140.0,
+        "end": 140.36,
+        "probability": 0.7072539925575256
+      },
+      {
+        "word": " es",
+        "start": 140.36,
+        "end": 140.52,
+        "probability": 0.9872227907180786
+      },
+      {
+        "word": " Jorge?",
+        "start": 140.52,
+        "end": 140.9,
+        "probability": 0.9050086736679077
+      }
+    ]
+  },
+  {
+    "start": 142.62,
+    "end": 143.52,
+    "text": " Yo voté a Jorge",
+    "words": [
+      {
+        "word": " Yo",
+        "start": 142.62,
+        "end": 142.98,
+        "probability": 0.6336837410926819
+      },
+      {
+        "word": " voté",
+        "start": 142.98,
+        "end": 143.2,
+        "probability": 0.961611270904541
+      },
+      {
+        "word": " a",
+        "start": 143.2,
+        "end": 143.24,
+        "probability": 0.9911474585533142
+      },
+      {
+        "word": " Jorge",
+        "start": 143.24,
+        "end": 143.52,
+        "probability": 0.9963621497154236
+      }
+    ]
+  },
+  {
+    "start": 143.52,
+    "end": 145.86,
+    "text": " Bueno, hacemos una cosa, se va uno fuera y después el otro",
+    "words": [
+      {
+        "word": " Bueno,",
+        "start": 143.52,
+        "end": 143.94,
+        "probability": 0.8785435557365417
+      },
+      {
+        "word": " hacemos",
+        "start": 144.1,
+        "end": 144.22,
+        "probability": 0.989449143409729
+      },
+      {
+        "word": " una",
+        "start": 144.22,
+        "end": 144.4,
+        "probability": 0.8730778694152832
+      },
+      {
+        "word": " cosa,",
+        "start": 144.4,
+        "end": 144.58,
+        "probability": 0.9803704023361206
+      },
+      {
+        "word": " se",
+        "start": 144.74,
+        "end": 144.8,
+        "probability": 0.6529308557510376
+      },
+      {
+        "word": " va",
+        "start": 144.8,
+        "end": 144.86,
+        "probability": 0.272020548582077
+      },
+      {
+        "word": " uno",
+        "start": 144.86,
+        "end": 144.98,
+        "probability": 0.8271649479866028
+      },
+      {
+        "word": " fuera",
+        "start": 144.98,
+        "end": 145.2,
+        "probability": 0.8950622081756592
+      },
+      {
+        "word": " y",
+        "start": 145.2,
+        "end": 145.3,
+        "probability": 0.9727359414100647
+      },
+      {
+        "word": " después",
+        "start": 145.3,
+        "end": 145.44,
+        "probability": 0.9215352535247803
+      },
+      {
+        "word": " el",
+        "start": 145.44,
+        "end": 145.64,
+        "probability": 0.6653108596801758
+      },
+      {
+        "word": " otro",
+        "start": 145.64,
+        "end": 145.86,
+        "probability": 0.9981595873832703
+      }
+    ]
+  },
+  {
+    "start": 145.86,
+    "end": 147.92,
+    "text": " En hoy, Lucas, este es empate",
+    "words": [
+      {
+        "word": " En",
+        "start": 145.86,
+        "end": 146.36,
+        "probability": 0.26580438017845154
+      },
+      {
+        "word": " hoy,",
+        "start": 146.36,
+        "end": 146.5,
+        "probability": 0.6542215347290039
+      },
+      {
+        "word": " Lucas,",
+        "start": 147.1,
+        "end": 147.24,
+        "probability": 0.5169623494148254
+      },
+      {
+        "word": " este",
+        "start": 147.44,
+        "end": 147.52,
+        "probability": 0.49104154109954834
+      },
+      {
+        "word": " es",
+        "start": 147.52,
+        "end": 147.62,
+        "probability": 0.980861246585846
+      },
+      {
+        "word": " empate",
+        "start": 147.62,
+        "end": 147.92,
+        "probability": 0.803932398557663
+      }
+    ]
+  },
+  {
+    "start": 147.92,
+    "end": 148.72,
+    "text": " Aquí quieres votar",
+    "words": [
+      {
+        "word": " Aquí",
+        "start": 147.92,
+        "end": 148.08,
+        "probability": 0.018420562148094177
+      },
+      {
+        "word": " quieres",
+        "start": 148.08,
+        "end": 148.38,
+        "probability": 0.8196925520896912
+      },
+      {
+        "word": " votar",
+        "start": 148.38,
+        "end": 148.72,
+        "probability": 0.8013059794902802
+      }
+    ]
+  },
+  {
+    "start": 150.2,
+    "end": 151.62,
+    "text": " Lucas, votamos a lo que quieras",
+    "words": [
+      {
+        "word": " Lucas,",
+        "start": 150.2,
+        "end": 150.6,
+        "probability": 0.007465273607522249
+      },
+      {
+        "word": " votamos",
+        "start": 150.82,
+        "end": 151.06,
+        "probability": 0.8896097242832184
+      },
+      {
+        "word": " a",
+        "start": 151.06,
+        "end": 151.24,
+        "probability": 0.3041013181209564
+      },
+      {
+        "word": " lo",
+        "start": 151.24,
+        "end": 151.26,
+        "probability": 0.7217843532562256
+      },
+      {
+        "word": " que",
+        "start": 151.26,
+        "end": 151.46,
+        "probability": 0.9724873900413513
+      },
+      {
+        "word": " quieras",
+        "start": 151.46,
+        "end": 151.62,
+        "probability": 0.8966031670570374
+      }
+    ]
+  },
+  {
+    "start": 151.62,
+    "end": 152.54,
+    "text": " Y luego largamos a Jorge",
+    "words": [
+      {
+        "word": " Y",
+        "start": 151.62,
+        "end": 151.74,
+        "probability": 0.06701038032770157
+      },
+      {
+        "word": " luego",
+        "start": 151.74,
+        "end": 151.88,
+        "probability": 0.9937742948532104
+      },
+      {
+        "word": " largamos",
+        "start": 151.88,
+        "end": 152.22,
+        "probability": 0.881692498922348
+      },
+      {
+        "word": " a",
+        "start": 152.22,
+        "end": 152.34,
+        "probability": 0.9891992211341858
+      },
+      {
+        "word": " Jorge",
+        "start": 152.34,
+        "end": 152.54,
+        "probability": 0.9435661435127258
+      }
+    ]
+  },
+  {
+    "start": 153.5,
+    "end": 154.54,
+    "text": " Venga, pues Eloi, venga",
+    "words": [
+      {
+        "word": " Venga,",
+        "start": 153.5,
+        "end": 153.9,
+        "probability": 0.605992816388607
+      },
+      {
+        "word": " pues",
+        "start": 154.02,
+        "end": 154.06,
+        "probability": 0.952180027961731
+      },
+      {
+        "word": " Eloi,",
+        "start": 154.06,
+        "end": 154.4,
+        "probability": 0.7059887945652008
+      },
+      {
+        "word": " venga",
+        "start": 154.42,
+        "end": 154.54,
+        "probability": 0.8232023119926453
+      }
+    ]
+  },
+  {
+    "start": 155.54,
+    "end": 156.92,
+    "text": " Eloi y luego largamos a Jorge",
+    "words": [
+      {
+        "word": " Eloi",
+        "start": 155.54,
+        "end": 155.94,
+        "probability": 0.6057410538196564
+      },
+      {
+        "word": " y",
+        "start": 155.94,
+        "end": 156.0,
+        "probability": 0.6435829401016235
+      },
+      {
+        "word": " luego",
+        "start": 156.0,
+        "end": 156.1,
+        "probability": 0.9758525490760803
+      },
+      {
+        "word": " largamos",
+        "start": 156.1,
+        "end": 156.4,
+        "probability": 0.9461534321308136
+      },
+      {
+        "word": " a",
+        "start": 156.4,
+        "end": 156.52,
+        "probability": 0.9973581433296204
+      },
+      {
+        "word": " Jorge",
+        "start": 156.52,
+        "end": 156.92,
+        "probability": 0.9977900981903076
+      }
+    ]
+  },
+  {
+    "start": 156.92,
+    "end": 158.2,
+    "text": " Ay, la leche",
+    "words": [
+      {
+        "word": " Ay,",
+        "start": 156.92,
+        "end": 157.18,
+        "probability": 0.20554772019386292
+      },
+      {
+        "word": " la",
+        "start": 157.72,
+        "end": 157.8,
+        "probability": 0.9701333045959473
+      },
+      {
+        "word": " leche",
+        "start": 157.8,
+        "end": 158.2,
+        "probability": 0.9976049661636353
+      }
+    ]
+  },
+  {
+    "start": 158.78,
+    "end": 160.88,
+    "text": " Eres un paquete de la virgen, Andoludo",
+    "words": [
+      {
+        "word": " Eres",
+        "start": 158.78,
+        "end": 159.18,
+        "probability": 0.6853335797786713
+      },
+      {
+        "word": " un",
+        "start": 159.18,
+        "end": 159.4,
+        "probability": 0.9934768080711365
+      },
+      {
+        "word": " paquete",
+        "start": 159.4,
+        "end": 159.9,
+        "probability": 0.9929622809092203
+      },
+      {
+        "word": " de",
+        "start": 159.9,
+        "end": 160.06,
+        "probability": 0.750179648399353
+      },
+      {
+        "word": " la",
+        "start": 160.06,
+        "end": 160.16,
+        "probability": 0.9307869076728821
+      },
+      {
+        "word": " virgen,",
+        "start": 160.16,
+        "end": 160.52,
+        "probability": 0.7459414005279541
+      },
+      {
+        "word": " Andoludo",
+        "start": 160.6,
+        "end": 160.88,
+        "probability": 0.6022764345010122
+      }
+    ]
+  },
+  {
+    "start": 160.88,
+    "end": 161.8,
+    "text": " De la virgen, un paquete",
+    "words": [
+      {
+        "word": " De",
+        "start": 160.88,
+        "end": 161.02,
+        "probability": 0.4428863227367401
+      },
+      {
+        "word": " la",
+        "start": 161.02,
+        "end": 161.1,
+        "probability": 0.9844930171966553
+      },
+      {
+        "word": " virgen,",
+        "start": 161.1,
+        "end": 161.38,
+        "probability": 0.974514365196228
+      },
+      {
+        "word": " un",
+        "start": 161.44,
+        "end": 161.52,
+        "probability": 0.949766218662262
+      },
+      {
+        "word": " paquete",
+        "start": 161.52,
+        "end": 161.8,
+        "probability": 0.9631738662719727
+      }
+    ]
+  },
+  {
+    "start": 162.56,
+    "end": 163.68,
+    "text": " Primero mundo y luego lo pido",
+    "words": [
+      {
+        "word": " Primero",
+        "start": 162.56,
+        "end": 162.96,
+        "probability": 0.5648180246353149
+      },
+      {
+        "word": " mundo",
+        "start": 162.96,
+        "end": 163.14,
+        "probability": 0.37136247754096985
+      },
+      {
+        "word": " y",
+        "start": 163.14,
+        "end": 163.26,
+        "probability": 0.901756227016449
+      },
+      {
+        "word": " luego",
+        "start": 163.26,
+        "end": 163.34,
+        "probability": 0.9848922491073608
+      },
+      {
+        "word": " lo",
+        "start": 163.34,
+        "end": 163.46,
+        "probability": 0.7632718682289124
+      },
+      {
+        "word": " pido",
+        "start": 163.46,
+        "end": 163.68,
+        "probability": 0.37841005623340607
+      }
+    ]
+  },
+  {
+    "start": 163.68,
+    "end": 168.54,
+    "text": " Hasta el final la tira",
+    "words": [
+      {
+        "word": " Hasta",
+        "start": 163.68,
+        "end": 163.88,
+        "probability": 0.02140040509402752
+      },
+      {
+        "word": " el",
+        "start": 163.88,
+        "end": 167.02,
+        "probability": 0.7939037680625916
+      },
+      {
+        "word": " final",
+        "start": 167.02,
+        "end": 168.06,
+        "probability": 0.888080358505249
+      },
+      {
+        "word": " la",
+        "start": 168.06,
+        "end": 168.3,
+        "probability": 0.7209180593490601
+      },
+      {
+        "word": " tira",
+        "start": 168.3,
+        "end": 168.54,
+        "probability": 0.9867278635501862
+      }
+    ]
+  },
+  {
+    "start": 170.26,
+    "end": 171.36,
+    "text": " Vale, pido, perdón",
+    "words": [
+      {
+        "word": " Vale,",
+        "start": 170.26,
+        "end": 170.66,
+        "probability": 0.013562354259192944
+      },
+      {
+        "word": " pido,",
+        "start": 170.9,
+        "end": 170.98,
+        "probability": 0.8108695447444916
+      },
+      {
+        "word": " perdón",
+        "start": 171.14,
+        "end": 171.36,
+        "probability": 0.9556912481784821
+      }
+    ]
+  },
+  {
+    "start": 171.36,
+    "end": 173.6,
+    "text": " Hay un cambio de forma, pido, perdón",
+    "words": [
+      {
+        "word": " Hay",
+        "start": 171.36,
+        "end": 171.58,
+        "probability": 0.19173987209796906
+      },
+      {
+        "word": " un",
+        "start": 171.58,
+        "end": 171.68,
+        "probability": 0.9811534881591797
+      },
+      {
+        "word": " cambio",
+        "start": 171.68,
+        "end": 171.86,
+        "probability": 0.981857180595398
+      },
+      {
+        "word": " de",
+        "start": 171.86,
+        "end": 172.02,
+        "probability": 0.5468803644180298
+      },
+      {
+        "word": " forma,",
+        "start": 172.02,
+        "end": 172.24,
+        "probability": 0.9868651032447815
+      },
+      {
+        "word": " pido,",
+        "start": 172.32,
+        "end": 173.0,
+        "probability": 0.6542280465364456
+      },
+      {
+        "word": " perdón",
+        "start": 173.02,
+        "end": 173.6,
+        "probability": 0.9721400737762451
+      }
+    ]
+  },
+  {
+    "start": 174.5,
+    "end": 175.46,
+    "text": " Es Jorge, ¿no?",
+    "words": [
+      {
+        "word": " Es",
+        "start": 174.5,
+        "end": 174.9,
+        "probability": 0.4399813115596771
+      },
+      {
+        "word": " Jorge,",
+        "start": 174.9,
+        "end": 175.2,
+        "probability": 0.016768258064985275
+      },
+      {
+        "word": " ¿no?",
+        "start": 175.34,
+        "end": 175.46,
+        "probability": 0.6895317435264587
+      }
+    ]
+  },
+  {
+    "start": 175.46,
+    "end": 176.62,
+    "text": " Pero ¿por qué dices juntos?",
+    "words": [
+      {
+        "word": " Pero",
+        "start": 175.46,
+        "end": 175.62,
+        "probability": 0.5551180243492126
+      },
+      {
+        "word": " ¿por",
+        "start": 175.62,
+        "end": 175.84,
+        "probability": 0.49221378564834595
+      },
+      {
+        "word": " qué",
+        "start": 175.84,
+        "end": 176.02,
+        "probability": 0.7708101272583008
+      },
+      {
+        "word": " dices",
+        "start": 176.02,
+        "end": 176.26,
+        "probability": 0.5251900106668472
+      },
+      {
+        "word": " juntos?",
+        "start": 176.26,
+        "end": 176.62,
+        "probability": 0.30280208587646484
+      }
+    ]
+  },
+  {
+    "start": 176.94,
+    "end": 178.0,
+    "text": " Pero me cago, tío",
+    "words": [
+      {
+        "word": " Pero",
+        "start": 176.94,
+        "end": 177.04,
+        "probability": 0.5112313032150269
+      },
+      {
+        "word": " me",
+        "start": 177.04,
+        "end": 177.24,
+        "probability": 0.9796063303947449
+      },
+      {
+        "word": " cago,",
+        "start": 177.24,
+        "end": 177.48,
+        "probability": 0.8410700261592865
+      },
+      {
+        "word": " tío",
+        "start": 177.68,
+        "end": 178.0,
+        "probability": 0.5250310227274895
+      }
+    ]
+  },
+  {
+    "start": 178.94,
+    "end": 180.08,
+    "text": " Lo de fan, no, tío",
+    "words": [
+      {
+        "word": " Lo",
+        "start": 178.94,
+        "end": 179.34,
+        "probability": 0.0023443191312253475
+      },
+      {
+        "word": " de",
+        "start": 179.34,
+        "end": 179.48,
+        "probability": 0.5035631060600281
+      },
+      {
+        "word": " fan,",
+        "start": 179.48,
+        "end": 179.68,
+        "probability": 0.07830354571342468
+      },
+      {
+        "word": " no,",
+        "start": 179.78,
+        "end": 179.8,
+        "probability": 0.27538204193115234
+      },
+      {
+        "word": " tío",
+        "start": 179.96,
+        "end": 180.08,
+        "probability": 0.9845840334892273
+      }
+    ]
+  }
+]

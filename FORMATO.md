@@ -76,6 +76,10 @@ Aplicación → API JDBC → Driver → SGBD
 
 `aviso`, `examen`, `practica` y `proyecto` aceptan Markdown en su cuerpo. `pregunta` muestra el título como pregunta desplegable y el cuerpo como respuesta. `proceso` separa pasos por `→` o `->`. `cifras` tiene una línea `número | descripción` por elemento. Estos dos últimos tipos son para flujos y cifras sencillos; para diagramas más complejos se puede incluir una imagen como archivo de la unidad.
 
+Los bloques `ejemplo` y `original` muestran ejemplos resueltos plegables. `ejemplo` se carga plegado y `original` abierto. Escribe el enunciado de cada ejercicio antes de un bloque `solucion`, que se abre con «Mostrar solución».
+
+Las fórmulas se delimitan con `\(` y `\)`. Admiten subíndices como `lim_{x→0}`, exponentes como `x^{n+1}` y fracciones como `\frac{1}{x^{2}}`. Una fórmula en su propio párrafo aparece destacada. En una tabla se puede usar `∣x∣` para evitar que las barras se lean como separadores de celdas.
+
 ## Enlaces entre unidades
 
 Usa la dirección `?u=<asignatura>/<id-unidad>#apartado`; en Markdown, codifica la barra en la URL:

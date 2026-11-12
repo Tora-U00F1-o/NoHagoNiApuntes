@@ -1,0 +1,270 @@
+[
+  {
+    "start": 5.39,
+    "end": 14.03,
+    "text": " Deberías llevarte a un ocho y un",
+    "words": [
+      {
+        "word": " Deberías",
+        "start": 5.39,
+        "end": 6.87,
+        "probability": 0.44611372364064056
+      },
+      {
+        "word": " llevarte",
+        "start": 12.95,
+        "end": 13.21,
+        "probability": 0.8401167690753937
+      },
+      {
+        "word": " a",
+        "start": 13.21,
+        "end": 13.35,
+        "probability": 0.9207391142845154
+      },
+      {
+        "word": " un",
+        "start": 13.35,
+        "end": 13.41,
+        "probability": 0.7989985942840576
+      },
+      {
+        "word": " ocho",
+        "start": 13.41,
+        "end": 13.67,
+        "probability": 0.31867459416389465
+      },
+      {
+        "word": " y",
+        "start": 13.67,
+        "end": 13.67,
+        "probability": 0.19772964715957642
+      },
+      {
+        "word": " un",
+        "start": 13.67,
+        "end": 14.03,
+        "probability": 0.2892661392688751
+      }
+    ]
+  },
+  {
+    "start": 14.03,
+    "end": 19.52,
+    "text": " Se ha sentado",
+    "words": [
+      {
+        "word": " Se",
+        "start": 14.03,
+        "end": 15.45,
+        "probability": 0.0002653873525559902
+      },
+      {
+        "word": " ha",
+        "start": 17.24,
+        "end": 18.3,
+        "probability": 0.17110015451908112
+      },
+      {
+        "word": " sentado",
+        "start": 18.3,
+        "end": 19.52,
+        "probability": 0.9178528487682343
+      }
+    ]
+  },
+  {
+    "start": 19.52,
+    "end": 20.62,
+    "text": " Ay madre",
+    "words": [
+      {
+        "word": " Ay",
+        "start": 19.52,
+        "end": 19.74,
+        "probability": 0.02368871122598648
+      },
+      {
+        "word": " madre",
+        "start": 19.74,
+        "end": 20.62,
+        "probability": 0.5837293267250061
+      }
+    ]
+  },
+  {
+    "start": 22.6,
+    "end": 24.78,
+    "text": " Queda un enemigo",
+    "words": [
+      {
+        "word": " Queda",
+        "start": 22.6,
+        "end": 23.1,
+        "probability": 0.8113398849964142
+      },
+      {
+        "word": " un",
+        "start": 23.1,
+        "end": 23.38,
+        "probability": 0.9856780171394348
+      },
+      {
+        "word": " enemigo",
+        "start": 23.38,
+        "end": 24.78,
+        "probability": 0.9949195981025696
+      }
+    ]
+  },
+  {
+    "start": 24.78,
+    "end": 26.04,
+    "text": " Que hombre",
+    "words": [
+      {
+        "word": " Que",
+        "start": 24.78,
+        "end": 25.28,
+        "probability": 0.11787119507789612
+      },
+      {
+        "word": " hombre",
+        "start": 25.28,
+        "end": 26.04,
+        "probability": 0.9868879914283752
+      }
+    ]
+  },
+  {
+    "start": 26.52,
+    "end": 27.22,
+    "text": " Guardame la OP",
+    "words": [
+      {
+        "word": " Guardame",
+        "start": 26.52,
+        "end": 27.02,
+        "probability": 0.5293298959732056
+      },
+      {
+        "word": " la",
+        "start": 27.02,
+        "end": 27.14,
+        "probability": 0.9388769268989563
+      },
+      {
+        "word": " OP",
+        "start": 27.14,
+        "end": 27.22,
+        "probability": 0.7102923393249512
+      }
+    ]
+  },
+  {
+    "start": 27.22,
+    "end": 31.0,
+    "text": " La OP",
+    "words": [
+      {
+        "word": " La",
+        "start": 27.22,
+        "end": 28.64,
+        "probability": 0.03363411873579025
+      },
+      {
+        "word": " OP",
+        "start": 28.64,
+        "end": 31.0,
+        "probability": 0.8893770575523376
+      }
+    ]
+  },
+  {
+    "start": 31.0,
+    "end": 31.02,
+    "text": " La OP",
+    "words": [
+      {
+        "word": " La",
+        "start": 31.0,
+        "end": 31.02,
+        "probability": 0.22973452508449554
+      },
+      {
+        "word": " OP",
+        "start": 31.02,
+        "end": 31.02,
+        "probability": 0.9093580842018127
+      }
+    ]
+  },
+  {
+    "start": 31.02,
+    "end": 34.34,
+    "text": " Ay pero a mi no me gusta",
+    "words": [
+      {
+        "word": " Ay",
+        "start": 31.02,
+        "end": 32.92,
+        "probability": 0.09567376226186752
+      },
+      {
+        "word": " pero",
+        "start": 32.92,
+        "end": 33.2,
+        "probability": 0.6902439594268799
+      },
+      {
+        "word": " a",
+        "start": 33.2,
+        "end": 33.28,
+        "probability": 0.9736433029174805
+      },
+      {
+        "word": " mi",
+        "start": 33.28,
+        "end": 33.34,
+        "probability": 0.9489665627479553
+      },
+      {
+        "word": " no",
+        "start": 33.34,
+        "end": 33.52,
+        "probability": 0.9953743815422058
+      },
+      {
+        "word": " me",
+        "start": 33.52,
+        "end": 33.68,
+        "probability": 0.9969428181648254
+      },
+      {
+        "word": " gusta",
+        "start": 33.68,
+        "end": 34.34,
+        "probability": 0.9882335662841797
+      }
+    ]
+  },
+  {
+    "start": 34.72,
+    "end": 36.12,
+    "text": " Guardala guardala",
+    "words": [
+      {
+        "word": " Guardala",
+        "start": 34.72,
+        "end": 35.22,
+        "probability": 0.5406015068292618
+      },
+      {
+        "word": " guardala",
+        "start": 35.22,
+        "end": 36.12,
+        "probability": 0.656966969370842
+      }
+    ]
+  }
+]

@@ -1,0 +1,10 @@
+.captions > div > div {
+  background: rgba(8, 12, 19, .88) !important;
+  font-weight: 800 !important;
+  border-radius: 14px;
+  padding: 14px 28px !important;
+  box-shadow: 0 4px 24px #0008;
+  text-shadow: 0 2px 2px #0008;
+  color: var(--speaker-color, #fff) !important;
+  border-left: 6px solid var(--speaker-color, #fff);
+}

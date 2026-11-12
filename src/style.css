@@ -615,6 +615,89 @@ body.theme-sepia .quiz-reference-badge {
 }
 
 /* Pregunta interactiva tipo flashcard */
+.study-math {
+  font-family: 'Cambria Math', 'STIX Two Math', Georgia, serif;
+  font-size: 1.12em;
+  font-variant-numeric: lining-nums;
+  overflow-wrap: anywhere;
+  --math-variable: #1d4ed8;
+  --math-constant: #047857;
+  --math-operator: #a21caf;
+}
+
+.dark .study-math {
+  --math-variable: #93c5fd;
+  --math-constant: #6ee7b7;
+  --math-operator: #f0abfc;
+}
+
+.math-variable { color: var(--math-variable); }
+.math-constant { color: var(--math-constant); }
+.math-operator { color: var(--math-operator); }
+
+.math-fraction {
+  display: inline-grid;
+  justify-items: stretch;
+  vertical-align: middle;
+  text-align: center;
+  font-size: .91em;
+  line-height: 1.4;
+  margin-inline: .12em;
+}
+
+.math-fraction > span { padding-inline: .22em; }
+.math-fraction > span:first-child { border-bottom: 1px solid currentColor; }
+
+#articleContent .study-formula,
+#quickNotesContent .study-formula {
+  padding: .85rem 1rem;
+  border-inline-start: .2rem solid #0e7490;
+  background: rgb(8 145 178 / 8%);
+  line-height: 1.85;
+}
+
+details.study-example {
+  border-inline-start: .2rem solid #0e7490;
+}
+
+details.study-example summary:focus-visible,
+details.study-solution summary:focus-visible {
+  outline: 2px solid #0891b2;
+  outline-offset: .3rem;
+  border-radius: .2rem;
+}
+
+#articleContent .study-graph {
+  display: block;
+  width: min(100%, 24rem);
+  height: auto;
+  margin: .7rem 0 .25rem;
+  border-radius: .55rem;
+  border: 1px solid #cbd5e1;
+}
+
+details.study-question.study-solution {
+  width: fit-content;
+  max-width: 100%;
+  margin: .4rem 0 1.15rem;
+  padding: .6rem .85rem;
+}
+
+details.study-question.study-solution[open] { width: auto; }
+details.study-question.study-solution summary {
+  width: fit-content;
+  color: #0e7490;
+}
+.dark details.study-question.study-solution summary { color: #67e8f9; }
+
+details.study-question.study-solution summary::after { content: none; }
+.study-solution summary svg { width: 1em; height: 1em; }
+.study-solution summary span { align-items: center; gap: .45em; }
+.study-solution .solution-show,
+.study-solution[open] .solution-hide { display: inline-flex; }
+.study-solution .solution-hide,
+.study-solution[open] .solution-show { display: none; }
+
 details.study-question {
   border: 1px solid rgba(148, 163, 184, 0.25);
   border-radius: 0.875rem;

@@ -1,0 +1,33 @@
+{
+  "fps": 59.94005994005994,
+  "width": 1080,
+  "height": 1920,
+  "frames": 1199,
+  "durationSeconds": 20.003316666666667,
+  "clips": [
+    {
+      "name": "Primera muerte",
+      "sourceStartFrame": 896,
+      "frames": 111,
+      "outputStartFrame": 0,
+      "sourceStartSeconds": 14.948266666666667,
+      "sourceEndSeconds": 16.800116666666668
+    },
+    {
+      "name": "Combate del compañero",
+      "sourceStartFrame": 1130,
+      "frames": 357,
+      "outputStartFrame": 111,
+      "sourceStartSeconds": 18.852166666666665,
+      "sourceEndSeconds": 24.808116666666667
+    },
+    {
+      "name": "Guardar la OP y desenlace",
+      "sourceStartFrame": 1579,
+      "frames": 731,
+      "outputStartFrame": 468,
+      "sourceStartSeconds": 26.342983333333333,
+      "sourceEndSeconds": 38.5385
+    }
+  ]
+}

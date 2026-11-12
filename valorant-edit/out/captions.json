@@ -1,0 +1,51 @@
+[
+  {
+    "text": "¡Ay, madre!",
+    "startMs": 2519.6833333333343,
+    "endMs": 3619.6833333333343,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "Queda un enemigo.",
+    "startMs": 5599.683333333334,
+    "endMs": 7779.683333333334,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "Guárdame la OP.",
+    "startMs": 8064.816666666669,
+    "endMs": 9144.81666666667,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "Guárdame la OP.",
+    "startMs": 9964.81666666667,
+    "endMs": 10964.81666666667,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "La OP.",
+    "startMs": 11804.81666666667,
+    "endMs": 12464.81666666667,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "Pero a mí\nno me gusta.",
+    "startMs": 14384.81666666667,
+    "endMs": 15644.81666666667,
+    "timestampMs": null,
+    "confidence": null
+  },
+  {
+    "text": "Guárdala, guárdala, guárdala.",
+    "startMs": 16464.81666666667,
+    "endMs": 17544.81666666667,
+    "timestampMs": null,
+    "confidence": null
+  }
+]

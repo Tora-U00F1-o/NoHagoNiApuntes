@@ -1,0 +1,135 @@
+[
+  {
+    "startMs": 134031,
+    "endMs": 135533,
+    "speaker": 1,
+    "label": "Voz 1",
+    "color": "#70e8ff"
+  },
+  {
+    "startMs": 136697,
+    "endMs": 138165,
+    "speaker": 0,
+    "label": "Voz 2",
+    "color": "#ffe082"
+  },
+  {
+    "startMs": 138165,
+    "endMs": 139313,
+    "speaker": 1,
+    "label": "Voz 1",
+    "color": "#70e8ff"
+  },
+  {
+    "startMs": 140308,
+    "endMs": 141169,
+    "speaker": 1,
+    "label": "Voz 1",
+    "color": "#70e8ff"
+  },
+  {
+    "startMs": 142907,
+    "endMs": 143447,
+    "speaker": 1,
+    "label": "Voz 1",
+    "color": "#70e8ff"
+  },
+  {
+    "startMs": 143785,
+    "endMs": 144966,
+    "speaker": 0,
+    "label": "Voz 2",
+    "color": "#ffe082"
+  },
+  {
+    "startMs": 144966,
+    "endMs": 145894,
+    "speaker": 3,
+    "label": "Voz 3",
+    "color": "#ff94c6"
+  },
+  {
+    "startMs": 146147,
+    "endMs": 148830,
+    "speaker": 0,
+    "label": "Voz 2",
+    "color": "#ffe082"
+  },
+  {
+    "startMs": 150265,
+    "endMs": 157892,
+    "speaker": 3,
+    "label": "Voz 3",
+    "color": "#ff94c6"
+  },
+  {
+    "startMs": 150433,
+    "endMs": 151851,
+    "speaker": 0,
+    "label": "Voz 2",
+    "color": "#ffe082"
+  },
+  {
+    "startMs": 157892,
+    "endMs": 158331,
+    "speaker": 1,
+    "label": "Voz 1",
+    "color": "#70e8ff"
+  },
+  {
+    "startMs": 158955,
+    "endMs": 162212,
+    "speaker": 4,
+    "label": "Voz 4",
+    "color": "#ffb67b"
+  },
+  {
+    "startMs": 162415,
+    "endMs": 163782,
+    "speaker": 3,
+    "label": "Voz 3",
+    "color": "#ff94c6"
+  },
+  {
+    "startMs": 163782,
+    "endMs": 165621,
+    "speaker": 6,
+    "label": "Voz 5",
+    "color": "#8af0a4"
+  },
+  {
+    "startMs": 166667,
+    "endMs": 168777,
+    "speaker": 6,
+    "label": "Voz 5",
+    "color": "#8af0a4"
+  },
+  {
+    "startMs": 170852,
+    "endMs": 173451,
+    "speaker": 6,
+    "label": "Voz 5",
+    "color": "#8af0a4"
+  },
+  {
+    "startMs": 173451,
+    "endMs": 177889,
+    "speaker": 9,
+    "label": "Voz 6",
+    "color": "#c7abff"
+  },
+  {
+    "startMs": 176033,
+    "endMs": 176286,
+    "speaker": 6,
+    "label": "Voz 5",
+    "color": "#8af0a4"
+  },
+  {
+    "startMs": 179188,
+    "endMs": 180117,
+    "speaker": 3,
+    "label": "Voz 3",
+    "color": "#ff94c6"
+  }
+]

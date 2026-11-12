@@ -1,0 +1,1479 @@
+[
+  {
+    "start": 41.38,
+    "end": 42.86,
+    "text": " Jorge, te he visto matarlo.",
+    "words": [
+      {
+        "word": " Jorge,",
+        "start": 41.38,
+        "end": 41.7,
+        "probability": 8.903706475393847e-05
+      },
+      {
+        "word": " te",
+        "start": 41.76,
+        "end": 41.88,
+        "probability": 0.9035779237747192
+      },
+      {
+        "word": " he",
+        "start": 41.88,
+        "end": 41.96,
+        "probability": 0.9045772552490234
+      },
+      {
+        "word": " visto",
+        "start": 41.96,
+        "end": 42.06,
+        "probability": 0.9980090260505676
+      },
+      {
+        "word": " matarlo.",
+        "start": 42.06,
+        "end": 42.86,
+        "probability": 0.640716165304184
+      }
+    ]
+  },
+  {
+    "start": 44.56,
+    "end": 45.94,
+    "text": " Jorge, te he visto matarlo.",
+    "words": [
+      {
+        "word": " Jorge,",
+        "start": 44.56,
+        "end": 44.56,
+        "probability": 0.3759123384952545
+      },
+      {
+        "word": " te",
+        "start": 44.56,
+        "end": 44.56,
+        "probability": 0.8799973130226135
+      },
+      {
+        "word": " he",
+        "start": 44.56,
+        "end": 44.68,
+        "probability": 0.9766100645065308
+      },
+      {
+        "word": " visto",
+        "start": 44.68,
+        "end": 44.68,
+        "probability": 0.996451735496521
+      },
+      {
+        "word": " matarlo.",
+        "start": 44.68,
+        "end": 45.94,
+        "probability": 0.4923392178607173
+      }
+    ]
+  },
+  {
+    "start": 46.019999999999996,
+    "end": 50.0,
+    "text": " Jorge, te he visto por cámaras, he ido a reportar, pedazo de cabrón.",
+    "words": [
+      {
+        "word": " Jorge,",
+        "start": 46.019999999999996,
+        "end": 46.24,
+        "probability": 0.3067890405654907
+      },
+      {
+        "word": " te",
+        "start": 46.4,
+        "end": 46.4,
+        "probability": 0.8758440017700195
+      },
+      {
+        "word": " he",
+        "start": 46.4,
+        "end": 46.4,
+        "probability": 0.9886016249656677
+      },
+      {
+        "word": " visto",
+        "start": 46.4,
+        "end": 46.4,
+        "probability": 0.9967594742774963
+      },
+      {
+        "word": " por",
+        "start": 46.4,
+        "end": 47.12,
+        "probability": 0.7768304944038391
+      },
+      {
+        "word": " cámaras,",
+        "start": 47.12,
+        "end": 47.9,
+        "probability": 0.9202919999758402
+      },
+      {
+        "word": " he",
+        "start": 47.9,
+        "end": 47.980000000000004,
+        "probability": 0.530082643032074
+      },
+      {
+        "word": " ido",
+        "start": 47.980000000000004,
+        "end": 48.16,
+        "probability": 0.9954050779342651
+      },
+      {
+        "word": " a",
+        "start": 48.16,
+        "end": 48.32,
+        "probability": 0.9598779082298279
+      },
+      {
+        "word": " reportar,",
+        "start": 48.32,
+        "end": 48.44,
+        "probability": 0.9933228492736816
+      },
+      {
+        "word": " pedazo",
+        "start": 48.5,
+        "end": 49.22,
+        "probability": 0.7329443991184235
+      },
+      {
+        "word": " de",
+        "start": 49.22,
+        "end": 49.42,
+        "probability": 0.9934717416763306
+      },
+      {
+        "word": " cabrón.",
+        "start": 49.42,
+        "end": 50.0,
+        "probability": 0.9657909870147705
+      }
+    ]
+  },
+  {
+    "start": 51.32,
+    "end": 54.0,
+    "text": " Si te he visto por cámaras, que estaba yo en cámaras, he ido a reportar.",
+    "words": [
+      {
+        "word": " Si",
+        "start": 51.32,
+        "end": 51.54,
+        "probability": 0.5306594967842102
+      },
+      {
+        "word": " te",
+        "start": 51.54,
+        "end": 51.760000000000005,
+        "probability": 0.9878379106521606
+      },
+      {
+        "word": " he",
+        "start": 51.760000000000005,
+        "end": 51.9,
+        "probability": 0.9913861751556396
+      },
+      {
+        "word": " visto",
+        "start": 51.9,
+        "end": 52.019999999999996,
+        "probability": 0.9993313550949097
+      },
+      {
+        "word": " por",
+        "start": 52.019999999999996,
+        "end": 52.239999999999995,
+        "probability": 0.9602506756782532
+      },
+      {
+        "word": " cámaras,",
+        "start": 52.239999999999995,
+        "end": 52.6,
+        "probability": 0.9978364904721578
+      },
+      {
+        "word": " que",
+        "start": 52.7,
+        "end": 52.7,
+        "probability": 0.8137427568435669
+      },
+      {
+        "word": " estaba",
+        "start": 52.7,
+        "end": 52.86,
+        "probability": 0.7640326619148254
+      },
+      {
+        "word": " yo",
+        "start": 52.86,
+        "end": 53.0,
+        "probability": 0.9905706644058228
+      },
+      {
+        "word": " en",
+        "start": 53.0,
+        "end": 53.14,
+        "probability": 0.991332471370697
+      },
+      {
+        "word": " cámaras,",
+        "start": 53.14,
+        "end": 53.379999999999995,
+        "probability": 0.9283942580223083
+      },
+      {
+        "word": " he",
+        "start": 53.44,
+        "end": 53.46,
+        "probability": 0.9215151071548462
+      },
+      {
+        "word": " ido",
+        "start": 53.46,
+        "end": 53.620000000000005,
+        "probability": 0.9982908368110657
+      },
+      {
+        "word": " a",
+        "start": 53.620000000000005,
+        "end": 53.760000000000005,
+        "probability": 0.994266927242279
+      },
+      {
+        "word": " reportar.",
+        "start": 53.760000000000005,
+        "end": 54.0,
+        "probability": 0.9993337690830231
+      }
+    ]
+  },
+  {
+    "start": 67.86,
+    "end": 69.74000000000001,
+    "text": " Te he visto por cámaras, he ido a reportar.",
+    "words": [
+      {
+        "word": " Te",
+        "start": 67.86,
+        "end": 68.25999999999999,
+        "probability": 0.025636814534664154
+      },
+      {
+        "word": " he",
+        "start": 68.25999999999999,
+        "end": 68.66,
+        "probability": 0.13531310856342316
+      },
+      {
+        "word": " visto",
+        "start": 68.66,
+        "end": 68.92,
+        "probability": 2.9834433007636108e-05
+      },
+      {
+        "word": " por",
+        "start": 68.92,
+        "end": 69.44,
+        "probability": 0.8408241868019104
+      },
+      {
+        "word": " cámaras,",
+        "start": 69.44,
+        "end": 69.56,
+        "probability": 0.7372763107220331
+      },
+      {
+        "word": " he",
+        "start": 69.56,
+        "end": 69.56,
+        "probability": 0.6371063590049744
+      },
+      {
+        "word": " ido",
+        "start": 69.56,
+        "end": 69.56,
+        "probability": 0.9907050728797913
+      },
+      {
+        "word": " a",
+        "start": 69.56,
+        "end": 69.56,
+        "probability": 0.9625809192657471
+      },
+      {
+        "word": " reportar.",
+        "start": 69.56,
+        "end": 69.74000000000001,
+        "probability": 0.9872393012046814
+      }
+    ]
+  },
+  {
+    "start": 69.88,
+    "end": 72.08,
+    "text": " Literal, he visto por cámaras, he ido a reportar.",
+    "words": [
+      {
+        "word": " Literal,",
+        "start": 69.88,
+        "end": 70.28,
+        "probability": 0.3713248496254285
+      },
+      {
+        "word": " he",
+        "start": 70.38,
+        "end": 70.38,
+        "probability": 0.4168694019317627
+      },
+      {
+        "word": " visto",
+        "start": 70.38,
+        "end": 70.58,
+        "probability": 0.9966955184936523
+      },
+      {
+        "word": " por",
+        "start": 70.58,
+        "end": 70.75999999999999,
+        "probability": 0.8601568341255188
+      },
+      {
+        "word": " cámaras,",
+        "start": 70.75999999999999,
+        "end": 71.18,
+        "probability": 0.9952278137207031
+      },
+      {
+        "word": " he",
+        "start": 71.18,
+        "end": 71.28,
+        "probability": 0.9199731945991516
+      },
+      {
+        "word": " ido",
+        "start": 71.28,
+        "end": 71.4,
+        "probability": 0.9984579086303711
+      },
+      {
+        "word": " a",
+        "start": 71.4,
+        "end": 71.53999999999999,
+        "probability": 0.9894447922706604
+      },
+      {
+        "word": " reportar.",
+        "start": 71.53999999999999,
+        "end": 72.08,
+        "probability": 0.9979693293571472
+      }
+    ]
+  },
+  {
+    "start": 72.53999999999999,
+    "end": 73.58,
+    "text": " Pero, ¿dónde estaba el cuerpo?",
+    "words": [
+      {
+        "word": " Pero,",
+        "start": 72.53999999999999,
+        "end": 72.74000000000001,
+        "probability": 0.20611169934272766
+      },
+      {
+        "word": " ¿dónde",
+        "start": 72.74000000000001,
+        "end": 73.03999999999999,
+        "probability": 0.9299138486385345
+      },
+      {
+        "word": " estaba",
+        "start": 73.03999999999999,
+        "end": 73.16,
+        "probability": 0.9226579666137695
+      },
+      {
+        "word": " el",
+        "start": 73.16,
+        "end": 73.34,
+        "probability": 0.986071765422821
+      },
+      {
+        "word": " cuerpo?",
+        "start": 73.34,
+        "end": 73.58,
+        "probability": 0.9903182983398438
+      }
+    ]
+  },
+  {
+    "start": 74.34,
+    "end": 77.24000000000001,
+    "text": " No voy a dar explicaciones, que fue Eloy, que lo acabo de rajar del entomidio.",
+    "words": [
+      {
+        "word": " No",
+        "start": 74.34,
+        "end": 74.74000000000001,
+        "probability": 0.10628509521484375
+      },
+      {
+        "word": " voy",
+        "start": 74.74000000000001,
+        "end": 75.14,
+        "probability": 0.637480616569519
+      },
+      {
+        "word": " a",
+        "start": 75.14,
+        "end": 75.25999999999999,
+        "probability": 0.9889442920684814
+      },
+      {
+        "word": " dar",
+        "start": 75.25999999999999,
+        "end": 75.36,
+        "probability": 0.972894549369812
+      },
+      {
+        "word": " explicaciones,",
+        "start": 75.36,
+        "end": 75.86,
+        "probability": 0.9757739305496216
+      },
+      {
+        "word": " que",
+        "start": 76.03999999999999,
+        "end": 76.14,
+        "probability": 0.21268288791179657
+      },
+      {
+        "word": " fue",
+        "start": 76.14,
+        "end": 76.25999999999999,
+        "probability": 0.9713835716247559
+      },
+      {
+        "word": " Eloy,",
+        "start": 76.25999999999999,
+        "end": 76.38,
+        "probability": 0.2769113836111501
+      },
+      {
+        "word": " que",
+        "start": 76.4,
+        "end": 76.46000000000001,
+        "probability": 0.9508455991744995
+      },
+      {
+        "word": " lo",
+        "start": 76.46000000000001,
+        "end": 76.58,
+        "probability": 0.9752520322799683
+      },
+      {
+        "word": " acabo",
+        "start": 76.58,
+        "end": 76.68,
+        "probability": 0.8121480345726013
+      },
+      {
+        "word": " de",
+        "start": 76.68,
+        "end": 76.68,
+        "probability": 0.9752688407897949
+      },
+      {
+        "word": " rajar",
+        "start": 76.68,
+        "end": 76.94,
+        "probability": 0.7638839185237885
+      },
+      {
+        "word": " del",
+        "start": 76.94,
+        "end": 77.06,
+        "probability": 0.24373915791511536
+      },
+      {
+        "word": " entomidio.",
+        "start": 77.06,
+        "end": 77.24000000000001,
+        "probability": 0.4462039191275835
+      }
+    ]
+  },
+  {
+    "start": 77.34,
+    "end": 78.25999999999999,
+    "text": " ¿Dónde estaba el cuerpo?",
+    "words": [
+      {
+        "word": " ¿Dónde",
+        "start": 77.34,
+        "end": 77.74000000000001,
+        "probability": 0.887368842959404
+      },
+      {
+        "word": " estaba",
+        "start": 77.74000000000001,
+        "end": 77.84,
+        "probability": 0.9823363423347473
+      },
+      {
+        "word": " el",
+        "start": 77.84,
+        "end": 78.0,
+        "probability": 0.9937126040458679
+      },
+      {
+        "word": " cuerpo?",
+        "start": 78.0,
+        "end": 78.25999999999999,
+        "probability": 0.9994971752166748
+      }
+    ]
+  },
+  {
+    "start": 79.36,
+    "end": 83.4,
+    "text": " El cuerpo estaba en el pasillo de Alamedica, de arriba.",
+    "words": [
+      {
+        "word": " El",
+        "start": 79.36,
+        "end": 79.75999999999999,
+        "probability": 0.2628227174282074
+      },
+      {
+        "word": " cuerpo",
+        "start": 79.75999999999999,
+        "end": 80.06,
+        "probability": 0.9980176687240601
+      },
+      {
+        "word": " estaba",
+        "start": 80.06,
+        "end": 81.0,
+        "probability": 0.983036458492279
+      },
+      {
+        "word": " en",
+        "start": 81.0,
+        "end": 81.42,
+        "probability": 0.8666777014732361
+      },
+      {
+        "word": " el",
+        "start": 81.42,
+        "end": 81.62,
+        "probability": 0.9741590023040771
+      },
+      {
+        "word": " pasillo",
+        "start": 81.62,
+        "end": 81.94,
+        "probability": 0.9914142191410065
+      },
+      {
+        "word": " de",
+        "start": 81.94,
+        "end": 82.1,
+        "probability": 0.8772891163825989
+      },
+      {
+        "word": " Alamedica,",
+        "start": 82.1,
+        "end": 82.6,
+        "probability": 0.6620945731798807
+      },
+      {
+        "word": " de",
+        "start": 82.64,
+        "end": 82.75999999999999,
+        "probability": 0.6572368144989014
+      },
+      {
+        "word": " arriba.",
+        "start": 82.75999999999999,
+        "end": 83.4,
+        "probability": 0.9925544857978821
+      }
+    ]
+  },
+  {
+    "start": 84.8,
+    "end": 86.0,
+    "text": " Que he ido yo para allá, coño.",
+    "words": [
+      {
+        "word": " Que",
+        "start": 84.8,
+        "end": 84.96000000000001,
+        "probability": 0.708591639995575
+      },
+      {
+        "word": " he",
+        "start": 84.96000000000001,
+        "end": 85.03999999999999,
+        "probability": 0.9198692440986633
+      },
+      {
+        "word": " ido",
+        "start": 85.03999999999999,
+        "end": 85.08,
+        "probability": 0.9985840320587158
+      },
+      {
+        "word": " yo",
+        "start": 85.08,
+        "end": 85.28,
+        "probability": 0.9729962944984436
+      },
+      {
+        "word": " para",
+        "start": 85.28,
+        "end": 85.44,
+        "probability": 0.6641344428062439
+      },
+      {
+        "word": " allá,",
+        "start": 85.44,
+        "end": 85.64,
+        "probability": 0.9855316877365112
+      },
+      {
+        "word": " coño.",
+        "start": 85.66,
+        "end": 86.0,
+        "probability": 0.9405053555965424
+      }
+    ]
+  },
+  {
+    "start": 87.6,
+    "end": 89.0,
+    "text": " Yo estaba en electricidad, o sea que...",
+    "words": [
+      {
+        "word": " Yo",
+        "start": 87.6,
+        "end": 87.82,
+        "probability": 0.8920815587043762
+      },
+      {
+        "word": " estaba",
+        "start": 87.82,
+        "end": 88.0,
+        "probability": 0.9872773289680481
+      },
+      {
+        "word": " en",
+        "start": 88.0,
+        "end": 88.14,
+        "probability": 0.9953534603118896
+      },
+      {
+        "word": " electricidad,",
+        "start": 88.14,
+        "end": 88.6,
+        "probability": 0.5238246265798807
+      },
+      {
+        "word": " o",
+        "start": 88.62,
+        "end": 88.75999999999999,
+        "probability": 0.9429190754890442
+      },
+      {
+        "word": " sea",
+        "start": 88.75999999999999,
+        "end": 88.86,
+        "probability": 0.9298343062400818
+      },
+      {
+        "word": " que...",
+        "start": 88.86,
+        "end": 89.06,
+        "probability": 0.7727823257446289
+      }
+    ]
+  },
+  {
+    "start": 90.62,
+    "end": 92.34,
+    "text": " Que lo vi por cámaras, coño.",
+    "words": [
+      {
+        "word": " Que",
+        "start": 90.62,
+        "end": 90.82,
+        "probability": 0.3308295011520386
+      },
+      {
+        "word": " lo",
+        "start": 90.82,
+        "end": 91.16,
+        "probability": 0.987341582775116
+      },
+      {
+        "word": " vi",
+        "start": 91.16,
+        "end": 91.16,
+        "probability": 0.8595240116119385
+      },
+      {
+        "word": " por",
+        "start": 91.16,
+        "end": 91.38,
+        "probability": 0.9925507307052612
+      },
+      {
+        "word": " cámaras,",
+        "start": 91.38,
+        "end": 91.86,
+        "probability": 0.7978517214457194
+      },
+      {
+        "word": " coño.",
+        "start": 91.88,
+        "end": 92.34,
+        "probability": 0.9817062318325043
+      }
+    ]
+  },
+  {
+    "start": 94.82,
+    "end": 96.5,
+    "text": " Pero lo viste de matarlo.",
+    "words": [
+      {
+        "word": " Pero",
+        "start": 94.82,
+        "end": 95.25999999999999,
+        "probability": 0.27467426657676697
+      },
+      {
+        "word": " lo",
+        "start": 95.25999999999999,
+        "end": 95.42,
+        "probability": 0.8438549041748047
+      },
+      {
+        "word": " viste",
+        "start": 95.42,
+        "end": 95.6,
+        "probability": 0.9749180674552917
+      },
+      {
+        "word": " de",
+        "start": 95.6,
+        "end": 95.75999999999999,
+        "probability": 0.5281406044960022
+      },
+      {
+        "word": " matarlo.",
+        "start": 95.75999999999999,
+        "end": 96.5,
+        "probability": 0.49986522644758224
+      }
+    ]
+  },
+  {
+    "start": 96.84,
+    "end": 99.1,
+    "text": " No, lo vi de matarlo.",
+    "words": [
+      {
+        "word": " No,",
+        "start": 96.84,
+        "end": 97.28,
+        "probability": 0.43727925419807434
+      },
+      {
+        "word": " lo",
+        "start": 97.3,
+        "end": 97.66,
+        "probability": 0.5466513633728027
+      },
+      {
+        "word": " vi",
+        "start": 97.66,
+        "end": 97.8,
+        "probability": 0.8437924385070801
+      },
+      {
+        "word": " de",
+        "start": 97.8,
+        "end": 98.9,
+        "probability": 0.8061798810958862
+      },
+      {
+        "word": " matarlo.",
+        "start": 98.9,
+        "end": 99.1,
+        "probability": 0.9149390161037445
+      }
+    ]
+  },
+  {
+    "start": 99.96,
+    "end": 100.88,
+    "text": " ¿No lo viste matarlo?",
+    "words": [
+      {
+        "word": " ¿No",
+        "start": 99.96,
+        "end": 100.22,
+        "probability": 0.21338814496994019
+      },
+      {
+        "word": " lo",
+        "start": 100.22,
+        "end": 100.34,
+        "probability": 0.9829608798027039
+      },
+      {
+        "word": " viste",
+        "start": 100.34,
+        "end": 100.5,
+        "probability": 0.9958921372890472
+      },
+      {
+        "word": " matarlo?",
+        "start": 100.5,
+        "end": 100.88,
+        "probability": 0.7571262121200562
+      }
+    ]
+  },
+  {
+    "start": 101.96000000000001,
+    "end": 102.9,
+    "text": " ¿Dónde estabas, Jorge?",
+    "words": [
+      {
+        "word": " ¿Dónde",
+        "start": 101.96000000000001,
+        "end": 102.4,
+        "probability": 0.6482895016670227
+      },
+      {
+        "word": " estabas,",
+        "start": 102.4,
+        "end": 102.62,
+        "probability": 0.6539671421051025
+      },
+      {
+        "word": " Jorge?",
+        "start": 102.72,
+        "end": 102.9,
+        "probability": 0.996377170085907
+      }
+    ]
+  },
+  {
+    "start": 104.80000000000001,
+    "end": 108.02,
+    "text": " Cámaras, está en vuestra puta madre, escuchadme por Dios, eh.",
+    "words": [
+      {
+        "word": " Cámaras,",
+        "start": 104.80000000000001,
+        "end": 105.24000000000001,
+        "probability": 0.15981455906148767
+      },
+      {
+        "word": " está",
+        "start": 105.24000000000001,
+        "end": 105.68,
+        "probability": 0.09016874432563782
+      },
+      {
+        "word": " en",
+        "start": 105.68,
+        "end": 105.9,
+        "probability": 0.9115553498268127
+      },
+      {
+        "word": " vuestra",
+        "start": 105.9,
+        "end": 106.2,
+        "probability": 0.9817946255207062
+      },
+      {
+        "word": " puta",
+        "start": 106.2,
+        "end": 106.46,
+        "probability": 0.9888807535171509
+      },
+      {
+        "word": " madre,",
+        "start": 106.46,
+        "end": 106.74,
+        "probability": 0.9964784979820251
+      },
+      {
+        "word": " escuchadme",
+        "start": 106.94,
+        "end": 107.28,
+        "probability": 0.7814069191614786
+      },
+      {
+        "word": " por",
+        "start": 107.28,
+        "end": 107.46,
+        "probability": 0.674915611743927
+      },
+      {
+        "word": " Dios,",
+        "start": 107.46,
+        "end": 107.7,
+        "probability": 0.8600303530693054
+      },
+      {
+        "word": " eh.",
+        "start": 107.7,
+        "end": 108.02,
+        "probability": 0.8606062531471252
+      }
+    ]
+  },
+  {
+    "start": 109.66,
+    "end": 113.06,
+    "text": " Estaban a Alamedica, y venían ahí haciendo majestos como que lo siguiera, ¿vale?",
+    "words": [
+      {
+        "word": " Estaban",
+        "start": 109.66,
+        "end": 109.96,
+        "probability": 0.8585443496704102
+      },
+      {
+        "word": " a",
+        "start": 109.96,
+        "end": 110.08,
+        "probability": 0.9451770782470703
+      },
+      {
+        "word": " Alamedica,",
+        "start": 110.08,
+        "end": 110.48,
+        "probability": 0.30744654463963644
+      },
+      {
+        "word": " y",
+        "start": 110.72,
+        "end": 110.78,
+        "probability": 0.48699620366096497
+      },
+      {
+        "word": " venían",
+        "start": 110.78,
+        "end": 110.98,
+        "probability": 0.6858208775520325
+      },
+      {
+        "word": " ahí",
+        "start": 110.98,
+        "end": 111.14,
+        "probability": 0.1181643158197403
+      },
+      {
+        "word": " haciendo",
+        "start": 111.14,
+        "end": 111.34,
+        "probability": 0.94099360704422
+      },
+      {
+        "word": " majestos",
+        "start": 111.34,
+        "end": 111.68,
+        "probability": 0.4823737492163976
+      },
+      {
+        "word": " como",
+        "start": 111.68,
+        "end": 111.88,
+        "probability": 0.7722287774085999
+      },
+      {
+        "word": " que",
+        "start": 111.88,
+        "end": 111.96,
+        "probability": 0.6926907896995544
+      },
+      {
+        "word": " lo",
+        "start": 111.96,
+        "end": 112.06,
+        "probability": 0.6069357991218567
+      },
+      {
+        "word": " siguiera,",
+        "start": 112.06,
+        "end": 112.3,
+        "probability": 0.9422831833362579
+      },
+      {
+        "word": " ¿vale?",
+        "start": 113.06,
+        "end": 113.06,
+        "probability": 0.8085842132568359
+      }
+    ]
+  },
+  {
+    "start": 113.06,
+    "end": 115.66,
+    "text": " Y yo lo iba a seguir, pero hice una filiana como que lo he matado.",
+    "words": [
+      {
+        "word": " Y",
+        "start": 113.06,
+        "end": 113.2,
+        "probability": 0.7172597646713257
+      },
+      {
+        "word": " yo",
+        "start": 113.2,
+        "end": 113.34,
+        "probability": 0.9209480285644531
+      },
+      {
+        "word": " lo",
+        "start": 113.34,
+        "end": 113.78,
+        "probability": 0.3373897969722748
+      },
+      {
+        "word": " iba",
+        "start": 113.78,
+        "end": 113.96,
+        "probability": 0.9626939296722412
+      },
+      {
+        "word": " a",
+        "start": 113.96,
+        "end": 114.02,
+        "probability": 0.9907006025314331
+      },
+      {
+        "word": " seguir,",
+        "start": 114.02,
+        "end": 114.22,
+        "probability": 0.9982450008392334
+      },
+      {
+        "word": " pero",
+        "start": 114.32,
+        "end": 114.46,
+        "probability": 0.9673813581466675
+      },
+      {
+        "word": " hice",
+        "start": 114.46,
+        "end": 114.6,
+        "probability": 0.9075992107391357
+      },
+      {
+        "word": " una",
+        "start": 114.6,
+        "end": 114.78,
+        "probability": 0.9629333019256592
+      },
+      {
+        "word": " filiana",
+        "start": 114.78,
+        "end": 115.02,
+        "probability": 0.7535383403301239
+      },
+      {
+        "word": " como",
+        "start": 115.02,
+        "end": 115.3,
+        "probability": 0.6369367241859436
+      },
+      {
+        "word": " que",
+        "start": 115.3,
+        "end": 115.4,
+        "probability": 0.72990882396698
+      },
+      {
+        "word": " lo",
+        "start": 115.4,
+        "end": 115.48,
+        "probability": 0.23355451226234436
+      },
+      {
+        "word": " he",
+        "start": 115.48,
+        "end": 115.54,
+        "probability": 0.21298696100711823
+      },
+      {
+        "word": " matado.",
+        "start": 115.54,
+        "end": 115.66,
+        "probability": 0.910926103591919
+      }
+    ]
+  },
+  {
+    "start": 115.66,
+    "end": 123.04,
+    "text": " He visto, Jorge, que estabas al lado, que salió la muerte y de pronto pasaste tú por el mismo hueco.",
+    "words": [
+      {
+        "word": " He",
+        "start": 115.66,
+        "end": 115.84,
+        "probability": 0.16706693172454834
+      },
+      {
+        "word": " visto,",
+        "start": 115.84,
+        "end": 116.34,
+        "probability": 0.9953991770744324
+      },
+      {
+        "word": " Jorge,",
+        "start": 117.36,
+        "end": 117.36,
+        "probability": 0.9902498126029968
+      },
+      {
+        "word": " que",
+        "start": 117.6,
+        "end": 117.62,
+        "probability": 0.9849236011505127
+      },
+      {
+        "word": " estabas",
+        "start": 117.62,
+        "end": 117.9,
+        "probability": 0.9865216314792633
+      },
+      {
+        "word": " al",
+        "start": 117.9,
+        "end": 118.1,
+        "probability": 0.9887943863868713
+      },
+      {
+        "word": " lado,",
+        "start": 118.1,
+        "end": 118.46,
+        "probability": 0.9946421384811401
+      },
+      {
+        "word": " que",
+        "start": 118.7,
+        "end": 120.14,
+        "probability": 0.9275318384170532
+      },
+      {
+        "word": " salió",
+        "start": 120.14,
+        "end": 120.42,
+        "probability": 0.9928325116634369
+      },
+      {
+        "word": " la",
+        "start": 120.42,
+        "end": 120.52,
+        "probability": 0.8244875073432922
+      },
+      {
+        "word": " muerte",
+        "start": 120.52,
+        "end": 120.78,
+        "probability": 0.9079856276512146
+      },
+      {
+        "word": " y",
+        "start": 120.78,
+        "end": 120.88,
+        "probability": 0.7227862477302551
+      },
+      {
+        "word": " de",
+        "start": 120.88,
+        "end": 121.06,
+        "probability": 0.9126883149147034
+      },
+      {
+        "word": " pronto",
+        "start": 121.06,
+        "end": 121.22,
+        "probability": 0.9988987445831299
+      },
+      {
+        "word": " pasaste",
+        "start": 121.22,
+        "end": 121.68,
+        "probability": 0.9878993332386017
+      },
+      {
+        "word": " tú",
+        "start": 121.68,
+        "end": 122.02,
+        "probability": 0.9677377343177795
+      },
+      {
+        "word": " por",
+        "start": 122.02,
+        "end": 122.24,
+        "probability": 0.8085147142410278
+      },
+      {
+        "word": " el",
+        "start": 122.24,
+        "end": 122.32,
+        "probability": 0.9932680726051331
+      },
+      {
+        "word": " mismo",
+        "start": 122.32,
+        "end": 122.54,
+        "probability": 0.9276050329208374
+      },
+      {
+        "word": " hueco.",
+        "start": 122.54,
+        "end": 123.04,
+        "probability": 0.9968374669551849
+      }
+    ]
+  },
+  {
+    "start": 123.04,
+    "end": 124.8,
+    "text": " ¿Y no lo reportaste, coño?",
+    "words": [
+      {
+        "word": " ¿Y",
+        "start": 123.04,
+        "end": 123.3,
+        "probability": 0.4805598855018616
+      },
+      {
+        "word": " no",
+        "start": 123.3,
+        "end": 123.4,
+        "probability": 0.8985463976860046
+      },
+      {
+        "word": " lo",
+        "start": 123.4,
+        "end": 123.58,
+        "probability": 0.8880606293678284
+      },
+      {
+        "word": " reportaste,",
+        "start": 123.58,
+        "end": 124.16,
+        "probability": 0.9949778020381927
+      },
+      {
+        "word": " coño?",
+        "start": 124.32,
+        "end": 124.8,
+        "probability": 0.9671436548233032
+      }
+    ]
+  },
+  {
+    "start": 125.54,
+    "end": 126.96,
+    "text": " Que estaba justo en la esquina del pasillo.",
+    "words": [
+      {
+        "word": " Que",
+        "start": 125.54,
+        "end": 125.68,
+        "probability": 0.2606334686279297
+      },
+      {
+        "word": " estaba",
+        "start": 125.68,
+        "end": 125.78,
+        "probability": 0.7813398241996765
+      },
+      {
+        "word": " justo",
+        "start": 125.78,
+        "end": 126.0,
+        "probability": 0.9890495538711548
+      },
+      {
+        "word": " en",
+        "start": 126.0,
+        "end": 126.12,
+        "probability": 0.9865518808364868
+      },
+      {
+        "word": " la",
+        "start": 126.12,
+        "end": 126.22,
+        "probability": 0.9873451590538025
+      },
+      {
+        "word": " esquina",
+        "start": 126.22,
+        "end": 126.54,
+        "probability": 0.9992794990539551
+      },
+      {
+        "word": " del",
+        "start": 126.54,
+        "end": 126.6,
+        "probability": 0.8960122466087341
+      },
+      {
+        "word": " pasillo.",
+        "start": 126.6,
+        "end": 126.96,
+        "probability": 0.9961722791194916
+      }
+    ]
+  },
+  {
+    "start": 126.98,
+    "end": 128.68,
+    "text": " Es que no fue así, a mí no había tipo ni acercame.",
+    "words": [
+      {
+        "word": " Es",
+        "start": 126.98,
+        "end": 126.98,
+        "probability": 0.4424663484096527
+      },
+      {
+        "word": " que",
+        "start": 126.98,
+        "end": 127.12,
+        "probability": 0.9941989183425903
+      },
+      {
+        "word": " no",
+        "start": 127.12,
+        "end": 127.24,
+        "probability": 0.9875583648681641
+      },
+      {
+        "word": " fue",
+        "start": 127.24,
+        "end": 127.38,
+        "probability": 0.984070897102356
+      },
+      {
+        "word": " así,",
+        "start": 127.38,
+        "end": 127.52,
+        "probability": 0.9898776412010193
+      },
+      {
+        "word": " a",
+        "start": 127.64,
+        "end": 127.64,
+        "probability": 0.8432832956314087
+      },
+      {
+        "word": " mí",
+        "start": 127.64,
+        "end": 127.72,
+        "probability": 0.4046158194541931
+      },
+      {
+        "word": " no",
+        "start": 127.72,
+        "end": 127.84,
+        "probability": 0.9340094923973083
+      },
+      {
+        "word": " había",
+        "start": 127.84,
+        "end": 127.9,
+        "probability": 0.08738143742084503
+      },
+      {
+        "word": " tipo",
+        "start": 127.9,
+        "end": 128.12,
+        "probability": 0.7632598280906677
+      },
+      {
+        "word": " ni",
+        "start": 128.12,
+        "end": 128.3,
+        "probability": 0.8423234224319458
+      },
+      {
+        "word": " acercame.",
+        "start": 128.3,
+        "end": 128.68,
+        "probability": 0.7331798672676086
+      }
+    ]
+  },
+  {
+    "start": 128.68,
+    "end": 129.84,
+    "text": " Lo vi en el rango de vista.",
+    "words": [
+      {
+        "word": " Lo",
+        "start": 128.68,
+        "end": 128.95999999999998,
+        "probability": 0.45701688528060913
+      },
+      {
+        "word": " vi",
+        "start": 128.95999999999998,
+        "end": 129.07999999999998,
+        "probability": 0.7112510204315186
+      },
+      {
+        "word": " en",
+        "start": 129.07999999999998,
+        "end": 129.32,
+        "probability": 0.9316585659980774
+      },
+      {
+        "word": " el",
+        "start": 129.32,
+        "end": 129.42000000000002,
+        "probability": 0.9851780533790588
+      },
+      {
+        "word": " rango",
+        "start": 129.42000000000002,
+        "end": 129.72,
+        "probability": 0.9972027838230133
+      },
+      {
+        "word": " de",
+        "start": 129.72,
+        "end": 129.84,
+        "probability": 0.9953184723854065
+      },
+      {
+        "word": " vista.",
+        "start": 129.84,
+        "end": 129.84,
+        "probability": 0.9670703411102295
+      }
+    ]
+  }
+]

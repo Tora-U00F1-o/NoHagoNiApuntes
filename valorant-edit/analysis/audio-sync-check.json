@@ -1,0 +1,17 @@
+[
+  {
+    "clip": "Primera muerte",
+    "offsetMs": -0.167,
+    "correlation": 0.92
+  },
+  {
+    "clip": "Combate del compañero",
+    "offsetMs": 0.0,
+    "correlation": 0.9877
+  },
+  {
+    "clip": "Guardar la OP y desenlace",
+    "offsetMs": 0.0,
+    "correlation": 0.9954
+  }
+]

@@ -171,7 +171,7 @@ function configureMarkdownParser() {
   if (!window.marked) return;
 
   const markdown = window.marked.marked || window.marked;
-  const BLOCKS = new Set(['aviso', 'examen', 'practica', 'proyecto', 'pregunta', 'proceso', 'cifras']);
+  const BLOCKS = new Set(['aviso', 'examen', 'practica', 'proyecto', 'pregunta', 'ejemplo', 'original', 'solucion', 'proceso', 'cifras']);
   const escapeHtml = value => String(value || '').replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
@@ -186,14 +186,22 @@ function configureMarkdownParser() {
         return `<a href="${escapeHtml(href)}"${title}>${this.parser.parseInline(token.tokens)}</a>`;
       },
       image(token) {
-        return `<img src="${escapeHtml(resolveStudyResource(token.href))}" alt="${escapeHtml(token.text)}"${token.title ? ` title="${escapeHtml(token.title)}"` : ''}>`;
+        const graph = token.href.startsWith('graficas/') ? ' class="study-graph" loading="lazy" decoding="async"' : '';
+        return `<img${graph} src="${escapeHtml(resolveStudyResource(token.href))}" alt="${escapeHtml(token.text)}"${token.title ? ` title="${escapeHtml(token.title)}"` : ''}>`;
+      },
+      paragraph(token) {
+        if (token.tokens.length === 1 && token.tokens[0].type === 'study-math') {
+          return `<p class="study-formula">${this.parser.parseInline(token.tokens)}</p>\n`;
+        }
+        return false;
       },
       heading(token) {
         const text = token.text || '';
         const match = /\s+\{#([a-z0-9-]+)\}$/.exec(text);
         const title = match ? text.slice(0, -match[0].length) : text;
         const slug = match ? match[1] : title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'seccion';
-        return `<h${token.depth} id="${slug}">${this.parser.parseInline(token.tokens)}</h${token.depth}>\n`;
+        const content = match ? markdown.parseInline(title) : this.parser.parseInline(token.tokens);
+        return `<h${token.depth} id="${slug}">${content}</h${token.depth}>\n`;
       },
       code(token) {
         const info = token.lang || '';
@@ -216,6 +224,51 @@ function configureMarkdownParser() {
       }
     },
     extensions: [{
+      name: 'study-math',
+      level: 'inline',
+      start: source => source.indexOf('\\('),
+      tokenizer(source) {
+        const match = /^\\\(([^\n]+?)\\\)/.exec(source);
+        if (match) return { type: 'study-math', raw: match[0], text: match[1] };
+      },
+      renderer(token) {
+        const operators = /[∀∃∈∉⊂⊆∪∩∖→↦⇔⇒≤≥≠=+−±×·∼≈≪≫<>∘]/gu;
+        const symbols = /([ℕℤℚℝ∞π]|[∀∃∈∉⊂⊆∪∩∖→↦⇔⇒≤≥≠=+−±×·∼≈≪≫<>∘]|\d+(?:[.,]\d+)?|[⁰¹²³⁴⁵⁶⁷⁸⁹₀₁₂₃₄₅₆₇₈₉]+|\p{L}+)/gu;
+        const math = token.text.replace(/\\([{}|])/g, '$1');
+        const spaced = math.replace(operators, (operator, index, source) => {
+          const left = source.slice(0, index);
+          const right = source.slice(index + 1);
+          const previous = left.trimEnd().slice(-1);
+          if (/[+−±]/u.test(operator) && (!previous || /[([{,;:/=<>≤≥→·×+−]/u.test(previous))) return operator;
+          const before = previous && !/[\s([{]$/u.test(left);
+          const after = right && !/^[\s)\]},;:]/u.test(right);
+          return (before ? ' ' : '') + operator + (after ? ' ' : '');
+        }).replace(/(?<!\d),(?!\s|$)|,(?![\d\s]|$)|[;:](?!\s|$)/gu, '$& ');
+        const color = expression => expression.split(symbols).map((part, index) => {
+          if (index % 2 === 0) return escapeHtml(part);
+          const kind = /^[ℕℤℚℝ∞π\d⁰¹²³⁴⁵⁶⁷⁸⁹₀₁₂₃₄₅₆₇₈₉]/u.test(part)
+            ? 'constant' : /^\p{L}/u.test(part) ? 'variable' : 'operator';
+          return `<span class="math-${kind}">${escapeHtml(part)}</span>`;
+        }).join('');
+        const scripts = expression => expression.split(/([_^]\{[^{}]+\})/).map(part => {
+          if (part.startsWith('_{')) return `<sub>${color(part.slice(2, -1))}</sub>`;
+          if (part.startsWith('^{')) return `<sup>${color(part.slice(2, -1))}</sup>`;
+          return color(part);
+        }).join('');
+        // Los grupos de una fracción pueden contener superíndices o subíndices.
+        const fractions = /\\frac\{((?:[^{}]|\{[^{}]*\})+)\}\{((?:[^{}]|\{[^{}]*\})+)\}/gu;
+        const parts = [];
+        let end = 0;
+        for (const match of spaced.matchAll(fractions)) {
+          const [source, numerator, denominator] = match;
+          parts.push(scripts(spaced.slice(end, match.index)));
+          parts.push(`<span class="math-fraction" role="math" aria-label="${escapeHtml(numerator)} dividido por ${escapeHtml(denominator)}"><span>${scripts(numerator)}</span><span>${scripts(denominator)}</span></span>`);
+          end = match.index + source.length;
+        }
+        const expression = parts.join('') + scripts(spaced.slice(end));
+        return `<span class="study-math">${expression}</span>`;
+      }
+    }, {
       name: 'study-block',
       level: 'block',
       tokenizer(source) {
@@ -250,12 +303,22 @@ function configureMarkdownParser() {
           return `<div class="study-flow">${steps}</div>\n`;
         }
 
-        // Bloque de pregunta interactiva
-        if (kind === 'pregunta') {
+        if (kind === 'solucion') {
+          return `<details class="study-question study-solution">
+            <summary>
+              <span class="solution-show"><i data-lucide="eye" aria-hidden="true"></i> Mostrar solución</span>
+              <span class="solution-hide"><i data-lucide="eye-off" aria-hidden="true"></i> Ocultar solución</span>
+            </summary>
+            <div>${this.parser.parse(token.tokens)}</div>
+          </details>\n`;
+        }
+
+        if (kind === 'pregunta' || kind === 'ejemplo' || kind === 'original') {
           const content = this.parser.parse(token.tokens);
+          const example = kind === 'pregunta' ? '' : ' study-example';
           return `
-            <details class="study-question">
-              <summary>${escapeHtml(title || 'Pregunta de repaso')}</summary>
+            <details class="study-question${example}"${kind === 'original' ? ' open' : ''}>
+              <summary>${escapeHtml(title || (example ? 'Ejemplo resuelto' : 'Pregunta de repaso'))}</summary>
               <div>${content}</div>
             </details>\n`;
         }
@@ -584,7 +647,7 @@ function renderSidebarTree(subject, selectedUnit) {
         const u = unitMap.get(node.id);
         if (!u) return '';
         const isActive = u.id === selectedUnit?.id;
-        const numberLabel = u.number ? String(u.number).padStart(2, '0') : '';
+        const numberLabel = u.parte ? u.number + '.' + u.parte : u.number ? String(u.number).padStart(2, '0') : '';
         
         // Estilo adaptado según nivel de anidación
         if (depth >= 2) {
@@ -710,7 +773,8 @@ async function loadUnit(unit, { summary = false, exam = false, anchor = '' } = {
   // Actualizar Breadcrumbs
   $('#breadcrumbUnit').textContent = unit.title;
   $('#lessonTitle').textContent = state.showingExam ? `${unit.title} · Claves de examen` : state.showingSummary ? `${unit.title} · Resumen` : unit.title;
-  $('#contentPill').innerHTML = `<i data-lucide="book-open" class="w-3.5 h-3.5"></i> ${state.showingExam ? 'Examen' : state.showingSummary ? 'Resumen' : 'Unidad ' + (unit.number || '')}`;
+  const unitLabel = unit.parte ? 'Subunidad ' + unit.number + '.' + unit.parte : 'Unidad ' + (unit.number || '');
+  $('#contentPill').innerHTML = `<i data-lucide="book-open" class="w-3.5 h-3.5"></i> ${state.showingExam ? 'Examen' : state.showingSummary ? 'Resumen' : unitLabel}`;
 
   // Botón PDF si tiene archivo fuente
   const pdfBtn = $('#btnPdfResource');
