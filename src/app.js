@@ -171,7 +171,7 @@ function configureMarkdownParser() {
   if (!window.marked) return;
 
   const markdown = window.marked.marked || window.marked;
-  const BLOCKS = new Set(['aviso', 'examen', 'practica', 'proyecto', 'pregunta', 'ejemplo', 'original', 'solucion', 'proceso', 'cifras']);
+  const BLOCKS = new Set(['aviso', 'examen', 'practica', 'proyecto', 'pregunta', 'ejemplo', 'original', 'solucion', 'proceso', 'cifras', 'graficador']);
   const escapeHtml = value => String(value || '').replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
@@ -285,6 +285,8 @@ function configureMarkdownParser() {
       },
       renderer(token) {
         const { kind, title, body } = token;
+
+        if (kind === 'graficador') return '<function-grapher></function-grapher>\n';
         
         // Bloque de métricas o cifras
         if (kind === 'cifras') {
@@ -647,7 +649,7 @@ function renderSidebarTree(subject, selectedUnit) {
         const u = unitMap.get(node.id);
         if (!u) return '';
         const isActive = u.id === selectedUnit?.id;
-        const numberLabel = u.parte ? u.number + '.' + u.parte : u.number ? String(u.number).padStart(2, '0') : '';
+        const numberLabel = u.parte ? u.number + '.' + u.parte : u.number === 0 ? '0' : u.number ? String(u.number).padStart(2, '0') : '';
         
         // Estilo adaptado según nivel de anidación
         if (depth >= 2) {
@@ -773,7 +775,7 @@ async function loadUnit(unit, { summary = false, exam = false, anchor = '' } = {
   // Actualizar Breadcrumbs
   $('#breadcrumbUnit').textContent = unit.title;
   $('#lessonTitle').textContent = state.showingExam ? `${unit.title} · Claves de examen` : state.showingSummary ? `${unit.title} · Resumen` : unit.title;
-  const unitLabel = unit.parte ? 'Subunidad ' + unit.number + '.' + unit.parte : 'Unidad ' + (unit.number || '');
+  const unitLabel = unit.parte ? 'Subunidad ' + unit.number + '.' + unit.parte : 'Unidad ' + (unit.number ?? '');
   $('#contentPill').innerHTML = `<i data-lucide="book-open" class="w-3.5 h-3.5"></i> ${state.showingExam ? 'Examen' : state.showingSummary ? 'Resumen' : unitLabel}`;
 
   // Botón PDF si tiene archivo fuente
