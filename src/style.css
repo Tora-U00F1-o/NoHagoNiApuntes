@@ -635,6 +635,22 @@ body.theme-sepia .quiz-reference-badge {
 .math-constant { color: var(--math-constant); }
 .math-operator { color: var(--math-operator); }
 
+.math-limits {
+  display: inline-flex;
+  align-items: center;
+  gap: .1em;
+  margin-inline-end: .2em;
+  vertical-align: middle;
+}
+
+.math-limits > .math-operator { font-size: 1.25em; }
+.math-limits-index {
+  display: flex;
+  flex-direction: column-reverse;
+  line-height: 1.05;
+  font-size: .7em;
+}
+
 .math-fraction {
   display: inline-grid;
   justify-items: stretch;

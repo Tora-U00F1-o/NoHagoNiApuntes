@@ -250,11 +250,22 @@ function configureMarkdownParser() {
             ? 'constant' : /^\p{L}/u.test(part) ? 'variable' : 'operator';
           return `<span class="math-${kind}">${escapeHtml(part)}</span>`;
         }).join('');
-        const scripts = expression => expression.split(/([_^]\{[^{}]+\})/).map(part => {
-          if (part.startsWith('_{')) return `<sub>${color(part.slice(2, -1))}</sub>`;
-          if (part.startsWith('^{')) return `<sup>${color(part.slice(2, -1))}</sup>`;
-          return color(part);
-        }).join('');
+        const scripts = expression => {
+          const parts = [];
+          let end = 0;
+          for (const match of expression.matchAll(/([∑∏∫])_\{([^{}]+)\}\^\{([^{}]+)\}|([_^])\{([^{}]+)\}/gu)) {
+            const [source, operator, lower, upper, position, value] = match;
+            parts.push(color(expression.slice(end, match.index)));
+            if (operator) {
+              parts.push(`<span class="math-limits"><span class="math-operator">${operator}</span><span class="math-limits-index"><span>${color(lower)}</span><span>${color(upper)}</span></span></span>`);
+            } else {
+              const tag = position === '_' ? 'sub' : 'sup';
+              parts.push(`<${tag}>${color(value)}</${tag}>`);
+            }
+            end = match.index + source.length;
+          }
+          return parts.join('') + color(expression.slice(end));
+        };
         // Los grupos de una fracción pueden contener superíndices o subíndices.
         const fractions = /\\frac\{((?:[^{}]|\{[^{}]*\})+)\}\{((?:[^{}]|\{[^{}]*\})+)\}/gu;
         const parts = [];
