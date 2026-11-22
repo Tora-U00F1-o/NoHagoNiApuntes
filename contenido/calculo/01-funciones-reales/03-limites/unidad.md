@@ -13,6 +13,8 @@ fuente: apuntes-originales.pdf
 
 [Apuntes de Manuel José Fernández · pp. 18–26](apuntes-originales.pdf)
 
+Para practicar estas técnicas con más ejemplos: [1.8 Operaciones con límites de funciones](?u=calculo%2Foperaciones-con-limites) y [1.9 Infinitésimos equivalentes](?u=calculo%2Finfinitesimos-equivalentes).
+
 ## Límite finito en un punto y límites laterales {#limites-finitos}
 
 Un **punto de acumulación** \(c\) del dominio \(D\) tiene puntos de \(D\) distintos de \(c\) arbitrariamente cerca. Se escribe \(lim_{x→c} f(x)=l\) si, para cualquier tolerancia en la salida, se puede elegir una distancia en la entrada que garantice esa tolerancia.
